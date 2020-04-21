@@ -147,8 +147,6 @@ El resultado final es el siguiente:
 ```bash
 ubuntu@ubuntu:~$ docker images
 REPOSITORY                     TAG                              IMAGE ID            CREATED             SIZE
-hyperledger/fabric-ca          arm64-1.4.4                      1dd63cb244fe        3 days ago          203MB
-hyperledger/fabric-ca          latest                           1dd63cb244fe        3 days ago          203MB
 hyperledger/fabric-tools       arm64-1.4.4-snapshot-7917a40ff   c9704ea000a9        5 days ago          1.65GB
 hyperledger/fabric-tools       arm64-latest                     c9704ea000a9        5 days ago          1.65GB
 hyperledger/fabric-tools       latest                           c9704ea000a9        5 days ago          1.65GB
@@ -179,4 +177,4 @@ arm64v8/ubuntu                 xenial                           11f8c8b83194    
 golang                         1.13.8-alpine                    b98704846f0c        8 weeks ago         353MB
 adoptopenjdk/openjdk8          aarch64-ubuntu-jdk8u222-b10      4263f1002511        6 months ago        301MB
 
-```**
+```
