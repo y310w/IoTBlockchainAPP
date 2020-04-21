@@ -6,6 +6,29 @@ Para el montaje de la red Blockchain se ha utilizado 5 Raspberries Pi:
 - Actuador (Raspberry Pi 2 Modelo B+) y sensor (Raspberry Pi 3 Modelo B+) para simular la red domótica.
 
 
+## Script de montaje
+
+Se ha realizado un script para automatizar el proceso de instalación de prerrequisitos, creación de binarios e imágenes, etc.
+
+El script `setup_base.sh` tiene las siguientes opciones:
+
+```bash
+./setup_base.sh -h
+Uso: setup_base.sh [opciones]
+
+opciones:
+-h : muestra esta ayuda
+-p : instalar prerrequisitos
+-f : instalar binarios e imagenes de Hyperlegder Fabric
+-s : iniciar Docker Swarm cluster
+-d : pull imagenes Docker
+-w : muestra las versiones de los prerrequisitos
+
+e.g. setup_base.sh -f
+creara los binarios e imagenes de Hyperledger Fabric
+```
+
+
 ## Instalación del SO
 
 El sistema operativo utilizado es [Ubuntu Server 18.04](https://ubuntu.com/download/raspberry-pi/thank-you?version=18.04.4&architecture=arm64+raspi3) la versión de 64-bit, que se puede encontrar en la [página oficial de Raspberry](https://www.raspberrypi.org/downloads/).
