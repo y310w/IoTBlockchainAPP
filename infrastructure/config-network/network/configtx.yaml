@@ -1,0 +1,75 @@
+---
+Organizations:
+
+    - &OrdererOrg
+        Name: OrdererIOT
+        ID: OrdererIOTMSP
+        MSPDir: crypto-config/ordererOrganizations/networkiot.com/msp
+
+    - &Device
+        Name: DeviceMSP
+        ID: DeviceMSP
+        MSPDir: crypto-config/peerOrganizations/device.networkiot.com/msp
+        AnchorPeers:
+            - Host: peer0.device.networkiot.com
+              Port: 7051
+
+    - &Handler
+        Name: HandlerMSP
+        ID: HandlerMSP
+        MSPDir: crypto-config/peerOrganizations/handler.networkiot.com/msp
+        AnchorPeers:
+            - Host: peer0.handler.networkiot.com
+              Port: 8051
+
+    - &Region
+        Name: RegionMSP
+        ID: RegionMSP
+        MSPDir: crypto-config/peerOrganizations/region.networkiot.com/msp
+        AnchorPeers:
+            - Host: peer0.region.networkiot.com
+            Port: 9051
+
+Application: &ApplicationDefaults
+    Organizations:
+
+Orderer: &OrdererDefaults
+    OrdererType: solo
+
+    Addresses:
+        - orderer.networkiot.com:7050
+
+    BatchTimeout: 2s
+    BatchSize:
+        MaxMessageCount: 10
+        AbsoluteMaxBytes: 99 MB
+        PreferredMaxBytes: 512 KB
+    Organizations:
+
+Profiles:
+
+    OrdererGenesis:
+        Orderer:
+            <<: *OrdererDefaults
+            Organizations:
+                - *OrdererOrg
+        Consortiums:
+            SampleConsortium:
+                Organizations:
+                    - *Device
+                    - *Handler
+                    - *Region
+    DeviceChannel:
+        Consortium: SampleConsortium
+        Application:
+            <<: *ApplicationDefaults
+            Organizations:
+                - *Device
+                - *Handler
+    RegionChannel:
+        Consortium: SampleConsortium
+        Application:
+            <<: *ApplicationDefaults
+            Organizations:
+                - *Region
+                - *Handler
