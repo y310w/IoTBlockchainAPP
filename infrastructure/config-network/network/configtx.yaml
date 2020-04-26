@@ -28,7 +28,7 @@ Organizations:
         MSPDir: crypto-config/peerOrganizations/region.networkiot.com/msp
         AnchorPeers:
             - Host: peer0.region.networkiot.com
-            Port: 9051
+              Port: 9051
 
 Application: &ApplicationDefaults
     Organizations:
