@@ -1,0 +1,169 @@
+version: '3'
+
+volumes:
+    orderer.networkiot.com:
+    peer0.device.networkiot.com:
+    peer0.handler.networkiot.com:
+    peer0.region.networkiot.com:
+
+networks:
+    networkiot:
+
+services:
+    orderer:
+        image: thejokeri/fabric-orderer:arm64-1.4.4
+        environment:
+            - FABRIC_LOGGING_SPEC=INFO
+            - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
+            - ORDERER_GENERAL_GENESISMETHOD=file
+            - ORDERER_GENERAL_GENESISFILE=/var/hyperledger/orderer/orderer.genesis.block
+            - ORDERER_GENERAL_LOCALMSPID=OrdererIOTMSP
+            - ORDERER_GENERAL_LOCALMSPDIR=/var/hyperledger/orderer/msp
+            - ORDERER_GENERAL_TLS_ENABLED=true
+            - ORDERER_GENERAL_TLS_PRIVATEKEY=/var/hyperledger/orderer/tls/server.key
+            - ORDERER_GENERAL_TLS_CERTIFICATE=/var/hyperledger/orderer/tls/server.crt
+            - ORDERER_GENERAL_TLS_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
+            - ORDERER_GENERAL_CLUSTER_CLIENTCERTIFICATE=/var/hyperledger/orderer/tls/server.crt
+            - ORDERER_GENERAL_CLUSTER_CLIENTPRIVATEKEY=/var/hyperledger/orderer/tls/server.key
+            - ORDERER_GENERAL_CLUSTER_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
+        working_dir: /opt/gopath/src/github.com/hyperledger/fabric
+        volumes:
+            - ./channel-artifacts/genesis.block:/var/hyperledger/orderer/orderer.genesis.block
+            - ./crypto-config/ordererOrganizations/networkiot.com/orderers/orderer.networkiot.com/msp:/var/hyperledger/orderer/msp
+            - ./crypto-config/ordererOrganizations/networkiot.com/orderers/orderer.networkiot.com/tls/:/var/hyperledger/orderer/tls
+            - orderer.networkiot.com:/var/hyperledger/production/orderer
+        hostname: orderer.networkiot.com
+        networks:
+            networkiot:
+                aliases:
+                    - orderer.networkiot.com
+        ports:
+            - 7050:7050
+        command: orderer
+
+    device:
+        image: thejokeri/fabric-peer:arm64-1.4.4
+        environment: 
+            - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+            - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=fabric_networkiot
+            - FABRIC_LOGGING_SPEC=INFO
+            - FABRIC_LOGGING_SPEC=DEBUG
+            - CORE_PEER_TLS_ENABLED=true
+            - CORE_PEER_GOSSIP_USELEADERELECTION=false
+            - CORE_PEER_GOSSIP_ORGLEADER=false
+            - CORE_PEER_PROFILE_ENABLED=true
+            - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt
+            - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
+            - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
+            - CORE_PEER_ID=peer0.device.networkiot.com
+            - CORE_PEER_ADDRESS=peer0.device.networkiot.com:7051
+            - CORE_PEER_CHAINCODEADDRESS=peer0.device.networkiot.com:7052
+            - CORE_PEER_LOCALMSPID=DeviceMSP
+        working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
+        volumes:
+            - /var/run/:/host/var/run/
+            - ./crypto-config/peerOrganizations/device.networkiot.com/peers/peer0.device.networkiot.com/msp:/etc/hyperledger/fabric/msp
+            - ./crypto-config/peerOrganizations/device.networkiot.com/peers/peer0.device.networkiot.com/tls:/etc/hyperledger/fabric/tls
+            - peer0.device.networkiot.com:/var/hyperledger/production
+        hostname: peer0.device.networkiot.com
+        networks:
+            networkiot:
+                aliases:
+                    - peer0.device.networkiot.com
+        ports:
+            - 7051:7051
+        command: peer node start
+
+    handler:
+        image: thejokeri/fabric-peer:arm64-1.4.4
+        environment: 
+            - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+            - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=fabric_networkiot
+            - FABRIC_LOGGING_SPEC=INFO
+            - FABRIC_LOGGING_SPEC=DEBUG
+            - CORE_PEER_TLS_ENABLED=true
+            - CORE_PEER_GOSSIP_USELEADERELECTION=false
+            - CORE_PEER_GOSSIP_ORGLEADER=false
+            - CORE_PEER_PROFILE_ENABLED=true
+            - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt
+            - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
+            - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
+            - CORE_PEER_ID=peer0.handler.networkiot.com
+            - CORE_PEER_ADDRESS=peer0.handler.networkiot.com:8051
+            - CORE_PEER_CHAINCODEADDRESS=peer0.handler.networkiot.com:8052
+            - CORE_PEER_LOCALMSPID=HandlerMSP
+        working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
+        volumes:
+            - /var/run/:/host/var/run/
+            - ./crypto-config/peerOrganizations/handler.networkiot.com/peers/peer0.handler.networkiot.com/msp:/etc/hyperledger/fabric/msp
+            - ./crypto-config/peerOrganizations/handler.networkiot.com/peers/peer0.handler.networkiot.com/tls:/etc/hyperledger/fabric/tls
+            - peer0.handler.networkiot.com:/var/hyperledger/production
+        hostname: peer0.handler.networkiot.com
+        networks:
+            networkiot:
+                aliases:
+                    - peer0.handler.networkiot.com
+        ports:
+            - 8051:8051
+        command: peer node start
+
+    region:
+        image: thejokeri/fabric-peer:arm64-1.4.4
+        environment: 
+            - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+            - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=fabric_networkiot
+            - FABRIC_LOGGING_SPEC=INFO
+            - FABRIC_LOGGING_SPEC=DEBUG
+            - CORE_PEER_TLS_ENABLED=true
+            - CORE_PEER_GOSSIP_USELEADERELECTION=false
+            - CORE_PEER_GOSSIP_ORGLEADER=false
+            - CORE_PEER_PROFILE_ENABLED=true
+            - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt
+            - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
+            - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
+            - CORE_PEER_ID=peer0.region.networkiot.com
+            - CORE_PEER_ADDRESS=peer0.region.networkiot.com:9051
+            - CORE_PEER_CHAINCODEADDRESS=peer0.region.networkiot.com:9052
+            - CORE_PEER_LOCALMSPID=RegionMSP
+        working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
+        volumes:
+            - /var/run/:/host/var/run/
+            - ./crypto-config/peerOrganizations/region.networkiot.com/peers/peer0.region.networkiot.com/msp:/etc/hyperledger/fabric/msp
+            - ./crypto-config/peerOrganizations/region.networkiot.com/peers/peer0.region.networkiot.com/tls:/etc/hyperledger/fabric/tls
+            - peer0.region.networkiot.com:/var/hyperledger/production
+        hostname: peer0.region.networkiot.com
+        networks:
+            networkiot:
+                aliases:
+                    - peer0.region.networkiot.com
+        ports:
+            - 9051:9051
+        command: peer node start
+
+    cli:
+        image: thejokeri/fabric-tools:arm64-1.4.4
+        tty: true
+        stdin_open: true
+        environment:
+            - GOPATH=/opt/gopath
+            - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+            - FABRIC_LOGGING_SPEC=DEBUG
+            - FABRIC_LOGGING_SPEC=INFO
+            - CORE_PEER_ID=cli
+            - CORE_CHAINCODE_KEEPALIVE=10
+        working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
+        command: /bin/bash
+        volumes:
+            - /var/run/:/host/var/run/
+            - ./../chaincode/:/opt/gopath/src/github.com/chaincode
+            - ./crypto-config:/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/
+            - ./channel-artifacts:/opt/gopath/src/github.com/hyperledger/fabric/peer/channel-artifacts
+        depends_on:
+            - orderer
+            - device
+            - handler
+            - region
+        networks:
+            networkiot:
+                aliases:
+                    - cli.networkiot.com
