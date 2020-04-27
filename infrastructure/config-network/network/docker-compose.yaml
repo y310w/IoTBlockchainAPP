@@ -28,9 +28,9 @@ services:
             - ORDERER_GENERAL_CLUSTER_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
         working_dir: /opt/gopath/src/github.com/hyperledger/fabric
         volumes:
-            - ./channel-artifacts/genesis.block:/var/hyperledger/orderer/orderer.genesis.block
-            - ./crypto-config/ordererOrganizations/networkiot.com/orderers/orderer.networkiot.com/msp:/var/hyperledger/orderer/msp
-            - ./crypto-config/ordererOrganizations/networkiot.com/orderers/orderer.networkiot.com/tls/:/var/hyperledger/orderer/tls
+            - ~/IoTBlockchainAPP/infrastructure/config-network/network/channel-artifacts/genesis.block:/var/hyperledger/orderer/orderer.genesis.block
+            - ~/IoTBlockchainAPP/infrastructure/config-network/network/crypto-config/ordererOrganizations/networkiot.com/orderers/orderer.networkiot.com/msp/:/var/hyperledger/orderer/msp/
+            - ~/IoTBlockchainAPP/infrastructure/config-network/network/crypto-config/ordererOrganizations/networkiot.com/orderers/orderer.networkiot.com/tls/:/var/hyperledger/orderer/tls/
             - orderer.networkiot.com:/var/hyperledger/production/orderer
         hostname: orderer.networkiot.com
         networks:
@@ -62,8 +62,8 @@ services:
         working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
         volumes:
             - /var/run/:/host/var/run/
-            - ./crypto-config/peerOrganizations/device.networkiot.com/peers/peer0.device.networkiot.com/msp:/etc/hyperledger/fabric/msp
-            - ./crypto-config/peerOrganizations/device.networkiot.com/peers/peer0.device.networkiot.com/tls:/etc/hyperledger/fabric/tls
+            - ~/IoTBlockchainAPP/infrastructure/config-network/network/crypto-config/peerOrganizations/device.networkiot.com/peers/peer0.device.networkiot.com/msp/:/etc/hyperledger/fabric/msp/
+            - ~/IoTBlockchainAPP/infrastructure/config-network/network/crypto-config/peerOrganizations/device.networkiot.com/peers/peer0.device.networkiot.com/tls/:/etc/hyperledger/fabric/tls/
             - peer0.device.networkiot.com:/var/hyperledger/production
         hostname: peer0.device.networkiot.com
         networks:
@@ -95,8 +95,8 @@ services:
         working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
         volumes:
             - /var/run/:/host/var/run/
-            - ./crypto-config/peerOrganizations/handler.networkiot.com/peers/peer0.handler.networkiot.com/msp:/etc/hyperledger/fabric/msp
-            - ./crypto-config/peerOrganizations/handler.networkiot.com/peers/peer0.handler.networkiot.com/tls:/etc/hyperledger/fabric/tls
+            - ~/IoTBlockchainAPP/infrastructure/config-network/network/crypto-config/peerOrganizations/handler.networkiot.com/peers/peer0.handler.networkiot.com/msp/:/etc/hyperledger/fabric/msp/
+            - ~/IoTBlockchainAPP/infrastructure/config-network/network/crypto-config/peerOrganizations/handler.networkiot.com/peers/peer0.handler.networkiot.com/tls/:/etc/hyperledger/fabric/tls/
             - peer0.handler.networkiot.com:/var/hyperledger/production
         hostname: peer0.handler.networkiot.com
         networks:
@@ -128,8 +128,8 @@ services:
         working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
         volumes:
             - /var/run/:/host/var/run/
-            - ./crypto-config/peerOrganizations/region.networkiot.com/peers/peer0.region.networkiot.com/msp:/etc/hyperledger/fabric/msp
-            - ./crypto-config/peerOrganizations/region.networkiot.com/peers/peer0.region.networkiot.com/tls:/etc/hyperledger/fabric/tls
+            - ~/IoTBlockchainAPP/infrastructure/config-network/network/crypto-config/peerOrganizations/region.networkiot.com/peers/peer0.region.networkiot.com/msp/:/etc/hyperledger/fabric/msp/
+            - ~/IoTBlockchainAPP/infrastructure/config-network/network/crypto-config/peerOrganizations/region.networkiot.com/peers/peer0.region.networkiot.com/tls/:/etc/hyperledger/fabric/tls/
             - peer0.region.networkiot.com:/var/hyperledger/production
         hostname: peer0.region.networkiot.com
         networks:
@@ -155,9 +155,9 @@ services:
         command: /bin/bash
         volumes:
             - /var/run/:/host/var/run/
-            - ./../chaincode/:/opt/gopath/src/github.com/chaincode
-            - ./crypto-config:/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/
-            - ./channel-artifacts:/opt/gopath/src/github.com/hyperledger/fabric/peer/channel-artifacts
+            - ~/IoTBlockchainAPP/infrastructure/config-network/chaincode/:/opt/gopath/src/github.com/chaincode/
+            - ~/IoTBlockchainAPP/infrastructure/config-network/network/crypto-config/:/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/
+            - ~/IoTBlockchainAPP/infrastructure/config-network/network/channel-artifacts/:/opt/gopath/src/github.com/hyperledger/fabric/peer/channel-artifacts/
         depends_on:
             - orderer
             - device
