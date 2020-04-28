@@ -59,6 +59,13 @@ services:
             - CORE_PEER_ADDRESS=peer0.device.networkiot.com:7051
             - CORE_PEER_CHAINCODEADDRESS=peer0.device.networkiot.com:7052
             - CORE_PEER_LOCALMSPID=DeviceMSP
+            - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
+            - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb:5984
+            - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=admin
+            - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=admin
+        depends_on:
+            - orderer
+            - couchdb
         working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
         volumes:
             - /var/run/:/host/var/run/
@@ -92,6 +99,13 @@ services:
             - CORE_PEER_ADDRESS=peer0.handler.networkiot.com:8051
             - CORE_PEER_CHAINCODEADDRESS=peer0.handler.networkiot.com:8052
             - CORE_PEER_LOCALMSPID=HandlerMSP
+            - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
+            - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb:5984
+            - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=admin
+            - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=admin
+        depends_on:
+            - orderer
+            - couchdb
         working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
         volumes:
             - /var/run/:/host/var/run/
@@ -125,6 +139,13 @@ services:
             - CORE_PEER_ADDRESS=peer0.region.networkiot.com:9051
             - CORE_PEER_CHAINCODEADDRESS=peer0.region.networkiot.com:9052
             - CORE_PEER_LOCALMSPID=RegionMSP
+            - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
+            - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb:5984
+            - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=admin
+            - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=admin
+        depends_on:
+            - orderer
+            - couchdb
         working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
         volumes:
             - /var/run/:/host/var/run/
@@ -139,6 +160,19 @@ services:
         ports:
             - 9051:9051
         command: peer node start
+
+    couchdb:
+        container_name: couchdb
+        image: thejokeri/fabric-couchdb:arm64-0.4.18
+        environment:
+            - COUCHDB_USER=admin
+            - COUCHDB_PASSWORD=admin
+        ports:
+            - 5984:5984
+        networks:
+            networkiot:
+                aliases:
+                    - couchdb.networkiot.com
 
     cli:
         image: thejokeri/fabric-tools:arm64-1.4.4
@@ -163,6 +197,7 @@ services:
             - device
             - handler
             - region
+            - couchdb
         networks:
             networkiot:
                 aliases:
