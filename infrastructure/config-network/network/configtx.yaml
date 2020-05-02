@@ -6,12 +6,12 @@ Organizations:
         ID: OrdererIOTMSP
         MSPDir: crypto-config/ordererOrganizations/networkiot.com/msp
 
-    - &Device
-        Name: DeviceMSP
-        ID: DeviceMSP
-        MSPDir: crypto-config/peerOrganizations/device.networkiot.com/msp
+    - &Sensor
+        Name: SensorMSP
+        ID: SensorMSP
+        MSPDir: crypto-config/peerOrganizations/sensor.networkiot.com/msp
         AnchorPeers:
-            - Host: peer0.device.networkiot.com
+            - Host: peer0.sensor.networkiot.com
               Port: 7051
 
     - &Handler
@@ -22,12 +22,12 @@ Organizations:
             - Host: peer0.handler.networkiot.com
               Port: 8051
 
-    - &Region
-        Name: RegionMSP
-        ID: RegionMSP
-        MSPDir: crypto-config/peerOrganizations/region.networkiot.com/msp
+    - &Linkage
+        Name: LinkageMSP
+        ID: LinkageMSP
+        MSPDir: crypto-config/peerOrganizations/linkage.networkiot.com/msp
         AnchorPeers:
-            - Host: peer0.region.networkiot.com
+            - Host: peer0.linkage.networkiot.com
               Port: 9051
 
 Application: &ApplicationDefaults
@@ -56,20 +56,20 @@ Profiles:
         Consortiums:
             SampleConsortium:
                 Organizations:
-                    - *Device
+                    - *Sensor
                     - *Handler
-                    - *Region
-    DeviceChannel:
+                    - *Linkage
+    SensorChannel:
         Consortium: SampleConsortium
         Application:
             <<: *ApplicationDefaults
             Organizations:
-                - *Device
+                - *Sensor
                 - *Handler
-    RegionChannel:
+    LinkageChannel:
         Consortium: SampleConsortium
         Application:
             <<: *ApplicationDefaults
             Organizations:
-                - *Region
+                - *Linkage
                 - *Handler
