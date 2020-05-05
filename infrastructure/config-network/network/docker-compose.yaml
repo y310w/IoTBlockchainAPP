@@ -33,6 +33,10 @@ services:
             - ~/IoTBlockchainAPP/infrastructure/config-network/network/crypto-config/ordererOrganizations/networkiot.com/orderers/orderer.networkiot.com/tls/:/var/hyperledger/orderer/tls/
             - orderer.networkiot.com:/var/hyperledger/production/orderer
         hostname: orderer.networkiot.com
+        deploy:
+            placement:
+                constraints:
+                    - "node.role==manager"
         networks:
             networkiot:
                 aliases:
@@ -73,6 +77,10 @@ services:
             - ~/IoTBlockchainAPP/infrastructure/config-network/network/crypto-config/peerOrganizations/sensor.networkiot.com/peers/peer0.sensor.networkiot.com/tls/:/etc/hyperledger/fabric/tls/
             - peer0.sensor.networkiot.com:/var/hyperledger/production
         hostname: peer0.sensor.networkiot.com
+        deploy:
+            placement:
+                constraints:
+                    - "node.role==worker"
         networks:
             networkiot:
                 aliases:
@@ -113,6 +121,10 @@ services:
             - ~/IoTBlockchainAPP/infrastructure/config-network/network/crypto-config/peerOrganizations/handler.networkiot.com/peers/peer0.handler.networkiot.com/tls/:/etc/hyperledger/fabric/tls/
             - peer0.handler.networkiot.com:/var/hyperledger/production
         hostname: peer0.handler.networkiot.com
+        deploy:
+            placement:
+                constraints:
+                    - "node.role==worker"
         networks:
             networkiot:
                 aliases:
@@ -153,6 +165,10 @@ services:
             - ~/IoTBlockchainAPP/infrastructure/config-network/network/crypto-config/peerOrganizations/linkage.networkiot.com/peers/peer0.linkage.networkiot.com/tls/:/etc/hyperledger/fabric/tls/
             - peer0.linkage.networkiot.com:/var/hyperledger/production
         hostname: peer0.linkage.networkiot.com
+        deploy:
+            placement:
+                constraints:
+                    - "node.role==worker"
         networks:
             networkiot:
                 aliases:
@@ -162,13 +178,16 @@ services:
         command: peer node start
 
     couchdb:
-        container_name: couchdb
         image: thejokeri/fabric-couchdb:arm64-0.4.18
         environment:
             - COUCHDB_USER=admin
             - COUCHDB_PASSWORD=admin
         ports:
             - 5984:5984
+        deploy:
+            placement:
+                constraints:
+                    - "node.role==manager"
         networks:
             networkiot:
                 aliases:
@@ -198,6 +217,10 @@ services:
             - handler
             - linkage
             - couchdb
+        deploy:
+            placement:
+                constraints:
+                    - "node.role==manager"
         networks:
             networkiot:
                 aliases:
