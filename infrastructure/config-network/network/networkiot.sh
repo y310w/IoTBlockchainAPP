@@ -15,11 +15,7 @@ printHelp() {
 }
 
 
-generateNetwork() {
-    # eliminamos cualquier configuracion previa
-    rm -fr channel-artifacts/*
-    rm -fr crypto-config
-    
+generateNetwork() {    
     mkdir ./channel-artifacts/anchors
     
     # generamos crypto material
@@ -36,96 +32,92 @@ generateNetwork() {
     exit 1
     fi
 
-    # generamos la configuracion del canal Device
-    ../bin/configtxgen -profile DeviceChannel -outputCreateChannelTx ./channel-artifacts/deviceChannel.tx -channelID devicechannel
+    # generamos la configuracion del canal Sensor
+    ../bin/configtxgen -profile SensorChannel -outputCreateChannelTx ./channel-artifacts/sensorChannel.tx -channelID sensorchannel
     if [ "$?" -ne 0 ]; then
-    echo "Fallo al generar la configuración del canal Device..."
+    echo "Fallo al generar la configuración del canal Sensor..."
     exit 1
     fi
 
     # generamos el anchor peer transaction
-    ../bin/configtxgen -profile DeviceChannel -outputAnchorPeersUpdate ./channel-artifacts/anchors/DeviceMSPanchors.tx -channelID dhanchor -asOrg DeviceMSP
+    ../bin/configtxgen -profile SensorChannel -outputAnchorPeersUpdate ./channel-artifacts/anchors/SensorMSPanchors.tx -channelID shanchor -asOrg SensorMSP
     if [ "$?" -ne 0 ]; then
-    echo "Fallo al generar el anchor peer para DeviceMSP..."
+    echo "Fallo al generar el anchor peer para SensorMSP..."
     exit 1
     fi
 
     # generamos el anchor peer transaction
-    ../bin/configtxgen -profile DeviceChannel -outputAnchorPeersUpdate ./channel-artifacts/anchors/DHandlerMSPanchors.tx -channelID hdanchor -asOrg HandlerMSP
+    ../bin/configtxgen -profile SensorChannel -outputAnchorPeersUpdate ./channel-artifacts/anchors/SHandlerMSPanchors.tx -channelID hsanchor -asOrg HandlerMSP
     if [ "$?" -ne 0 ]; then
-    echo "Fallo al generar el anchor peer de Device para HandlerMSP..."
+    echo "Fallo al generar el anchor peer de Sensor para HandlerMSP..."
     exit 1
     fi
 
-    # generamos la configuracion del canal Region
-    ../bin/configtxgen -profile RegionChannel -outputCreateChannelTx ./channel-artifacts/regionChannel.tx -channelID regionchannel
+    # generamos la configuracion del canal Linkage
+    ../bin/configtxgen -profile LinkageChannel -outputCreateChannelTx ./channel-artifacts/linkageChannel.tx -channelID linkagechannel
     if [ "$?" -ne 0 ]; then
-    echo "Fallo al generar la configuración del canal Region..."
-    exit 1
-    fi
-
-    # generamos el anchor peer transaction
-    ../bin/configtxgen -profile RegionChannel -outputAnchorPeersUpdate ./channel-artifacts/anchors/RegionMSPanchors.tx -channelID rhanchor -asOrg RegionMSP
-    if [ "$?" -ne 0 ]; then
-    echo "Fallo al generar el anchor peer para RegionMSP..."
+    echo "Fallo al generar la configuración del canal Linkage..."
     exit 1
     fi
 
     # generamos el anchor peer transaction
-    ../bin/configtxgen -profile RegionChannel -outputAnchorPeersUpdate ./channel-artifacts/anchors/RHandlerMSPanchors.tx -channelID hranchor -asOrg HandlerMSP
+    ../bin/configtxgen -profile LinkageChannel -outputAnchorPeersUpdate ./channel-artifacts/anchors/LinkageMSPanchors.tx -channelID lhanchor -asOrg LinkageMSP
     if [ "$?" -ne 0 ]; then
-    echo "Fallo al generar el anchor peer de Region para HandlerMSP..."
+    echo "Fallo al generar el anchor peer para LinkageMSP..."
     exit 1
     fi
+
+    # generamos el anchor peer transaction
+    ../bin/configtxgen -profile LinkageChannel -outputAnchorPeersUpdate ./channel-artifacts/anchors/LHandlerMSPanchors.tx -channelID hlanchor -asOrg HandlerMSP
+    if [ "$?" -ne 0 ]; then
+    echo "Fallo al generar el anchor peer de Linkage para HandlerMSP..."
+    exit 1
+    fi
+
+    rsync -r channel-artifacts/ ubuntu@192.168.0.31:$PWD/channel-artifacts
+    rsync -r crypto-config/ ubuntu@192.168.0.31:$PWD/crypto-config
+
+    rsync -r channel-artifacts/ ubuntu@192.168.0.32:$PWD/channel-artifacts
+    rsync -r crypto-config/ ubuntu@192.168.0.32:$PWD/crypto-config
 }
 
 
 startNetwork() {
     set -ev
 
-    docker-compose -f docker-compose.yaml down
-
-    rsync -r channel-artifacts/ ubuntu@192.168.0.32:~/channel-artifacts
-    rsync -r crypto-config/ ubuntu@192.168.0.32:~/crypto-config
-    rsync -r ../chaincode/ ubuntu@192.168.0.32:~/../chaincode
-    
-    docker stack deploy --compose-file docker-compose.yaml blockchain && docker ps
-    docker-compose -f docker-compose.yaml up -d
+    docker stack deploy --compose-file docker-compose.yaml blockchainIoT
+    docker stack ps blockchainIoT
     docker ps -a
-
-    
-    # Esperarmos a que este todo montado
-    export FABRIC_START_TIMEOUT=10
-    sleep ${FABRIC_START_TIMEOUT}
+    docker service ls
 
     # Create the channel
-    docker exec -e "CORE_PEER_LOCALMSPID=Org1MSP" -e "CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/msp/users/Admin@org1.example.com/msp" peer0.org1.example.com peer channel create -o orderer.example.com:7050 -c mychannel -f /etc/hyperledger/configtx/channel.tx
-    # Join peer0.org1.example.com to the channel.
-    docker exec -e "CORE_PEER_LOCALMSPID=Org1MSP" -e "CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/msp/users/Admin@org1.example.com/msp" peer0.org1.example.com peer channel join -b mychannel.block
+    docker exec -it $(docker ps --format='{{.Names}}' | grep clid) bash
+    peer channel create -t 10 -o orderer.networkiot.com:7050 -c sensorchannel -f /etc/hyperledger/configtx/sensorChannel.tx --tls true --cafile $ORDERER_CA
+
+    peer channel update -o orderer.example.com:7050 -c $CHANNEL_NAME -f ./channel-artifacts/${CORE_PEER_LOCALMSPID}anchors.tx --tls $CORE_PEER_TLS_ENABLED --cafile $ORDERER_CA
+
+    # Join peer0.sensor.networkiot.com to the channel.
+    peer channel join -b $CHANNEL_NAME.block
+    peer chaincode install -n mycc -v 1.0 -p github.com/hyperledger/fabric/examples/chaincode/go/chaincode_example02
+
+    peer chaincode instantiate -o orderer.example.com:7050 --tls $CORE_PEER_TLS_ENABLED --cafile $ORDERER_CA -C $CHANNEL_NAME -n mycc -v 1.0 -c '{"Args":["init","a","100","b","200"]}' -P "OR	('Org1MSP.member','Org2MSP.member')"
 }
 
 
 stopNetwork() {
     set -ev
 
-    docker stack rm blockchain
     # Apagamos los docker images que esten corriendo
-    docker-compose -f docker-compose.yaml stop
+    docker stack rm blockchainIoT
 }
 
 
 removeNetwork() {
-    set -e
+    stopNetwork
 
-    # Apagamos los docker images que esten corriendo
-    docker-compose -f docker-compose.yaml kill && docker-compose -f docker-compose.yaml down
-
-    # eliminamos el estado local
-    rm -f ~/.hfc-key-store/*
-
-    # eliminamos los docker de chaincode
-    docker rm $(docker ps -aq)
-    docker rmi $(docker images dev-* -q)
+    # eliminamos cualquier configuracion
+    rm -fr channel-artifacts/*
+    rm -fr crypto-config
 }
 
 
