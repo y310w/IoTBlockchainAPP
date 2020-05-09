@@ -10,25 +10,16 @@ Organizations:
         Name: SensorMSP
         ID: SensorMSP
         MSPDir: crypto-config/peerOrganizations/sensor.networkiot.com/msp
-        AnchorPeers:
-            - Host: peer0.sensor.networkiot.com
-              Port: 7051
 
     - &Handler
         Name: HandlerMSP
         ID: HandlerMSP
         MSPDir: crypto-config/peerOrganizations/handler.networkiot.com/msp
-        AnchorPeers:
-            - Host: peer0.handler.networkiot.com
-              Port: 8051
 
     - &Linkage
         Name: LinkageMSP
         ID: LinkageMSP
         MSPDir: crypto-config/peerOrganizations/linkage.networkiot.com/msp
-        AnchorPeers:
-            - Host: peer0.linkage.networkiot.com
-              Port: 9051
 
 Application: &ApplicationDefaults
     Organizations:
