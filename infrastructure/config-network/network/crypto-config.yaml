@@ -15,10 +15,10 @@ OrdererOrgs:
 # ---------------------------------------------------------------------------
 PeerOrgs:
   # ---------------------------------------------------------------------------
-  # Sensor organization
+  # Device organization
   # ---------------------------------------------------------------------------
-  - Name: Sensor
-    Domain: sensor.networkiot.com
+  - Name: Device
+    Domain: device.networkiot.com
     Template:
       Count: 1
     Users:

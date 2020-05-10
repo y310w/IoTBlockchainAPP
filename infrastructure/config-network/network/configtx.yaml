@@ -6,10 +6,10 @@ Organizations:
         ID: OrdererIOTMSP
         MSPDir: crypto-config/ordererOrganizations/networkiot.com/msp
 
-    - &Sensor
-        Name: SensorMSP
-        ID: SensorMSP
-        MSPDir: crypto-config/peerOrganizations/sensor.networkiot.com/msp
+    - &Device
+        Name: DeviceMSP
+        ID: DeviceMSP
+        MSPDir: crypto-config/peerOrganizations/device.networkiot.com/msp
 
     - &Handler
         Name: HandlerMSP
@@ -47,15 +47,15 @@ Profiles:
         Consortiums:
             SampleConsortium:
                 Organizations:
-                    - *Sensor
+                    - *Device
                     - *Handler
                     - *Linkage
-    SensorChannel:
+    DeviceChannel:
         Consortium: SampleConsortium
         Application:
             <<: *ApplicationDefaults
             Organizations:
-                - *Sensor
+                - *Device
                 - *Handler
     LinkageChannel:
         Consortium: SampleConsortium

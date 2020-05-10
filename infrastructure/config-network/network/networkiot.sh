@@ -31,10 +31,10 @@ generateNetwork() {
     exit 1
     fi
 
-    # generamos la configuracion del canal Sensor
-    ../bin/configtxgen -profile SensorChannel -outputCreateChannelTx ./channel-artifacts/sensorChannel.tx -channelID sensorchannel
+    # generamos la configuracion del canal Device
+    ../bin/configtxgen -profile DeviceChannel -outputCreateChannelTx ./channel-artifacts/deviceChannel.tx -channelID devicechannel
     if [ "$?" -ne 0 ]; then
-    echo "Fallo al generar la configuración del canal Sensor..."
+    echo "Fallo al generar la configuración del canal Device..."
     exit 1
     fi
 
@@ -75,22 +75,22 @@ upNetwork() {
     CLISERVICE=`docker ps --format='{{.Names}}' | grep cli`
 
     echo
-    # Crear canal sensor
-    echo "Creando canal sensorchannel"
-    docker exec -it $CLISERVICE peer channel create -o orderer.networkiot.com:7050 -c sensorchannel -f ${CHANNELS}/sensorChannel.tx --tls true --cafile $ORDERER_CA
+    # Crear canal device
+    echo "Creando canal devicechannel"
+    docker exec -it $CLISERVICE peer channel create -o orderer.networkiot.com:7050 -c devicechannel -f ${CHANNELS}/deviceChannel.tx --tls true --cafile $ORDERER_CA
     
     sleep 5
     echo "Done"
     
     echo
-    #Unir handler al canal sensor
+    #Unir handler al canal device
     echo "Uniendo Peer Handler..."
-    docker exec -it $CLISERVICE peer channel join -b sensorchannel.block
+    docker exec -it $CLISERVICE peer channel join -b devicechannel.block
     echo "Done"
 
     echo
     # Crear canal linkage
-    echo "Creando canal sensorchannel"
+    echo "Creando canal devicechannel"
     docker exec -it $CLISERVICE peer channel create -o orderer.networkiot.com:7050 -c linkagechannel -f ${CHANNELS}/linkageChannel.tx --tls true --cafile $ORDERER_CA
 
     sleep 5
@@ -103,14 +103,14 @@ upNetwork() {
     echo "Done"
 
     echo
-    echo "Uniendo Peer Sensor..."
-    docker exec -e "CORE_PEER_LOCALMSPID=SensorMSP" \
-    -e "CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/sensor.networkiot.com/peers/peer0.sensor.networkiot.com/tls/ca.crt" \
-    -e "CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/sensor.networkiot.com/users/Admin@sensor.networkiot.com/msp" \
-    -e "CORE_PEER_TLS_CERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/sensor.networkiot.com/peers/peer0.sensor.networkiot.com/tls/server.crt" \
-    -e "CORE_PEER_TLS_KEY_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/sensor.networkiot.com/peers/peer0.sensor.networkiot.com/tls/server.key" \
-    -e "CORE_PEER_ADDRESS=peer0.sensor.networkiot.com:7051" \
-    -it $CLISERVICE peer channel join -b sensorchannel.block
+    echo "Uniendo Peer Device..."
+    docker exec -e "CORE_PEER_LOCALMSPID=DeviceMSP" \
+    -e "CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/device.networkiot.com/peers/peer0.device.networkiot.com/tls/ca.crt" \
+    -e "CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/device.networkiot.com/users/Admin@device.networkiot.com/msp" \
+    -e "CORE_PEER_TLS_CERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/device.networkiot.com/peers/peer0.device.networkiot.com/tls/server.crt" \
+    -e "CORE_PEER_TLS_KEY_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/device.networkiot.com/peers/peer0.device.networkiot.com/tls/server.key" \
+    -e "CORE_PEER_ADDRESS=peer0.device.networkiot.com:7051" \
+    -it $CLISERVICE peer channel join -b devicechannel.block
     echo "Done"
 
     echo
@@ -172,7 +172,7 @@ MODE=$1
 
 if [ "${MODE}" == "up" ]; then                              # Activar red
     upNetwork
-elif [ "${MODE}" == "start" ]; then                           # Comenzar red
+elif [ "${MODE}" == "start" ]; then                         # Comenzar red
     startNetwork
 elif [ "${MODE}" == "stop" ]; then                          # Parar red
     stopNetwork

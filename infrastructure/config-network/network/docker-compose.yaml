@@ -2,7 +2,7 @@ version: '3'
 
 volumes:
     orderer.networkiot.com:
-    peer0.sensor.networkiot.com:
+    peer0.device.networkiot.com:
     peer0.handler.networkiot.com:
     peer0.linkage.networkiot.com:
 
@@ -43,7 +43,7 @@ services:
                 constraints:
                     - "node.role==manager"
 
-    sensor:
+    device:
         image: thejokeri/fabric-peer:arm64-1.4.4
         depends_on:
             - orderer
@@ -59,10 +59,10 @@ services:
             - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt
             - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
             - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
-            - CORE_PEER_ID=peer0.sensor.networkiot.com
-            - CORE_PEER_ADDRESS=peer0.sensor.networkiot.com:7051
-            - CORE_PEER_CHAINCODEADDRESS=peer0.sensor.networkiot.com:7052
-            - CORE_PEER_LOCALMSPID=SensorMSP
+            - CORE_PEER_ID=peer0.device.networkiot.com
+            - CORE_PEER_ADDRESS=peer0.device.networkiot.com:7051
+            - CORE_PEER_CHAINCODEADDRESS=peer0.device.networkiot.com:7052
+            - CORE_PEER_LOCALMSPID=DeviceMSP
             - CORE_CHAINCODE_BUILDER=thejokeri/fabric-ccenv:armv7l-1.0.7
             - CORE_CHAINCODE_GOLANG_RUNTIME=thejokeri/fabric-baseos:armv7l-0.3.2
             - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
@@ -72,14 +72,14 @@ services:
         working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
         volumes:
             - /var/run/:/host/var/run/
-            - ~/IoTBlockchainAPP/infrastructure/config-network/network/crypto-config/peerOrganizations/sensor.networkiot.com/peers/peer0.sensor.networkiot.com/msp/:/etc/hyperledger/fabric/msp/
-            - ~/IoTBlockchainAPP/infrastructure/config-network/network/crypto-config/peerOrganizations/sensor.networkiot.com/peers/peer0.sensor.networkiot.com/tls/:/etc/hyperledger/fabric/tls/
-            - ~/IoTBlockchainAPP/infrastructure/config-network/network/crypto-config/peerOrganizations/sensor.networkiot.com/users/:/etc/hyperledger/fabric/users/
-        hostname: peer0.sensor.networkiot.com
+            - ~/IoTBlockchainAPP/infrastructure/config-network/network/crypto-config/peerOrganizations/device.networkiot.com/peers/peer0.device.networkiot.com/msp/:/etc/hyperledger/fabric/msp/
+            - ~/IoTBlockchainAPP/infrastructure/config-network/network/crypto-config/peerOrganizations/device.networkiot.com/peers/peer0.device.networkiot.com/tls/:/etc/hyperledger/fabric/tls/
+            - ~/IoTBlockchainAPP/infrastructure/config-network/network/crypto-config/peerOrganizations/device.networkiot.com/users/:/etc/hyperledger/fabric/users/
+        hostname: peer0.device.networkiot.com
         networks:
             networkiot:
                 aliases:
-                    - peer0.sensor.networkiot.com
+                    - peer0.device.networkiot.com
         ports:
             - 7051:7051
         command: peer node start
@@ -197,7 +197,7 @@ services:
         image: thejokeri/fabric-tools:arm64-1.4.4
         depends_on:
             - orderer
-            - sensor
+            - device
             - handler
             - linkage
             - couchdb
