@@ -23,16 +23,21 @@ type linkage struct {
 	Region	 	string 	`json:"region"`
 }
 
-func (s *SmartContract) Init(stub shim.ChaincodeStubInterface) sc.Response {
-	fmt.Println('============= START : Initialize Ledger ===========')
-	data := []byte("initSensor" + "initActuator")
+func (s *SmartContract) Init(APIstub shim.ChaincodeStubInterface) sc.Response {
+	return shim.Success(nil)
+}
 
-	initLinkage = linkage{
-		Id: md5.Sum(data), 
+func (s *SmartContract) InitLinkage(stub shim.ChaincodeStubInterface) sc.Response {
+	fmt.Println("============= START : Initialize Ledger ===========")
+	data := md5.Sum([]byte("initSensor" + "initActuator"))
+	id := string(data[:])
+
+	initLinkage := linkage{
+		Id: id, 
 		Sensor: "initSensor", 
 		Cond: "true", 
 		Actuator: "initActuator",
-		Status: "true",
+		Status: true,
 		Region: "initRegion",
 	}
 
@@ -49,14 +54,13 @@ func (s *SmartContract) Init(stub shim.ChaincodeStubInterface) sc.Response {
 	value := []byte{0x00}
 	stub.PutState(saNameIndexKey, value)
 
-	fmt.Println('============= END : Initialize Ledger ===========')
+	fmt.Println("============= END : Initialize Ledger ===========")
 
 	return shim.Success(nil)
 }
 
 func (s *SmartContract) Invoke(stub shim.ChaincodeStubInterface) sc.Response {
 	function, args := stub.GetFunctionAndParameters()
-	fmt.Println("Invoke\n Function: " + function + "\n Args: " + args)
 
 	if function == "queryLinkage" {
 		return s.queryLinkage(stub, args)
@@ -92,14 +96,20 @@ func (s *SmartContract) addLinkage(stub shim.ChaincodeStubInterface, args []stri
 		return shim.Error("Incorrect number of arguments. Expecting 5")
 	}
 
-	data := []byte(args[0] + args[2])
+	data := md5.Sum([]byte(args[0] + args[2]))
+	id := string(data[:])
 
-	var newLinkage = linkage{
-		Id: md5.Sum(data), 
+	status, err := strconv.ParseBool(args[3])
+   	if err != nil {
+		return shim.Error("Failed to convert status:" + err.Error())
+   	}
+
+	newLinkage := linkage{
+		Id: id, 
 		Sensor: args[0], 
 		Cond: args[1], 
 		Actuator: args[2],
-		Status: args[3],
+		Status: status,
 		Region: args[4],
 	}
 	
@@ -107,7 +117,7 @@ func (s *SmartContract) addLinkage(stub shim.ChaincodeStubInterface, args []stri
 	stub.PutState(newLinkage.Id, linkageAsBytes)
 
 	indexName := "sensor~actuator"
-	saNameIndexKey, err := stub.CreateCompositeKey(indexName, []string{newLinkage.Sensor, initLinkage.Actuator})
+	saNameIndexKey, err := stub.CreateCompositeKey(indexName, []string{newLinkage.Sensor, newLinkage.Actuator})
 	if err != nil {
 		return shim.Error(err.Error())
 	}
@@ -125,7 +135,12 @@ func (s *SmartContract) updateLinkage(stub shim.ChaincodeStubInterface, args []s
 
 	id := args[0]
 	cond := args[1]
-	status := args[2]
+
+	status, err := strconv.ParseBool(args[2])
+   	if err != nil {
+		return shim.Error("Failed to convert status:" + err.Error())
+   	}
+	
 	region := args[3]
 
 	linkageAsBytes, err := stub.GetState(id)
@@ -146,7 +161,7 @@ func (s *SmartContract) updateLinkage(stub shim.ChaincodeStubInterface, args []s
 	updateLinkage.Region = region
 
 	linkageJSONasBytes, _ := json.Marshal(updateLinkage)
-	err = stub.PutState(serial, linkageJSONasBytes) //rewrite the marble
+	err = stub.PutState(id, linkageJSONasBytes) //rewrite the marble
 	if err != nil {
 		return shim.Error(err.Error())
 	}
@@ -170,7 +185,7 @@ func (s *SmartContract) deleteLinkage(stub shim.ChaincodeStubInterface, args []s
 	deleteLinkage := linkage{}
 	err = json.Unmarshal([]byte(linkageAsBytes), &deleteLinkage)
 	if err != nil {
-		jsonResp = "{\"Error\":\"Failed to decode JSON of: " + id + "\"}"
+		jsonResp := "{\"Error\":\"Failed to decode JSON of: " + id + "\"}"
 		return shim.Error(jsonResp)
 	}
 
@@ -187,12 +202,43 @@ func (s *SmartContract) deleteLinkage(stub shim.ChaincodeStubInterface, args []s
 	}
 
 	//  Delete index entry to state.
-	err = stub.Delate(saNameIndexKey)
+	err = stub.DelState(saNameIndexKey)
 	if err != nil {
 		return shim.Error("Failed to delete state:" + err.Error())
 	}
 
 	return shim.Success(nil)
+}
+
+func constructQueryResponseFromIterator(resultsIterator shim.StateQueryIteratorInterface) (*bytes.Buffer, error) {
+	// buffer is a JSON array containing QueryResults
+	var buffer bytes.Buffer
+	buffer.WriteString("[")
+
+	bArrayMemberAlreadyWritten := false
+	for resultsIterator.HasNext() {
+		queryResponse, err := resultsIterator.Next()
+		if err != nil {
+			return nil, err
+		}
+		// Add a comma before array members, suppress it for the first array member
+		if bArrayMemberAlreadyWritten == true {
+			buffer.WriteString(",")
+		}
+		buffer.WriteString("{\"Key\":")
+		buffer.WriteString("\"")
+		buffer.WriteString(queryResponse.Key)
+		buffer.WriteString("\"")
+
+		buffer.WriteString(", \"Record\":")
+		// Record is a JSON object, so we write as-is
+		buffer.WriteString(string(queryResponse.Value))
+		buffer.WriteString("}")
+		bArrayMemberAlreadyWritten = true
+	}
+	buffer.WriteString("]")
+
+	return &buffer, nil
 }
 
 func getQueryResultForQueryString(stub shim.ChaincodeStubInterface, queryString string) ([]byte, error) {

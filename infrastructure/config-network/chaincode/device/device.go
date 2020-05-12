@@ -17,12 +17,16 @@ type device struct {
 	Name		string 	`json:"name"`
 	Serial		string 	`json:"serial"`
 	IpAddress	string 	`json:"ipAddress"`
-	Value		int32 	`json:"value"`
+	Value		int 	`json:"value"`
 }
 
-func (s *SmartContract) Init(stub shim.ChaincodeStubInterface) sc.Response {
-	fmt.Println('============= START : Initialize Ledger ===========')
-	initDevice = device{
+func (s *SmartContract) Init(APIstub shim.ChaincodeStubInterface) sc.Response {
+	return shim.Success(nil)
+}
+
+func (s *SmartContract) InitDevice(stub shim.ChaincodeStubInterface) sc.Response {
+	fmt.Println("============= START : Initialize Ledger ===========")
+	initDevice := device{
 		Name: "initName", 
 		Serial: "initSerialNumber", 
 		IpAddress: "initIpAddress", 
@@ -42,14 +46,13 @@ func (s *SmartContract) Init(stub shim.ChaincodeStubInterface) sc.Response {
 	value := []byte{0x00}
 	stub.PutState(serialNameIndexKey, value)
 
-	fmt.Println('============= END : Initialize Ledger ===========')
+	fmt.Println("============= END : Initialize Ledger ===========")
 
 	return shim.Success(nil)
 }
 
 func (s *SmartContract) Invoke(stub shim.ChaincodeStubInterface) sc.Response {
 	function, args := stub.GetFunctionAndParameters()
-	fmt.Println("Invoke\n Function: " + function + "\n Args: " + args)
 
 	if function == "queryDevice" {
 		return s.queryDevice(stub, args)
@@ -80,16 +83,21 @@ func (s *SmartContract) queryDevice(stub shim.ChaincodeStubInterface, args []str
 	return shim.Success(queryResults)
 }
 
-func (s *SmartContract) addDevice(stub shim.ChaincodeStubInterface, , args []string) sc.Response {
+func (s *SmartContract) addDevice(stub shim.ChaincodeStubInterface, args []string) sc.Response {
 	if len(args) != 4 {
 		return shim.Error("Incorrect number of arguments. Expecting 4")
 	}
 
-	var newDevice = device{
+	val, err := strconv.Atoi(args[3])
+   	if err != nil {
+		return shim.Error("Failed to convert value:" + err.Error())
+   	}
+
+	newDevice := device{
 		Name: args[0], 
 		Serial: args[1], 
 		IpAddress: args[2], 
-		Value: args[3],
+		Value: val,
 	}
 	
 	deviceAsBytes, _ := json.Marshal(newDevice)
@@ -113,7 +121,10 @@ func (s *SmartContract) updateDevice(stub shim.ChaincodeStubInterface, args []st
 	}
 
 	serial := args[0]
-	value := args[1]
+	value, err := strconv.Atoi(args[3])
+	if err != nil {
+	 return shim.Error("Failed to convert value:" + err.Error())
+	}
 
 	deviceAsBytes, err := stub.GetState(serial)
 	if err != nil {
@@ -151,10 +162,10 @@ func (s *SmartContract) deleteDevice(stub shim.ChaincodeStubInterface, args []st
 		return shim.Error("Device does not exist")
 	}
 
-	deleteDevice := Device{}
+	deleteDevice := device{}
 	err = json.Unmarshal([]byte(deviceAsBytes), &deleteDevice)
 	if err != nil {
-		jsonResp = "{\"Error\":\"Failed to decode JSON of: " + serial + "\"}"
+		jsonResp := "{\"Error\":\"Failed to decode JSON of: " + serial + "\"}"
 		return shim.Error(jsonResp)
 	}
 
@@ -177,6 +188,37 @@ func (s *SmartContract) deleteDevice(stub shim.ChaincodeStubInterface, args []st
 	}
 
 	return shim.Success(nil)
+}
+
+func constructQueryResponseFromIterator(resultsIterator shim.StateQueryIteratorInterface) (*bytes.Buffer, error) {
+	// buffer is a JSON array containing QueryResults
+	var buffer bytes.Buffer
+	buffer.WriteString("[")
+
+	bArrayMemberAlreadyWritten := false
+	for resultsIterator.HasNext() {
+		queryResponse, err := resultsIterator.Next()
+		if err != nil {
+			return nil, err
+		}
+		// Add a comma before array members, suppress it for the first array member
+		if bArrayMemberAlreadyWritten == true {
+			buffer.WriteString(",")
+		}
+		buffer.WriteString("{\"Key\":")
+		buffer.WriteString("\"")
+		buffer.WriteString(queryResponse.Key)
+		buffer.WriteString("\"")
+
+		buffer.WriteString(", \"Record\":")
+		// Record is a JSON object, so we write as-is
+		buffer.WriteString(string(queryResponse.Value))
+		buffer.WriteString("}")
+		bArrayMemberAlreadyWritten = true
+	}
+	buffer.WriteString("]")
+
+	return &buffer, nil
 }
 
 func getQueryResultForQueryString(stub shim.ChaincodeStubInterface, queryString string) ([]byte, error) {
