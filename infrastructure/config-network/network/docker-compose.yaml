@@ -23,8 +23,8 @@ services:
             - ORDERER_GENERAL_TLS_PRIVATEKEY=/var/hyperledger/orderer/tls/server.key
             - ORDERER_GENERAL_TLS_CERTIFICATE=/var/hyperledger/orderer/tls/server.crt
             - ORDERER_GENERAL_TLS_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
-            - CORE_CHAINCODE_BUILDER=thejokeri/fabric-ccenv:armv7l-1.0.7
-            - CORE_CHAINCODE_GOLANG_RUNTIME=thejokeri/fabric-baseos:armv7l-0.3.2
+            - CORE_CHAINCODE_BUILDER=thejokeri/fabric-ccenv:arm64-1.4.4
+            - CORE_CHAINCODE_GOLANG_RUNTIME= thejokeri/fabric-baseos:arm64-0.4.18
         working_dir: /opt/gopath/src/github.com/hyperledger/fabric
         volumes:
             - ~/IoTBlockchainAPP/infrastructure/config-network/network/channel-artifacts/genesis.block:/var/hyperledger/orderer/orderer.genesis.block
@@ -63,8 +63,8 @@ services:
             - CORE_PEER_ADDRESS=peer0.device.networkiot.com:7051
             - CORE_PEER_CHAINCODEADDRESS=peer0.device.networkiot.com:7052
             - CORE_PEER_LOCALMSPID=DeviceMSP
-            - CORE_CHAINCODE_BUILDER=thejokeri/fabric-ccenv:armv7l-1.0.7
-            - CORE_CHAINCODE_GOLANG_RUNTIME=thejokeri/fabric-baseos:armv7l-0.3.2
+            - CORE_CHAINCODE_BUILDER=thejokeri/fabric-ccenv:arm64-1.4.4
+            - CORE_CHAINCODE_GOLANG_RUNTIME= thejokeri/fabric-baseos:arm64-0.4.18
             - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
             - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb:5984
             - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=admin
@@ -108,8 +108,8 @@ services:
             - CORE_PEER_ADDRESS=peer0.handler.networkiot.com:7051
             - CORE_PEER_CHAINCODEADDRESS=peer0.handler.networkiot.com:7052
             - CORE_PEER_LOCALMSPID=HandlerMSP
-            - CORE_CHAINCODE_BUILDER=thejokeri/fabric-ccenv:armv7l-1.0.7
-            - CORE_CHAINCODE_GOLANG_RUNTIME=thejokeri/fabric-baseos:armv7l-0.3.2
+            - CORE_CHAINCODE_BUILDER=thejokeri/fabric-ccenv:arm64-1.4.4
+            - CORE_CHAINCODE_GOLANG_RUNTIME= thejokeri/fabric-baseos:arm64-0.4.18
             - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
             - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb:5984
             - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=admin
@@ -152,8 +152,8 @@ services:
             - CORE_PEER_ADDRESS=peer0.linkage.networkiot.com:7051
             - CORE_PEER_CHAINCODEADDRESS=peer0.linkage.networkiot.com:7052
             - CORE_PEER_LOCALMSPID=LinkageMSP
-            - CORE_CHAINCODE_BUILDER=thejokeri/fabric-ccenv:armv7l-1.0.7
-            - CORE_CHAINCODE_GOLANG_RUNTIME=thejokeri/fabric-baseos:armv7l-0.3.2
+            - CORE_CHAINCODE_BUILDER=thejokeri/fabric-ccenv:arm64-1.4.4
+            - CORE_CHAINCODE_GOLANG_RUNTIME= thejokeri/fabric-baseos:arm64-0.4.18
             - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
             - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb:5984
             - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=admin
@@ -214,8 +214,8 @@ services:
             - CORE_PEER_TLS_KEY_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/handler.networkiot.com/peers/peer0.handler.networkiot.com/tls/server.key
             - CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/handler.networkiot.com/peers/peer0.handler.networkiot.com/tls/ca.crt
             - CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/handler.networkiot.com/users/Admin@handler.networkiot.com/msp
-            - CORE_CHAINCODE_BUILDER=thejokeri/fabric-ccenv:armv7l-1.0.7
-            - CORE_CHAINCODE_GOLANG=thejokeri/fabric-baseos:armv7l-0.3.2
+            - CORE_CHAINCODE_BUILDER=thejokeri/fabric-ccenv:arm64-1.4.4
+            - CORE_CHAINCODE_GOLANG= thejokeri/fabric-baseos:arm64-0.4.18
         working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
         volumes:
             - /var/run/:/host/var/run/
