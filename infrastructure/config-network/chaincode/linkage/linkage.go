@@ -40,14 +40,14 @@ func (s *SmartContract) Init(stub shim.ChaincodeStubInterface) sc.Response {
 
 	stub.PutState(initLinkage.Id, linkageAsBytes)
 
-	indexName := "id"
-	idNameIndexKey, err := stub.CreateCompositeKey(indexName, []string{initLinkage.Id})
+	indexName := "sensor~actuator"
+	saNameIndexKey, err := stub.CreateCompositeKey(indexName, []string{initLinkage.Sensor, initLinkage.Actuator})
 	if err != nil {
 		return shim.Error(err.Error())
 	}
 
 	value := []byte{0x00}
-	stub.PutState(idNameIndexKey, value)
+	stub.PutState(saNameIndexKey, value)
 
 	fmt.Println('============= END : Initialize Ledger ===========')
 
@@ -106,27 +106,29 @@ func (s *SmartContract) addLinkage(stub shim.ChaincodeStubInterface, args []stri
 	linkageAsBytes, _ := json.Marshal(newLinkage)
 	stub.PutState(newLinkage.Id, linkageAsBytes)
 
-	indexName := "id"
-	idNameIndexKey, err := stub.CreateCompositeKey(indexName, []string{newLinkage.Id})
+	indexName := "sensor~actuator"
+	saNameIndexKey, err := stub.CreateCompositeKey(indexName, []string{newLinkage.Sensor, initLinkage.Actuator})
 	if err != nil {
 		return shim.Error(err.Error())
 	}
 
 	value := []byte{0x00}
-	stub.PutState(idNameIndexKey, value)
+	stub.PutState(saNameIndexKey, value)
 
 	return shim.Success(nil)
 }
 
 func (s *SmartContract) updateLinkage(stub shim.ChaincodeStubInterface, args []string) sc.Response {
-	if len(args) != 2 {
-		return shim.Error("Incorrect number of arguments. Expecting 2")
+	if len(args) != 4 {
+		return shim.Error("Incorrect number of arguments. Expecting 4")
 	}
 
 	id := args[0]
-	value := args[1]
+	cond := args[1]
+	status := args[2]
+	region := args[3]
 
-	linkageAsBytes, err := stub.GetState(serial)
+	linkageAsBytes, err := stub.GetState(id)
 	if err != nil {
 		return shim.Error("Failed to get linkage:" + err.Error())
 	} else if linkageAsBytes == nil {
@@ -139,7 +141,10 @@ func (s *SmartContract) updateLinkage(stub shim.ChaincodeStubInterface, args []s
 		return shim.Error(err.Error())
 	}
 
-	updateLinkage.Value = value
+	updateLinkage.Cond = cond
+	updateLinkage.Status = status
+	updateLinkage.Region = region
+
 	linkageJSONasBytes, _ := json.Marshal(updateLinkage)
 	err = stub.PutState(serial, linkageJSONasBytes) //rewrite the marble
 	if err != nil {
@@ -175,14 +180,14 @@ func (s *SmartContract) deleteLinkage(stub shim.ChaincodeStubInterface, args []s
 	}
 
 	// maintain the index
-	indexName := "id"
-	idNameIndexKey, err := stub.CreateCompositeKey(indexName, []string{deleteLinkage.Id})
+	indexName := "sensor~actuator"
+	saNameIndexKey, err := stub.CreateCompositeKey(indexName, []string{deleteLinkage.Sensor, deleteLinkage.Actuator})
 	if err != nil {
 		return shim.Error(err.Error())
 	}
 
 	//  Delete index entry to state.
-	err = stub.DelState(idNameIndexKey)
+	err = stub.Delate(saNameIndexKey)
 	if err != nil {
 		return shim.Error("Failed to delete state:" + err.Error())
 	}
