@@ -7,11 +7,9 @@ printHelp() {
     echo "Comandos:"
     echo "  help        Mostrar esta ayuda"
     echo "  up          Activar red"
-    echo "  start       Comenzar red"
-    echo "  stop        Parar red"
     echo "  generate    Generar red"
-    echo "  restart     Reiniciar red"
     echo "  remove      Eliminar red"
+    echo "  all         Generar y Activar red"
     echo
 }
 
@@ -70,7 +68,12 @@ upNetwork() {
     ORDERER_CA=${BASE}crypto/ordererOrganizations/networkiot.com/orderers/orderer.networkiot.com/msp/tlscacerts/tlsca.networkiot.com-cert.pem
     CHANNELS=${BASE}channel-artifacts
 
-    startNetwork
+    echo "Iniciando servicios..."
+    docker stack deploy --compose-file docker-compose.yaml blockchainIoT
+    
+    sleep 10
+    
+    docker service ls
 
     CLISERVICE=`docker ps --format='{{.Names}}' | grep cli`
 
@@ -123,33 +126,37 @@ upNetwork() {
     -e "CORE_PEER_ADDRESS=peer0.linkage.networkiot.com:7051" \
     -it $CLISERVICE peer channel join -b linkagechannel.block
     echo "Done"
+
+    chaincodeOperation
 }
 
 
-startNetwork() {
-    set -ev
+chaincodeOperation() {
+    echo
+    echo "Instalando chaincode device..."
+    docker exec -it $CLISERVICE peer chaincode install -n device -p github.com/chaincode/device -v 1.0
 
-    echo "Iniciando servicios..."
-    docker stack deploy --compose-file docker-compose.yaml blockchainIoT
+    echo
+    docker exec -it $CLISERVICE peer chaincode instantiate -o orderer.networkiot.com:7050 -C devicechannel -n device -v 1.0 --tls true --cafile $ORDERER_CA -c '{"Args": ["init"]}' -P "OR('DeviceMSP.member', 'HandlerMSP.member')"
+    echo "Done"
+
+
+    echo
+    echo "Instalando chaincode linkage..."
+    docker exec -it $CLISERVICE peer chaincode install -n linkage -p github.com/chaincode/linkage -v 1.0
     
-    sleep 10
-    
-    docker service ls
-}
-
-
-stopNetwork() {
-    set -ev
-
-    echo "Parando servicios..."
-    docker stack rm blockchainIoT
+    echo
+    docker exec -it $CLISERVICE peer chaincode instantiate -o orderer.networkiot.com:7050 -C linkagechannel -n linkage -v 1.0 --tls true --cafile $ORDERER_CA -c '{"Args": ["init"]}' -P "OR('LinkageMSP.member', 'HandlerMSP.member')"
     echo "Done"
 }
 
 
 removeNetwork() {
-    stopNetwork
+    echo "Parando servicios..."
+    docker stack rm blockchainIoT
+    echo "Done"
 
+    echo
     echo "Eliminando red networkiot..."
     docker network rm networkiot
     echo "Done"
@@ -170,19 +177,16 @@ removeNetwork() {
 
 MODE=$1
 
-if [ "${MODE}" == "up" ]; then                              # Activar red
+if [ "${MODE}" == "up" ]; then          # Activar red
     upNetwork
-elif [ "${MODE}" == "start" ]; then                         # Comenzar red
-    startNetwork
-elif [ "${MODE}" == "stop" ]; then                          # Parar red
-    stopNetwork
-elif [ "${MODE}" == "generate" ]; then                      # Generar red
+elif [ "${MODE}" == "generate" ]; then  # Generar red
     generateNetwork
-elif [ "${MODE}" == "restart" ]; then                       # Reiniciar red
-    startNetwork
-    stopNetwork
-elif [ "${MODE}" == "remove" ]; then                        # Eliminar red
+elif [ "${MODE}" == "remove" ]; then    # Eliminar red
     removeNetwork
+elif [ "${MODE}" == "all" ]; then       # Generar y activar
+    generateNetwork
+    sleep 10
+    upNetwork
 elif [ "${MODE}" == "" ] || [ "${MODE}" == "help" ]; then   # Mostrar la ayuda 
     printHelp
     exit 0
