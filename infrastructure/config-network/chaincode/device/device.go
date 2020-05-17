@@ -39,7 +39,7 @@ func (s *SmartContract) Invoke(stub shim.ChaincodeStubInterface) sc.Response {
 		return s.deleteDevice(stub, args)
 	} 
 
-	return shim.Error("Invalid Smart Contract function name" + function)
+	return shim.Error("Invalid Smart Contract function name.")
 }
 
 func (s *SmartContract) initDevice(stub shim.ChaincodeStubInterface) sc.Response {

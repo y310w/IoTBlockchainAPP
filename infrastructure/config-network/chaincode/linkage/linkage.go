@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"crypto/md5"
+	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	"strconv"
@@ -48,7 +49,7 @@ func (s *SmartContract) Invoke(stub shim.ChaincodeStubInterface) sc.Response {
 func (s *SmartContract) initLinkage(stub shim.ChaincodeStubInterface) sc.Response {
 	fmt.Println("============= START : Initialize Ledger ===========")
 	data := md5.Sum([]byte("initSensor" + "initActuator"))
-	id := string(data[:])
+	id := hex.EncodeToString(data[:])
 
 	initLinkage := linkage{
 		Id: id, 
@@ -99,7 +100,7 @@ func (s *SmartContract) addLinkage(stub shim.ChaincodeStubInterface, args []stri
 	}
 
 	data := md5.Sum([]byte(args[0] + args[2]))
-	id := string(data[:])
+	id := hex.EncodeToString(data[:])
 
 	status, err := strconv.ParseBool(args[3])
    	if err != nil {
