@@ -24,7 +24,25 @@ func (s *SmartContract) Init(APIstub shim.ChaincodeStubInterface) sc.Response {
 	return shim.Success(nil)
 }
 
-func (s *SmartContract) InitDevice(stub shim.ChaincodeStubInterface) sc.Response {
+func (s *SmartContract) Invoke(stub shim.ChaincodeStubInterface) sc.Response {
+	function, args := stub.GetFunctionAndParameters()
+
+	if function == "initDevice" {
+		return s.initDevice(stub)
+	} else if function == "queryDevice" {
+		return s.queryDevice(stub, args)
+	} else if function == "addDevice" {
+		return s.addDevice(stub, args)
+	} else if function == "updateDevice" {
+		return s.updateDevice(stub, args)
+	} else if function == "deleteDevice" {
+		return s.deleteDevice(stub, args)
+	} 
+
+	return shim.Error("Invalid Smart Contract function name" + function)
+}
+
+func (s *SmartContract) initDevice(stub shim.ChaincodeStubInterface) sc.Response {
 	fmt.Println("============= START : Initialize Ledger ===========")
 	initDevice := device{
 		Name: "initName", 
@@ -49,22 +67,6 @@ func (s *SmartContract) InitDevice(stub shim.ChaincodeStubInterface) sc.Response
 	fmt.Println("============= END : Initialize Ledger ===========")
 
 	return shim.Success(nil)
-}
-
-func (s *SmartContract) Invoke(stub shim.ChaincodeStubInterface) sc.Response {
-	function, args := stub.GetFunctionAndParameters()
-
-	if function == "queryDevice" {
-		return s.queryDevice(stub, args)
-	} else if function == "addDevice" {
-		return s.addDevice(stub, args)
-	} else if function == "updateDevice" {
-		return s.updateDevice(stub, args)
-	} else if function == "deleteDevice" {
-		return s.deleteDevice(stub, args)
-	} 
-
-	return shim.Error("Invalid Smart Contract function name.")
 }
 
 func (s *SmartContract) queryDevice(stub shim.ChaincodeStubInterface, args []string) sc.Response {
@@ -121,7 +123,7 @@ func (s *SmartContract) updateDevice(stub shim.ChaincodeStubInterface, args []st
 	}
 
 	serial := args[0]
-	value, err := strconv.Atoi(args[3])
+	value, err := strconv.Atoi(args[1])
 	if err != nil {
 	 return shim.Error("Failed to convert value:" + err.Error())
 	}

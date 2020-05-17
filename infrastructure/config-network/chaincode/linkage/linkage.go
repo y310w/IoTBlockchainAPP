@@ -17,7 +17,7 @@ type SmartContract struct {
 type linkage struct {
 	Id	 		string 	`json:"id"`
 	Sensor	 	string 	`json:"sensor"`
-	Cond	 	string 	`json:"thresh"`
+	Cond	 	string 	`json:"cond"`
 	Actuator	string 	`json:"actuator"`
 	Status	 	bool 	`json:"status"`
 	Region	 	string 	`json:"region"`
@@ -27,7 +27,25 @@ func (s *SmartContract) Init(APIstub shim.ChaincodeStubInterface) sc.Response {
 	return shim.Success(nil)
 }
 
-func (s *SmartContract) InitLinkage(stub shim.ChaincodeStubInterface) sc.Response {
+func (s *SmartContract) Invoke(stub shim.ChaincodeStubInterface) sc.Response {
+	function, args := stub.GetFunctionAndParameters()
+
+	if function == "initLinkage" {
+		return s.initLinkage(stub)
+	} else if function == "queryLinkage" {
+		return s.queryLinkage(stub, args)
+	} else if function == "addLinkage" {
+		return s.addLinkage(stub, args)
+	} else if function == "updateLinkage" {
+		return s.updateLinkage(stub, args)
+	} else if function == "deleteLinkage" {
+		return s.deleteLinkage(stub, args)
+	} 
+
+	return shim.Error("Invalid Smart Contract function name.")
+}
+
+func (s *SmartContract) initLinkage(stub shim.ChaincodeStubInterface) sc.Response {
 	fmt.Println("============= START : Initialize Ledger ===========")
 	data := md5.Sum([]byte("initSensor" + "initActuator"))
 	id := string(data[:])
@@ -57,22 +75,6 @@ func (s *SmartContract) InitLinkage(stub shim.ChaincodeStubInterface) sc.Respons
 	fmt.Println("============= END : Initialize Ledger ===========")
 
 	return shim.Success(nil)
-}
-
-func (s *SmartContract) Invoke(stub shim.ChaincodeStubInterface) sc.Response {
-	function, args := stub.GetFunctionAndParameters()
-
-	if function == "queryLinkage" {
-		return s.queryLinkage(stub, args)
-	} else if function == "addLinkage" {
-		return s.addLinkage(stub, args)
-	} else if function == "updateLinkage" {
-		return s.updateLinkage(stub, args)
-	} else if function == "deleteLinkage" {
-		return s.deleteLinkage(stub, args)
-	} 
-
-	return shim.Error("Invalid Smart Contract function name.")
 }
 
 func (s *SmartContract) queryLinkage(stub shim.ChaincodeStubInterface, args []string) sc.Response {
