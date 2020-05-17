@@ -137,7 +137,7 @@ chaincodeOperation() {
     docker exec -it $CLISERVICE peer chaincode install -n device -p github.com/chaincode/device -v 1.0
 
     echo
-    docker exec -it $CLISERVICE peer chaincode instantiate -o orderer.networkiot.com:7050 -C devicechannel -n device -v 1.0 --tls true --cafile $ORDERER_CA -c '{"Args": ["init"]}' -P "OR('DeviceMSP.member', 'HandlerMSP.member')"
+    docker exec -it $CLISERVICE peer chaincode instantiate -o orderer.networkiot.com:7050 -C devicechannel -n device -v 1.0 --tls true --cafile $ORDERER_CA -c '{"function":"Init", "Args": []}' -P "OR('DeviceMSP.member', 'HandlerMSP.member')"
     echo "Done"
 
 
@@ -146,7 +146,7 @@ chaincodeOperation() {
     docker exec -it $CLISERVICE peer chaincode install -n linkage -p github.com/chaincode/linkage -v 1.0
     
     echo
-    docker exec -it $CLISERVICE peer chaincode instantiate -o orderer.networkiot.com:7050 -C linkagechannel -n linkage -v 1.0 --tls true --cafile $ORDERER_CA -c '{"Args": ["init"]}' -P "OR('LinkageMSP.member', 'HandlerMSP.member')"
+    docker exec -it $CLISERVICE peer chaincode instantiate -o orderer.networkiot.com:7050 -C linkagechannel -n linkage -v 1.0 --tls true --cafile $ORDERER_CA -c '{"function":"Init", "Args": []}' -P "OR('LinkageMSP.member', 'HandlerMSP.member')"
     echo "Done"
 }
 
