@@ -1,6 +1,8 @@
 import mongoose from 'mongoose';
 
 import User from './user';
+import Device from './device';
+import Linkage from './linkage';
 
 const connectDb = () => {
     return mongoose.connect(
@@ -13,7 +15,7 @@ const connectDb = () => {
     );
 };
 
-const models = { User };
+const models = { User, Device, Linkage };
 
 export { connectDb };
 

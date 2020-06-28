@@ -2,7 +2,6 @@ import { AuthenticationError, ForbiddenError, UserInputError } from 'apollo-serv
 import { isAdmin } from './authorization';
 import { combineResolvers } from 'graphql-resolvers';
 import jwt from 'jsonwebtoken';
-import models from "mongoose";
 
 
 const createToken = async (user, secret, expiresIn) => {
