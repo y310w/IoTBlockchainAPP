@@ -14,7 +14,9 @@ printHelp() {
 }
 
 
-generateNetwork() {        
+generateNetwork() {
+    ROOT_FOLDER=${HOME}/IoTBlockchainAPP/infrastructure/config-network/network/crypto-config/peerOrganizations/
+
     # generamos crypto material
     ../bin/cryptogen generate --config=./crypto-config.yaml
     if [ "$?" -ne 0 ]; then
@@ -42,6 +44,18 @@ generateNetwork() {
     echo "Fallo al generar la configuración del canal Linkage..."
     exit 1
     fi
+
+    # Copiando las claves al docker-compose.yml
+    echo
+    echo
+    echo "Exportando claves de Device peer..."
+    export DEVICE_CA_KEY=$(cd ${ROOT_FOLDER}device.networkiot.com/ca/ && ls *_sk)
+
+    echo "Exportando claves de Handler peer..."
+    export HANDLER_CA_KEY=$(cd ${ROOT_FOLDER}handler.networkiot.com/ca/ && ls *_sk)
+    
+    echo "Exportando claves de Linkage peer..."
+    export LINKAGE_CA_KEY=$(cd ${ROOT_FOLDER}linkage.networkiot.com/ca/ && ls *_sk)
 
     echo
     echo
