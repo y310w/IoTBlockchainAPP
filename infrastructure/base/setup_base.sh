@@ -9,7 +9,7 @@ printHelp() {
     echo "-f : instalar binarios e imagenes de Hyperlegder Fabric"
     echo "-s : iniciar Docker Swarm cluster"
     echo "-d : pull imagenes Docker"
-    echo "-w : muestra las versiones de los prerrequisitos"
+    echo "-v : muestra las versiones de los prerrequisitos"
     echo
     echo "e.g. setup_base.sh -f"
     echo "creara los binarios e imagenes de Hyperledger Fabric"
