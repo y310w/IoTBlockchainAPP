@@ -1,5 +1,7 @@
-import mongoose from 'mongoose';
+import { X509WalletMixin } from 'fabric-network';
 import bcrypt from 'bcrypt';
+import mongoose from 'mongoose';
+import utils from '../utils/fabric-utils';
 
 const SALT = 10;
 
@@ -33,11 +35,6 @@ const userSchema = new mongoose.Schema(
                 },
                 message: 'Minimum eight characters, at least one letter, one number and one special character',
             },
-        },
-        role: {
-            type: String,
-            enum: ["Admin", "Editor", "Observer"],
-            required: true,
         }
     },
     { timestamps: true },
@@ -65,7 +62,7 @@ userSchema.statics.findByLogin = async function (login) {
 
 userSchema.methods.validatePassword = async function (password) {
     return await bcrypt.compare(password, this.password);
-}
+};
 
 
 const User = mongoose.model('User', userSchema);

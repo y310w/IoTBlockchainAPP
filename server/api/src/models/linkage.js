@@ -1,6 +1,8 @@
+import { md5 } from 'md5';
+
 class Linkage {
     constructor(sensor, cond, actuator, region) {
-        this.id = sensor.concat('/', actuator);
+        this.id = md5(sensor + actuator);
         this.sensor = sensor;
         this.cond = cond;
         this.actuator = actuator;
@@ -51,15 +53,56 @@ class Linkage {
         }
     }
 
-    save() {
+    async save() {
         try {
+            let data = {
+                channel: 'LinkageChannel',
+                contractName: 'linkage',
+                transaction: 'addLinkage',
+                userName: 'user1',
+                args: [
+                    this.sensor,
+                    this.cond,
+                    this.actuator,
+                    false,
+                    this.region
+                ]
+            };
+
+            if (this.id) {
+                data = {
+                    channel: 'LinkageChannel',
+                    contractName: 'linkage',
+                    transaction: 'updateLinkage',
+                    userName: 'user1',
+                    args: [
+                        this.id,
+                        this.cond,
+                        this.status,
+                        this.region
+                    ]
+                };
+            }
+
+            const result = await utils.queryTransaction(data);
         } catch (err) {
             console.log(err);
         }
     }
 
-    remove() {
+    async remove() {
         try {
+            let data = {
+                channel: 'LinkageChannel',
+                contractName: 'linkage',
+                transaction: 'deleteLinkage',
+                userName: 'user1',
+                args: [
+                    this.id,
+                ]
+            };
+
+            const result = await utils.queryTransaction(data);
         } catch (err) {
             console.log(err);
         }
@@ -72,6 +115,39 @@ class Linkage {
     disable() {
         this.status = false;
     }
+}
+
+export const queryLinkage = async (query) => {
+    try {
+        let data = {
+            channel: 'handlerchannel',
+            contractName: 'linkage',
+            transaction: 'queryLinkage',
+            userName: 'user1',
+            args: [
+                query
+            ]
+        };
+        
+        const result = await utils.queryTransaction(data);
+        
+        return result;
+    }
+    catch (err) {
+        console.log(err);
+    }
+};
+
+export const checkLinkageExists = async (id) => {
+    let found = false;
+
+    const linkage = queryLinkage("{\"selector\": {\"id\": ${id}}}")
+    
+    if (linkage) {
+        found = true;
+    }
+
+    return found;
 }
 
 export default Linkage;
