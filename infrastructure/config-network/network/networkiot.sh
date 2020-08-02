@@ -148,19 +148,125 @@ upNetwork() {
 chaincodeOperation() {
     echo
     echo "Instalando chaincode device..."
-    docker exec -it $CLISERVICE peer chaincode install -n device -p github.com/chaincode/device -v 1.0
+    docker exec -e "CORE_PEER_LOCALMSPID=HandlerMSP" \
+    -e "CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/handler.networkiot.com/peers/peer0.handler.networkiot.com/tls/ca.crt" \
+    -e "CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/handler.networkiot.com/users/Admin@handler.networkiot.com/msp" \
+    -e "CORE_PEER_TLS_CERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/handler.networkiot.com/peers/peer0.handler.networkiot.com/tls/server.crt" \
+    -e "CORE_PEER_TLS_KEY_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/handler.networkiot.com/peers/peer0.handler.networkiot.com/tls/server.key" \
+    -e "CORE_PEER_ADDRESS=peer0.handler.networkiot.com:7051" \
+    -it $CLISERVICE peer chaincode install -n device -p github.com/chaincode/device -v 1.0
+
+    docker exec -e "CORE_PEER_LOCALMSPID=DeviceMSP" \
+    -e "CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/device.networkiot.com/peers/peer0.device.networkiot.com/tls/ca.crt" \
+    -e "CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/device.networkiot.com/users/Admin@device.networkiot.com/msp" \
+    -e "CORE_PEER_TLS_CERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/device.networkiot.com/peers/peer0.device.networkiot.com/tls/server.crt" \
+    -e "CORE_PEER_TLS_KEY_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/device.networkiot.com/peers/peer0.device.networkiot.com/tls/server.key" \
+    -e "CORE_PEER_ADDRESS=peer0.device.networkiot.com:7051" \
+    -it $CLISERVICE peer chaincode install -n device -p github.com/chaincode/device -v 1.0
+    echo "Done"
+
+    sleep 10
 
     echo
-    docker exec -it $CLISERVICE peer chaincode instantiate -o orderer.networkiot.com:7050 -C devicechannel -n device -v 1.0 --tls true --cafile $ORDERER_CA -c '{"function":"Init", "Args": []}' -P "OR('DeviceMSP.member', 'HandlerMSP.member')"
+    echo "Instanciar chaincode device..."
+    docker exec -e "CORE_PEER_LOCALMSPID=HandlerMSP" \
+    -e "CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/handler.networkiot.com/peers/peer0.handler.networkiot.com/tls/ca.crt" \
+    -e "CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/handler.networkiot.com/users/Admin@handler.networkiot.com/msp" \
+    -e "CORE_PEER_TLS_CERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/handler.networkiot.com/peers/peer0.handler.networkiot.com/tls/server.crt" \
+    -e "CORE_PEER_TLS_KEY_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/handler.networkiot.com/peers/peer0.handler.networkiot.com/tls/server.key" \
+    -e "CORE_PEER_ADDRESS=peer0.handler.networkiot.com:7051" \
+    -it $CLISERVICE peer chaincode instantiate -o orderer.networkiot.com:7050 -C devicechannel -n device -v 1.0 --tls true --cafile $ORDERER_CA -c '{"Args": []}' -P "OR('DeviceMSP.member', 'HandlerMSP.member')"
+
+    docker exec -e "CORE_PEER_LOCALMSPID=DeviceMSP" \
+    -e "CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/device.networkiot.com/peers/peer0.device.networkiot.com/tls/ca.crt" \
+    -e "CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/device.networkiot.com/users/Admin@device.networkiot.com/msp" \
+    -e "CORE_PEER_TLS_CERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/device.networkiot.com/peers/peer0.device.networkiot.com/tls/server.crt" \
+    -e "CORE_PEER_TLS_KEY_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/device.networkiot.com/peers/peer0.device.networkiot.com/tls/server.key" \
+    -e "CORE_PEER_ADDRESS=peer0.device.networkiot.com:7051" \
+    -it $CLISERVICE peer chaincode instantiate -o orderer.networkiot.com:7050 -C devicechannel -n device -v 1.0 --tls true --cafile $ORDERER_CA -c '{"Args": []}' -P "OR('DeviceMSP.member', 'HandlerMSP.member')"
+    echo "Done"
+
+    sleep 10
+
+    echo
+    echo "Invocar chaincode device..."
+    docker exec -e "CORE_PEER_LOCALMSPID=HandlerMSP" \
+    -e "CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/handler.networkiot.com/peers/peer0.handler.networkiot.com/tls/ca.crt" \
+    -e "CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/handler.networkiot.com/users/Admin@handler.networkiot.com/msp" \
+    -e "CORE_PEER_TLS_CERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/handler.networkiot.com/peers/peer0.handler.networkiot.com/tls/server.crt" \
+    -e "CORE_PEER_TLS_KEY_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/handler.networkiot.com/peers/peer0.handler.networkiot.com/tls/server.key" \
+    -e "CORE_PEER_ADDRESS=peer0.handler.networkiot.com:7051" \
+    -it $CLISERVICE peer chaincode invoke -o orderer.networkiot.com:7050 -C devicechannel -n device --tls true --cafile $ORDERER_CA -c '{"function": "initDevice", "Args": []}'
+
+    docker exec -e "CORE_PEER_LOCALMSPID=DeviceMSP" \
+    -e "CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/device.networkiot.com/peers/peer0.device.networkiot.com/tls/ca.crt" \
+    -e "CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/device.networkiot.com/users/Admin@device.networkiot.com/msp" \
+    -e "CORE_PEER_TLS_CERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/device.networkiot.com/peers/peer0.device.networkiot.com/tls/server.crt" \
+    -e "CORE_PEER_TLS_KEY_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/device.networkiot.com/peers/peer0.device.networkiot.com/tls/server.key" \
+    -e "CORE_PEER_ADDRESS=peer0.device.networkiot.com:7051" \
+    -it $CLISERVICE peer chaincode invoke -o orderer.networkiot.com:7050 -C devicechannel -n device --tls true --cafile $ORDERER_CA -c '{"function": "initDevice", "Args": []}'
     echo "Done"
 
 
     echo
     echo "Instalando chaincode linkage..."
-    docker exec -it $CLISERVICE peer chaincode install -n linkage -p github.com/chaincode/linkage -v 1.0
-    
+    docker exec -e "CORE_PEER_LOCALMSPID=HandlerMSP" \
+    -e "CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/handler.networkiot.com/peers/peer0.handler.networkiot.com/tls/ca.crt" \
+    -e "CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/handler.networkiot.com/users/Admin@handler.networkiot.com/msp" \
+    -e "CORE_PEER_TLS_CERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/handler.networkiot.com/peers/peer0.handler.networkiot.com/tls/server.crt" \
+    -e "CORE_PEER_TLS_KEY_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/handler.networkiot.com/peers/peer0.handler.networkiot.com/tls/server.key" \
+    -e "CORE_PEER_ADDRESS=peer0.handler.networkiot.com:7051" \
+    -it $CLISERVICE peer chaincode install -n linkage -p github.com/chaincode/linkage -v 1.0
+
+    docker exec -e "CORE_PEER_LOCALMSPID=LinkageMSP" \
+    -e "CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/linkage.networkiot.com/peers/peer0.linkage.networkiot.com/tls/ca.crt" \
+    -e "CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/linkage.networkiot.com/users/Admin@linkage.networkiot.com/msp" \
+    -e "CORE_PEER_TLS_CERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/linkage.networkiot.com/peers/peer0.linkage.networkiot.com/tls/server.crt" \
+    -e "CORE_PEER_TLS_KEY_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/linkage.networkiot.com/peers/peer0.linkage.networkiot.com/tls/server.key" \
+    -e "CORE_PEER_ADDRESS=peer0.linkage.networkiot.com:7051" \
+    -it $CLISERVICE peer chaincode install -n linkage -p github.com/chaincode/linkage -v 1.0
+    echo "Done"
+
+    sleep 10
+
     echo
-    docker exec -it $CLISERVICE peer chaincode instantiate -o orderer.networkiot.com:7050 -C linkagechannel -n linkage -v 1.0 --tls true --cafile $ORDERER_CA -c '{"function":"Init", "Args": []}' -P "OR('LinkageMSP.member', 'HandlerMSP.member')"
+    echo "Instanciar chaincode linkage..."
+    docker exec -e "CORE_PEER_LOCALMSPID=HandlerMSP" \
+    -e "CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/handler.networkiot.com/peers/peer0.handler.networkiot.com/tls/ca.crt" \
+    -e "CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/handler.networkiot.com/users/Admin@handler.networkiot.com/msp" \
+    -e "CORE_PEER_TLS_CERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/handler.networkiot.com/peers/peer0.handler.networkiot.com/tls/server.crt" \
+    -e "CORE_PEER_TLS_KEY_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/handler.networkiot.com/peers/peer0.handler.networkiot.com/tls/server.key" \
+    -e "CORE_PEER_ADDRESS=peer0.handler.networkiot.com:7051" \
+    -it $CLISERVICE peer chaincode instantiate -o orderer.networkiot.com:7050 -C linkagechannel -n linkage -v 1.0 --tls true --cafile $ORDERER_CA -c '{"Args": []}' -P "OR('LinkageMSP.member', 'HandlerMSP.member')"
+
+    docker exec -e "CORE_PEER_LOCALMSPID=LinkageMSP" \
+    -e "CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/linkage.networkiot.com/peers/peer0.linkage.networkiot.com/tls/ca.crt" \
+    -e "CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/linkage.networkiot.com/users/Admin@linkage.networkiot.com/msp" \
+    -e "CORE_PEER_TLS_CERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/linkage.networkiot.com/peers/peer0.linkage.networkiot.com/tls/server.crt" \
+    -e "CORE_PEER_TLS_KEY_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/linkage.networkiot.com/peers/peer0.linkage.networkiot.com/tls/server.key" \
+    -e "CORE_PEER_ADDRESS=peer0.linkage.networkiot.com:7051" \
+    -it $CLISERVICE peer chaincode instantiate -o orderer.networkiot.com:7050 -C linkagechannel -n linkage -v 1.0 --tls true --cafile $ORDERER_CA -c '{"Args": []}' -P "OR('LinkageMSP.member', 'HandlerMSP.member')"
+    echo "Done"
+
+    sleep 10
+
+    echo
+    echo "Invocar chaincode linkage..."
+    docker exec -e "CORE_PEER_LOCALMSPID=HandlerMSP" \
+    -e "CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/handler.networkiot.com/peers/peer0.handler.networkiot.com/tls/ca.crt" \
+    -e "CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/handler.networkiot.com/users/Admin@handler.networkiot.com/msp" \
+    -e "CORE_PEER_TLS_CERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/handler.networkiot.com/peers/peer0.handler.networkiot.com/tls/server.crt" \
+    -e "CORE_PEER_TLS_KEY_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/handler.networkiot.com/peers/peer0.handler.networkiot.com/tls/server.key" \
+    -e "CORE_PEER_ADDRESS=peer0.handler.networkiot.com:7051" \
+    -it $CLISERVICE peer chaincode invoke -o orderer.networkiot.com:7050 -C linkagechannel -n linkage --tls true --cafile $ORDERER_CA -c '{"function": "initLinkage", "Args": []}'
+
+    docker exec -e "CORE_PEER_LOCALMSPID=LinkageMSP" \
+    -e "CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/linkage.networkiot.com/peers/peer0.linkage.networkiot.com/tls/ca.crt" \
+    -e "CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/linkage.networkiot.com/users/Admin@linkage.networkiot.com/msp" \
+    -e "CORE_PEER_TLS_CERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/linkage.networkiot.com/peers/peer0.linkage.networkiot.com/tls/server.crt" \
+    -e "CORE_PEER_TLS_KEY_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/linkage.networkiot.com/peers/peer0.linkage.networkiot.com/tls/server.key" \
+    -e "CORE_PEER_ADDRESS=peer0.linkage.networkiot.com:7051" \
+    -it $CLISERVICE peer chaincode invoke -o orderer.networkiot.com:7050 -C linkagechannel -n linkage --tls true --cafile $ORDERER_CA -c '{"function": "initLinkage", "Args": []}'
     echo "Done"
 }
 

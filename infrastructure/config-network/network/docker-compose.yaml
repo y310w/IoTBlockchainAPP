@@ -55,6 +55,8 @@ services:
             - CORE_PEER_TLS_ENABLED=true
             - CORE_PEER_GOSSIP_USELEADERELECTION=true
             - CORE_PEER_GOSSIP_ORGLEADER=false
+            - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.device.networkiot.com:7051
+            - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.device.networkiot.com:7051
             - CORE_PEER_PROFILE_ENABLED=true
             - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt
             - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
@@ -118,6 +120,8 @@ services:
             - CORE_PEER_TLS_ENABLED=true
             - CORE_PEER_GOSSIP_USELEADERELECTION=true
             - CORE_PEER_GOSSIP_ORGLEADER=false
+            - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.handler.networkiot.com:7051
+            - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.handler.networkiot.com:7051
             - CORE_PEER_PROFILE_ENABLED=true
             - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt
             - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
@@ -180,6 +184,8 @@ services:
             - CORE_PEER_TLS_ENABLED=true
             - CORE_PEER_GOSSIP_USELEADERELECTION=true
             - CORE_PEER_GOSSIP_ORGLEADER=false
+            - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.linkage.networkiot.com:7051
+            - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.linkage.networkiot.com:7051
             - CORE_PEER_PROFILE_ENABLED=true
             - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt
             - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
