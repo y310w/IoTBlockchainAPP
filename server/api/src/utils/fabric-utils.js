@@ -4,20 +4,17 @@ import path from 'path';
 
 const connectionFile = process.env.CONNECTION || 'connection_dev.json';
 
-const ccpPath = path.resolve('./config/', connectionFile);
-const ccpJSON = fs.readFileSync(ccpPath, 'utf8');
-const ccp = JSON.parse(ccpJSON);
-
+const ccpPath = path.resolve(__dirname, '..', '..', 'config', connectionFile);
 
 const getGateway = async () => {
     try {
         // Create a new file system based wallet for managing identities.
-        const walletPath = path.join(process.cwd(), '/wallet');
+        const walletPath = path.join(process.cwd(), 'wallet');
         const wallet = new FileSystemWallet(walletPath);
         
         // Create a new gateway for connecting to our peer node.
         const gateway = new Gateway();
-        await gateway.connect(ccp, { wallet, identity: 'admin', discovery: { enabled: true, asLocalhost: true } });
+        await gateway.connect(ccpPath, { wallet, identity: 'user1', discovery: { enabled: true, asLocalhost: true });
         
         return gateway;
     } catch (err) {

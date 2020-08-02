@@ -13,7 +13,7 @@
   },
   "orderers": {
     "orderer.networkiot.com": {
-      "url": "grpc://192.168.0.30:7050",
+      "url": "grpcs://192.168.0.30:7050",
       "grpcOptions": {
         "ssl-target-name-override": "orderer.networkiot.com",
         "grpc-max-send-message-length": 5000
@@ -43,7 +43,7 @@
   },
   "peers": {
     "peer0.device.networkiot.com": {
-      "url": "grpc://192.168.0.30:7051",
+      "url": "grpcs://192.168.0.30:7051",
       "tlsCACerts": {
         "path": "crypto-config/peerOrganizations/device.networkiot.com/tlsca/tlsca.device.networkiot.com-cert.pem"
       },
@@ -53,7 +53,7 @@
       }
     },
     "peer0.handler.networkiot.com": {
-      "url": "grpc://192.168.0.30:8051",
+      "url": "grpcs://192.168.0.30:8051",
       "tlsCACerts": {
         "path": "crypto-config/peerOrganizations/handler.networkiot.com/tlsca/tlsca.handler.networkiot.com-cert.pem"
       },
@@ -63,7 +63,7 @@
       }
     },
     "peer0.linkage.networkiot.com": {
-      "url": "grpc://192.168.0.30:9051",
+      "url": "grpcs://192.168.0.30:9051",
       "tlsCACerts": {
         "path": "crypto-config/peerOrganizations/linkage.networkiot.com/tlsca/tlsca.linkage.networkiot.com-cert.pem"
       },
@@ -75,7 +75,7 @@
   },
   "certificateAuthorities": {
     "ca.device.networkiot.com": {
-      "url": "http://192.168.0.30:7054",
+      "url": "https://192.168.0.30:7054",
       "caName": "caDevice",
       "tlsCACerts": {
         "path": "crypto-config/peerOrganizations/device.networkiot.com/tlsca/tlsca.device.networkiot.com-cert.pem"
@@ -91,7 +91,7 @@
       ]
     },
     "ca.handler.networkiot.com": {
-      "url": "http://192.168.0.30:8054",
+      "url": "https://192.168.0.30:8054",
       "caName": "caHandler",
       "tlsCACerts": {
         "path": "crypto-config/peerOrganizations/handler.networkiot.com/tlsca/tlsca.handler.networkiot.com-cert.pem"
@@ -107,7 +107,7 @@
       ]
     },
     "ca.linkage.networkiot.com": {
-      "url": "http://192.168.0.30:9054",
+      "url": "https://192.168.0.30:9054",
       "caName": "caLinkage",
       "tlsCACerts": {
         "path": "crypto-config/peerOrganizations/linkage.networkiot.com/tlsca/tlsca.linkage.networkiot.com-cert.pem"

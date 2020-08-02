@@ -32,7 +32,6 @@ class Device {
                 channel: 'devicechannel',
                 contractName: 'device',
                 transaction: 'addDevice',
-                userName: 'user1',
                 args: [
                     this.name,
                     this.serial,
@@ -54,7 +53,6 @@ class Device {
                 channel: 'devicechannel',
                 contractName: 'device',
                 transaction: 'deleteDevice',
-                userName: 'user1',
                 args: [
                     this.serial,
                 ]
@@ -75,7 +73,6 @@ export const queryDevice = async (query) => {
             channel: 'devicechannel',
             contractName: 'device',
             transaction: 'queryDevice',
-            userName: 'user1',
             args: [
                 query
             ]

@@ -59,7 +59,6 @@ class Linkage {
                 channel: 'LinkageChannel',
                 contractName: 'linkage',
                 transaction: 'addLinkage',
-                userName: 'user1',
                 args: [
                     this.sensor,
                     this.cond,
@@ -74,7 +73,6 @@ class Linkage {
                     channel: 'LinkageChannel',
                     contractName: 'linkage',
                     transaction: 'updateLinkage',
-                    userName: 'user1',
                     args: [
                         this.id,
                         this.cond,
@@ -96,7 +94,6 @@ class Linkage {
                 channel: 'LinkageChannel',
                 contractName: 'linkage',
                 transaction: 'deleteLinkage',
-                userName: 'user1',
                 args: [
                     this.id,
                 ]
@@ -123,7 +120,6 @@ export const queryLinkage = async (query) => {
             channel: 'handlerchannel',
             contractName: 'linkage',
             transaction: 'queryLinkage',
-            userName: 'user1',
             args: [
                 query
             ]

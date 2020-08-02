@@ -4,7 +4,7 @@ import { checkDeviceExists, queryDevice } from '../models/device';
 export default {
     Query: {
         devices: async (parent) => {
-            return await queryDevice({"selector": {}});
+            return await queryDevice("{\"selector\": {}}");
         },
 
         device: async (parent, { serial }) => {
@@ -33,7 +33,7 @@ export default {
 
         setValue: async (parent, { serial, value }) => {
             let defined = false;
-            let updateDevice = queryDevice({"selector": {"serial": serial}});
+            let updateDevice = queryDevice("{\"selector\": {\"serial\": serial}}");
 
             if (updateDevice) {
                 updateDevice.value = value;
@@ -46,7 +46,7 @@ export default {
 
         deleteDevice: async (parent, { serial }) => {
             let deleted = false;
-            let deleteDevice = queryDevice({"selector": {"serial": serial}});
+            let deleteDevice = queryDevice("{\"selector\": {\"serial\": serial}}");
             
             if (deleteDevice) {
                 deleteDevice.remove();

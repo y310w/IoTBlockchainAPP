@@ -1,7 +1,5 @@
-import { X509WalletMixin } from 'fabric-network';
 import bcrypt from 'bcrypt';
 import mongoose from 'mongoose';
-import utils from '../utils/fabric-utils';
 
 const SALT = 10;
 
