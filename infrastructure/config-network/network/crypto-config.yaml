@@ -5,7 +5,7 @@ OrdererOrgs:
   # ---------------------------------------------------------------------------
   # OrdererIOT
   # ---------------------------------------------------------------------------
-  - Name: OrdererIOT
+  - Name: Orderer
     Domain: networkiot.com
     Specs:
       - Hostname: orderer

@@ -2,7 +2,7 @@
 Organizations:
 
     - &OrdererOrg
-        Name: OrdererIOT
+        Name: OrdererOrg
         ID: OrdererIOTMSP
         MSPDir: crypto-config/ordererOrganizations/networkiot.com/msp
 
@@ -50,6 +50,14 @@ Profiles:
                     - *Device
                     - *Handler
                     - *Linkage
+    ChannelAll:
+        Consortium: SampleConsortium
+        Application:
+            <<: *ApplicationDefaults
+            Organizations:
+                - *Device
+                - *Handler
+                - *Linkage
     DeviceChannel:
         Consortium: SampleConsortium
         Application:
