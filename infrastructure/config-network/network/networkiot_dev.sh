@@ -15,9 +15,21 @@ printHelp() {
 }
 
 
-generateNetwork() {
+exportKeys() {
     ROOT_FOLDER=${HOME}/tfg/IoTBlockchainAPP/infrastructure/config-network/network/crypto-config/peerOrganizations/
 
+    # Copiando las claves al docker-compose.yml
+    echo
+    echo
+    echo "Exportando claves de Device peer..."
+    export DEVICE_CA_KEY=$(cd ${ROOT_FOLDER}device.networkiot.com/ca/ && ls *_sk)
+    
+    echo "Exportando claves de Linkage peer..."
+    export LINKAGE_CA_KEY=$(cd ${ROOT_FOLDER}linkage.networkiot.com/ca/ && ls *_sk)
+}
+
+
+generateNetwork() {
     echo "Generando certificados con cryptogen..."
     # generamos crypto material
     ../bin_dev/cryptogen generate --config=./crypto-config.yaml
@@ -30,7 +42,7 @@ generateNetwork() {
     echo
     echo
     echo "Generando bloque genesis..."
-    ../bin_dev/configtxgen -profile OrdererGenesis -outputBlock ./channel-artifacts/genesis.block
+    ../bin_dev/configtxgen -profile OrdererGenesis -channelID networkiot -outputBlock ./channel-artifacts/genesis.block
     if [ "$?" -ne 0 ]; then
     echo "Fallo al generar el orderer genesis block..."
     exit 1
@@ -40,52 +52,17 @@ generateNetwork() {
     echo
     echo
     echo "Generando channelall..."
-    ../bin_dev/configtxgen -profile ChannelAll -outputCreateChannelTx ./channel-artifacts/channelAll.tx -channelID channelall
+    ../bin_dev/configtxgen -profile ChannelAll -outputCreateChannelTx ./channel-artifacts/channelall.tx -channelID channelall
     if [ "$?" -ne 0 ]; then
     echo "Fallo al generar la configuración del canal All..."
     exit 1
     fi
-
-    # generamos la configuracion del canal Device
-    echo
-    echo
-    echo "Generando devicechannel..."
-    ../bin_dev/configtxgen -profile DeviceChannel -outputCreateChannelTx ./channel-artifacts/deviceChannel.tx -channelID devicechannel
-    if [ "$?" -ne 0 ]; then
-    echo "Fallo al generar la configuración del canal Device..."
-    exit 1
-    fi
-
-    # generamos la configuracion del canal Linkage
-    echo
-    echo
-    echo "Generando linkagechannel.."
-    ../bin_dev/configtxgen -profile LinkageChannel -outputCreateChannelTx ./channel-artifacts/linkageChannel.tx -channelID linkagechannel
-    if [ "$?" -ne 0 ]; then
-    echo "Fallo al generar la configuración del canal Linkage..."
-    exit 1
-    fi
-
-    # Copiando las claves al docker-compose.yml
-    echo
-    echo
-    echo "Exportando claves de Device peer..."
-    export DEVICE_CA_KEY=$(cd ${ROOT_FOLDER}device.networkiot.com/ca/ && ls *_sk)
-
-    echo "Exportando claves de Handler peer..."
-    export HANDLER_CA_KEY=$(cd ${ROOT_FOLDER}handler.networkiot.com/ca/ && ls *_sk)
-    
-    echo "Exportando claves de Linkage peer..."
-    export LINKAGE_CA_KEY=$(cd ${ROOT_FOLDER}linkage.networkiot.com/ca/ && ls *_sk)
-
-    echo
-    echo "Creando red networkiot..."
-    docker network create networkiot
-    echo "Done"
 }
 
 
 upNetwork() {
+    exportKeys
+    
     set -ev
 
     BASE=/opt/gopath/src/github.com/hyperledger/fabric/peer/
@@ -105,67 +82,51 @@ upNetwork() {
     echo
     # Crear canal All
     echo "Creando canal channelall"
-    docker exec -it $CLISERVICE peer channel create -o orderer.networkiot.com:7050 -c channelall -f ${CHANNELS}/channelAll.tx --cafile $ORDERER_CA
+    docker exec $CLISERVICE peer channel create -o orderer.networkiot.com:7050 -c channelall -f ${CHANNELS}/channelall.tx --tls true --cafile $ORDERER_CA 
 
-    echo
-    # Crear canal device
-    echo "Creando canal devicechannel"
-    docker exec -it $CLISERVICE peer channel create -o orderer.networkiot.com:7050 -c devicechannel -f ${CHANNELS}/deviceChannel.tx --cafile $ORDERER_CA
-    
-    echo
-    # Crear canal linkage
-    echo "Creando canal linkagechannel"
-    docker exec -it $CLISERVICE peer channel create -o orderer.networkiot.com:7050 -c linkagechannel -f ${CHANNELS}/linkageChannel.tx --cafile $ORDERER_CA
-    
     sleep 10
     echo "Done"
 
     echo
-    #Unir handler al canal device
-    echo "Uniendo Peer Handler al devicechannel..."
-    docker exec -it $CLISERVICE peer channel join -b devicechannel.block
-    echo "Done"
-
-    echo
-    #Unir handler al canal linkage
-    echo "Uniendo Peer Handler al linkagechannel..."
-    docker exec -it $CLISERVICE peer channel join -b linkagechannel.block
-    echo "Done"
-
-    echo
-    #Unir handler al canal All
-    echo "Uniendo Peer Handler al channelAll..."
-    docker exec -it $CLISERVICE peer channel join -b channelall.block
-    echo "Done"
-
-    echo
-    echo "Uniendo Peer Device al devicechannel..."
-    docker exec -e "CORE_PEER_LOCALMSPID=DeviceMSP" \
-    -e "CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/device.networkiot.com/users/Admin@device.networkiot.com/msp" \
-    -e "CORE_PEER_ADDRESS=peer0.device.networkiot.com:7051" \
-    -it $CLISERVICE peer channel join -b devicechannel.block
-
-    echo
     echo "Uniendo Peer Device al channelAll..."
-    docker exec -e "CORE_PEER_LOCALMSPID=DeviceMSP" \
-    -e "CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/device.networkiot.com/users/Admin@device.networkiot.com/msp" \
-    -e "CORE_PEER_ADDRESS=peer0.device.networkiot.com:7051" \
-    -it $CLISERVICE peer channel join -b channelall.block
+    echo "Uniendo peer0.device.networkiot.com:7051..."
+    docker exec \
+    -e CORE_PEER_ADDRESS=peer0.device.networkiot.com:7051 \
+    -e CORE_PEER_LOCALMSPID=DeviceMSP \
+    -e CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/device.networkiot.com/users/Admin@device.networkiot.com/msp \
+    -e CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/device.networkiot.com/peers/peer0.device.networkiot.com/tls/ca.crt \
+    $CLISERVICE peer channel join -b channelall.block
     echo "Done"
-
+    
     echo
-    echo "Uniendo Peer Linkage al linkagechannel..."
-    docker exec -e "CORE_PEER_LOCALMSPID=LinkageMSP" \
-    -e "CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/linkage.networkiot.com/users/Admin@linkage.networkiot.com/msp" \
-    -e "CORE_PEER_ADDRESS=peer0.linkage.networkiot.com:7051" \
-    -it $CLISERVICE peer channel join -b linkagechannel.block
+    echo "Uniendo peer1.device.networkiot.com:8051..."
+    docker exec \
+    -e CORE_PEER_ADDRESS=peer1.device.networkiot.com:8051 \
+    -e CORE_PEER_LOCALMSPID=DeviceMSP \
+    -e CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/device.networkiot.com/users/Admin@device.networkiot.com/msp \
+    -e CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/device.networkiot.com/peers/peer1.device.networkiot.com/tls/ca.crt \
+    $CLISERVICE peer channel join -b channelall.block
+    echo "Done"
 
     echo
     echo "Uniendo Peer Linkage al channelAll..."
-    docker exec -e "CORE_PEER_LOCALMSPID=LinkageMSP" \
-    -e "CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/linkage.networkiot.com/users/Admin@linkage.networkiot.com/msp" \
-    -e "CORE_PEER_ADDRESS=peer0.linkage.networkiot.com:7051" \
-    -it $CLISERVICE peer channel join -b channelall.block
+    echo "Uniendo peer0.linkage.networkiot.com:9051..."
+    docker exec \
+    -e CORE_PEER_ADDRESS=peer0.linkage.networkiot.com:9051 \
+    -e CORE_PEER_LOCALMSPID=LinkageMSP \
+    -e CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/linkage.networkiot.com/users/Admin@linkage.networkiot.com/msp \
+    -e CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/linkage.networkiot.com/peers/peer0.linkage.networkiot.com/tls/ca.crt \
+    $CLISERVICE peer channel join -b channelall.block
+    echo "Done"
+
+    echo
+    echo "Uniendo peer1.linkage.networkiot.com:10051..."
+    docker exec \
+    -e CORE_PEER_ADDRESS=peer1.linkage.networkiot.com:10051 \
+    -e CORE_PEER_LOCALMSPID=LinkageMSP \
+    -e CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/linkage.networkiot.com/users/Admin@linkage.networkiot.com/msp \
+    -e CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/linkage.networkiot.com/peers/peer1.linkage.networkiot.com/tls/ca.crt \
+    $CLISERVICE peer channel join -b channelall.block
     echo "Done"
 
     chaincodeOperation
@@ -173,41 +134,156 @@ upNetwork() {
 
 
 chaincodeOperation() {
+    CONFIG_ROOT=/opt/gopath/src/github.com/hyperledger/fabric/peer
+    DEVICE_MSPCONFIGPATH=${CONFIG_ROOT}/crypto/peerOrganizations/device.networkiot.com/users/Admin@device.networkiot.com/msp
+    DEVICE_TLS_ROOTCERT_FILE=${CONFIG_ROOT}/crypto/peerOrganizations/device.networkiot.com/peers/peer0.device.networkiot.com/tls/ca.crt
+    LINKAGE_MSPCONFIGPATH=${CONFIG_ROOT}/crypto/peerOrganizations/linkage.networkiot.com/users/Admin@linkage.networkiot.com/msp
+    LINKAGE_TLS_ROOTCERT_FILE=${CONFIG_ROOT}/crypto/peerOrganizations/linkage.networkiot.com/peers/peer0.linkage.networkiot.com/tls/ca.crt
+    ORDERER_TLS_ROOTCERT_FILE=${CONFIG_ROOT}/crypto/ordererOrganizations/networkiot.com/orderers/orderer.networkiot.com/msp/tlscacerts/tlsca.networkiot.com-cert.pem
+
     echo
     echo "Instalando chaincode device..."
-    docker exec -it $CLISERVICE peer chaincode install -n device -p github.com/chaincode/device -v 1.0
+    docker exec \
+    -e CORE_PEER_LOCALMSPID=DeviceMSP \
+    -e CORE_PEER_ADDRESS=peer0.device.networkiot.com:7051 \
+    -e CORE_PEER_MSPCONFIGPATH=${DEVICE_MSPCONFIGPATH} \
+    -e CORE_PEER_TLS_ROOTCERT_FILE=${DEVICE_TLS_ROOTCERT_FILE} \
+    $CLISERVICE \
+    peer chaincode install \
+        -n device \
+        -v 1.0 \
+        -p github.com/chaincode/device \
+        -l golang
 
-    sleep 5
+    docker exec \
+    -e CORE_PEER_LOCALMSPID=DeviceMSP \
+    -e CORE_PEER_ADDRESS=peer1.device.networkiot.com:8051 \
+    -e CORE_PEER_MSPCONFIGPATH=${DEVICE_MSPCONFIGPATH} \
+    -e CORE_PEER_TLS_ROOTCERT_FILE=${DEVICE_TLS_ROOTCERT_FILE} \
+    $CLISERVICE \
+    peer chaincode install \
+        -n device \
+        -v 1.0 \
+        -p github.com/chaincode/device \
+        -l golang
 
     echo
-    docker exec -it $CLISERVICE peer chaincode instantiate -o orderer.networkiot.com:7050 -C devicechannel -n device -v 1.0 --cafile $ORDERER_CA -c '{"Args": []}' -P "OR('DeviceMSP.member', 'HandlerMSP.member')"
-    echo "Done"
+    echo "Instanciando Smart Contract Device en channelAll"
+    docker exec \
+    -e CORE_PEER_LOCALMSPID=DeviceMSP \
+    -e CORE_PEER_MSPCONFIGPATH=${DEVICE_MSPCONFIGPATH} \
+    $CLISERVICE \
+    peer chaincode instantiate \
+        -o orderer.networkiot.com:7050 \
+        -C channelall \
+        -n device \
+        -l golang \
+        -v 1.0 \
+        -c '{"Args":[]}' \
+        -P "AND('DeviceMSP.member')" \
+        --tls \
+        --cafile ${ORDERER_TLS_ROOTCERT_FILE} \
+        --peerAddresses peer0.device.networkiot.com:7051 \
+        --tlsRootCertFiles ${DEVICE_TLS_ROOTCERT_FILE}
 
-    sleep 5
+    echo "Esperando a que la petición de instanciación sea enviada..."
+    sleep 10
+
+    echo "Enviando transaccion initDevice a channelall"
+    echo "La transaccion se mando a los dos peers peer0.device.networkiot.com y peer1.device.networkiot.com"
+    docker exec \
+    -e CORE_PEER_LOCALMSPID=DeviceMSP \
+    -e CORE_PEER_MSPCONFIGPATH=${DEVICE_MSPCONFIGPATH} \
+    $CLISERVICE \
+    peer chaincode invoke \
+        -o orderer.networkiot.com:7050 \
+        -C channelall \
+        -n device \
+        -c '{"function":"initDevice","Args":[]}' \
+        --waitForEvent \
+        --tls \
+        --cafile ${ORDERER_TLS_ROOTCERT_FILE} \
+        --peerAddresses peer0.device.networkiot.com:7051 \
+        --peerAddresses peer1.device.networkiot.com:8051 \
+        --tlsRootCertFiles ${DEVICE_TLS_ROOTCERT_FILE} \
+        --tlsRootCertFiles ${DEVICE_TLS_ROOTCERT_FILE}
+
+# ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
     echo
-    docker exec -it $CLISERVICE peer chaincode invoke -o orderer.networkiot.com:7050 -C devicechannel -n device -c '{"function":"Init", "Args": []}'
-    echo "Done"
+    echo "Instalando chaincode linkage..."
+    docker exec \
+    -e CORE_PEER_LOCALMSPID=LinkageMSP \
+    -e CORE_PEER_ADDRESS=peer0.linkage.networkiot.com:9051 \
+    -e CORE_PEER_MSPCONFIGPATH=${LINKAGE_MSPCONFIGPATH} \
+    -e CORE_PEER_TLS_ROOTCERT_FILE=${LINKAGE_TLS_ROOTCERT_FILE} \
+    $CLISERVICE \
+    peer chaincode install \
+        -n linkage \
+        -v 1.0 \
+        -p github.com/chaincode/linkage \
+        -l golang
 
+    docker exec \
+    -e CORE_PEER_LOCALMSPID=LinkageMSP \
+    -e CORE_PEER_ADDRESS=peer1.linkage.networkiot.com:10051 \
+    -e CORE_PEER_MSPCONFIGPATH=${LINKAGE_MSPCONFIGPATH} \
+    -e CORE_PEER_TLS_ROOTCERT_FILE=${LINKAGE_TLS_ROOTCERT_FILE} \
+    $CLISERVICE \
+    peer chaincode install \
+        -n linkage \
+        -v 1.0 \
+        -p github.com/chaincode/linkage \
+        -l golang
 
-    #echo
-    #echo "Instalando chaincode linkage..."
-    #docker exec -it $CLISERVICE peer chaincode install -n linkage -p github.com/chaincode/linkage -v 1.0
-    
-    #echo
-    #docker exec -it $CLISERVICE peer chaincode instantiate -o orderer.networkiot.com:7050 -C linkagechannel -n linkage -v 1.0 --cafile $ORDERER_CA -c '{"function":"Init", "Args": []}' -P "OR('LinkageMSP.member', 'HandlerMSP.member')"
-    #echo "Done"
+    echo
+    echo "Instanciando Smart Contract Linkage en channelAll"
+    docker exec \
+    -e CORE_PEER_LOCALMSPID=LinkageMSP \
+    -e CORE_PEER_MSPCONFIGPATH=${LINKAGE_MSPCONFIGPATH} \
+    $CLISERVICE \
+    peer chaincode instantiate \
+        -o orderer.networkiot.com:7050 \
+        -C channelall \
+        -n linkage \
+        -l golang \
+        -v 1.0 \
+        -c '{"Args":[]}' \
+        -P "AND('LinkageMSP.member')" \
+        --tls \
+        --cafile ${ORDERER_TLS_ROOTCERT_FILE} \
+        --peerAddresses peer0.linkage.networkiot.com:9051 \
+        --tlsRootCertFiles ${LINKAGE_TLS_ROOTCERT_FILE}
+
+    echo "Esperando a que la petición de instanciación sea enviada..."
+    sleep 10
+
+    echo "Enviando transaccion initLinkage a channelall"
+    echo "La transaccion se mando a los dos peers peer0.linkage.networkiot.com y peer1.linkage.networkiot.com"
+    docker exec \
+    -e CORE_PEER_LOCALMSPID=LinkageMSP \
+    -e CORE_PEER_MSPCONFIGPATH=${LINKAGE_MSPCONFIGPATH} \
+    $CLISERVICE \
+    peer chaincode invoke \
+        -o orderer.networkiot.com:7050 \
+        -C channelall \
+        -n linkage \
+        -c '{"function":"initLinkage","Args":[]}' \
+        --waitForEvent \
+        --tls \
+        --cafile ${ORDERER_TLS_ROOTCERT_FILE} \
+        --peerAddresses peer0.linkage.networkiot.com:9051 \
+        --peerAddresses peer1.linkage.networkiot.com:10051 \
+        --tlsRootCertFiles ${LINKAGE_TLS_ROOTCERT_FILE} \
+        --tlsRootCertFiles ${LINKAGE_TLS_ROOTCERT_FILE}
 }
 
 
 removeNetwork() {
-    echo "Parando servicios..."
-    docker-compose -f docker-compose-dev.yaml down
-    echo "Done"
+    exportKeys
 
-    echo
-    echo "Eliminando red networkiot..."
-    docker network rm networkiot
+    echo "Parando servicios..."
+    docker-compose -f docker-compose-dev.yaml down --volumes --remove-orphans
     echo "Done"
 
     # eliminamos cualquier configuracion

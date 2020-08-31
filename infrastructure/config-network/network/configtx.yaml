@@ -3,7 +3,7 @@ Organizations:
 
     - &OrdererOrg
         Name: OrdererOrg
-        ID: OrdererIOTMSP
+        ID: OrdererMSP
         MSPDir: crypto-config/ordererOrganizations/networkiot.com/msp
 
     - &Device
@@ -11,15 +11,20 @@ Organizations:
         ID: DeviceMSP
         MSPDir: crypto-config/peerOrganizations/device.networkiot.com/msp
 
-    - &Handler
-        Name: HandlerMSP
-        ID: HandlerMSP
-        MSPDir: crypto-config/peerOrganizations/handler.networkiot.com/msp
-
     - &Linkage
         Name: LinkageMSP
         ID: LinkageMSP
         MSPDir: crypto-config/peerOrganizations/linkage.networkiot.com/msp
+
+Capabilities:
+    Channel: &ChannelCapabilities
+        V1_4_3: true
+
+    Orderer: &OrdererCapabilities
+        V1_4_2: true
+
+    Application: &ApplicationCapabilities
+        V1_4_2: true
 
 Application: &ApplicationDefaults
     Organizations:
@@ -37,38 +42,47 @@ Orderer: &OrdererDefaults
         PreferredMaxBytes: 512 KB
     Organizations:
 
+Channel: &ChannelDefaults
+
+    Policies:
+        Readers:
+            Type: ImplicitMeta
+            Rule: "ANY Readers"
+
+        Writers:
+            Type: ImplicitMeta
+            Rule: "ANY Writers"
+
+        Admins:
+            Type: ImplicitMeta
+            Rule: "MAJORITY Admins"
+
+    Capabilities:
+        <<: *ChannelCapabilities
+
 Profiles:
 
     OrdererGenesis:
+        <<: *ChannelDefaults
         Orderer:
             <<: *OrdererDefaults
             Organizations:
                 - *OrdererOrg
+            Capabilities:
+                <<: *OrdererCapabilities
         Consortiums:
             SampleConsortium:
                 Organizations:
                     - *Device
-                    - *Handler
                     - *Linkage
+
     ChannelAll:
         Consortium: SampleConsortium
+        <<: *ChannelDefaults
         Application:
             <<: *ApplicationDefaults
             Organizations:
                 - *Device
-                - *Handler
                 - *Linkage
-    DeviceChannel:
-        Consortium: SampleConsortium
-        Application:
-            <<: *ApplicationDefaults
-            Organizations:
-                - *Device
-                - *Handler
-    LinkageChannel:
-        Consortium: SampleConsortium
-        Application:
-            <<: *ApplicationDefaults
-            Organizations:
-                - *Linkage
-                - *Handler
+            Capabilities:
+                <<: *ApplicationCapabilities

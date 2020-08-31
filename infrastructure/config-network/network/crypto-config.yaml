@@ -7,6 +7,7 @@ OrdererOrgs:
   # ---------------------------------------------------------------------------
   - Name: Orderer
     Domain: networkiot.com
+    EnableNodeOUs: true
     Specs:
       - Hostname: orderer
 
@@ -19,17 +20,9 @@ PeerOrgs:
   # ---------------------------------------------------------------------------
   - Name: Device
     Domain: device.networkiot.com
+    EnableNodeOUs: true
     Template:
-      Count: 1
-    Users:
-      Count: 1
-  # ---------------------------------------------------------------------------
-  # Handler organization
-  # ---------------------------------------------------------------------------
-  - Name: Handler
-    Domain: handler.networkiot.com
-    Template:
-      Count: 1
+      Count: 2
     Users:
       Count: 1
   # ---------------------------------------------------------------------------
@@ -37,7 +30,8 @@ PeerOrgs:
   # ---------------------------------------------------------------------------
   - Name: Linkage
     Domain: linkage.networkiot.com
+    EnableNodeOUs: true
     Template:
-      Count: 1
+      Count: 2
     Users:
       Count: 1
