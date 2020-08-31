@@ -1,3 +1,5 @@
+import utils from '../utils/fabric-utils';
+
 class Device {
     constructor(name, serial, ipAddress, value = null) {
         this.name = name;
@@ -26,6 +28,19 @@ class Device {
 
     async save() {
         try {
+            let data = {
+                channel: 'devicechannel',
+                contractName: 'device',
+                transaction: 'addDevice',
+                args: [
+                    this.name,
+                    this.serial,
+                    this.ipAddress,
+                    this.value
+                ]
+            };
+
+            const result = await utils.queryTransaction(data);
         }
         catch (err) {
             console.log(err);
@@ -34,11 +49,54 @@ class Device {
 
     async remove() {
         try {
+            let data = {
+                channel: 'devicechannel',
+                contractName: 'device',
+                transaction: 'deleteDevice',
+                args: [
+                    this.serial,
+                ]
+            };
+
+            const result = await utils.queryTransaction(data);
         }
         catch (err) {
             console.log(err);
         }
     }
 };
+
+
+export const queryDevice = async (query) => {
+    try {
+        let data = {
+            channel: 'devicechannel',
+            contractName: 'device',
+            transaction: 'queryDevice',
+            args: [
+                query
+            ]
+        };
+        
+        const result = await utils.queryTransaction(data);
+        
+        return result;
+    }
+    catch (err) {
+        console.log(err);
+    }
+};
+
+export const checkDeviceExists = async (serial, ipAddress) => {
+    let found = false;
+
+    const device = queryDevice("{\"selector\": {\"serial\": ${serial}, {\"ipAddress\": ${ipAddress}}}")
+    
+    if (device) {
+        found = true;
+    }
+
+    return found;
+}
 
 export default Device;

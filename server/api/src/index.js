@@ -55,7 +55,7 @@ server.applyMiddleware({ app, path: '/graphql' });
 const httpServer = http.createServer(app);
 server.installSubscriptionHandlers(httpServer);
 
-const port = process.env.PORT || 8000;
+const port = process.env.PORT || 8080;
 
 connectDb().then(async () => {
     httpServer.listen({ port }, () => {

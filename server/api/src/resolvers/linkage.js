@@ -1,32 +1,29 @@
 import { ApolloError } from 'apollo-server';
-
-let linkages = {};
+import { checkLinkageExists, queryLinkage } from '../models/linkage';
 
 export default {
     Query: {
-        linkages: (parent) => {
-            return Object.values(linkages);
+        linkages: async (parent) => {
+            return await queryLinkage("{\"selector\": {}}");
         },
 
-        linkage: (parent, { id }) => {
-            return linkages[id];
+        linkage: async (parent, { id }) => {
+            return await queryLinkage("{\"selector\": {\"id\": ${id}}}");
         },
     },
 
     Mutation: {
-        addLinkage: (parent, { sensor, cond, actuator, region }, { models }) => {
+        addLinkage: async (parent, { sensor, cond, actuator, region }, { models }) => {
+            if (checkLinkageExists(md5(sensor + actuator))) {
+                throw new ApolloError(`Linkage with the id: ${id} already exists`);
+            }
+
             const addLinkage = new models.Linkage(sensor, cond, actuator, region);
 
             try {
                 addLinkage.validate();
 
-                let id = sensor.concat('/', actuator);
-
-                if (id in linkages) {
-                    throw new ApolloError(`Linkage with the id: ${id}, already exists`);
-                }
-
-                linkages[id] = addLinkage;
+                await addLinkage.save();
                 
                 return addLinkage;
             } catch (err) {
@@ -34,12 +31,10 @@ export default {
             }
         },
 
-        updateLinkage: (parent, { id, cond, region }, { models }) => {
-            let updateLinkage = null;
+        updateLinkage: async (parent, { id, cond, region }, { models }) => {
+            let updateLinkage = queryLinkage("{\"selector\": {\"id\": ${id}}}");
 
-            if (id in linkages) {
-                updateLinkage = linkages[id];
-
+            if (updateLinkage) {
                 let updateCond = cond || updateLinkage.cond;
                 let updateRegion = region || updateLinkage.region;
                 
@@ -49,7 +44,7 @@ export default {
                 try {
                     updateLinkage.validate();
 
-                    linkages[id] = updateLinkage;
+                    await updateLinkage.save();
                     
                     return updateLinkage;
                 } catch (err) {
@@ -60,30 +55,28 @@ export default {
             }
         },
 
-        deleteLinkage: (parent, { id }) => {
+        deleteLinkage: async (parent, { id }) => {
             let deleted = false;
+            let deleteLinkage = queryLinkage({"selector": {"id": id}});
 
-            if (id in linkages) {
-                delete linkages[id];
+            if (deleteLinkage) {
+                deleteLinkage.remove();
                 deleted = true;
             }
 
             return deleted;
         },
 
-        enable: (parent, { id }, { models }) => {
+        enable: async (parent, { id }) => {
             let defined = false;
             
-            if (id in linkages) {
-                let linkage = linkages[id];
-
-                const link = new models.Linkage(linkage.sensor, linkage.cond, 
-                                                linkage.actuator, linkage.region);
+            if (checkLinkageExists(id)) {
+                let linkage = queryLinkage({"selector": {"id": id}});
                 
-                link.enable();
+                linkage.enable();
 
-                if (link.status == true) {
-                    linkages[id] = link;
+                if (linkage.status == true) {
+                    await linkage.save();
                     defined = true;
                 }                            
             }
@@ -91,21 +84,18 @@ export default {
             return defined;
         },
 
-        disable: (parent, { id }, { models }) => {
+        disable: async (parent, { id }) => {
             let defined = false;
+            
+            if (checkLinkageExists(id)) {
+                let linkage = queryLinkage({"selector": {"id": id}});
+                
+                linkage.disable();
 
-            if (id in linkages) {
-                const linkage = linkages[id];
-
-                const link = new models.Linkage(linkage.sensor, linkage.cond, 
-                                                linkage.actuator, linkage.region);
-       
-                defined = link.disable();
-
-                if (link.status == false) {
-                    linkages[id] = link;
+                if (linkage.status == false) {
+                    await linkage.save();
                     defined = true;
-                }  
+                }                            
             }
 
             return defined;

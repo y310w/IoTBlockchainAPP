@@ -1,36 +1,29 @@
 import { ApolloError } from 'apollo-server';
-
-let devices = {};
+import { checkDeviceExists, queryDevice } from '../models/device';
 
 export default {
     Query: {
-        devices: (parent) => {
-            return Object.values(devices);
+        devices: async (parent) => {
+            return await queryDevice("{\"selector\": {}}");
         },
 
-        device: (parent, { serial }) => {
-            return devices[serial];
+        device: async (parent, { serial }) => {
+            return await queryDevice("{\"selector\": {\"serial\": ${serial}}}");
         },
     },
 
     Mutation: {
-        addDevice: (parent, { name, serial, ipAddress }, { models }) => {
+        addDevice: async (parent, { name, serial, ipAddress }, { models }) => {
+            if (checkDeviceExists(serial, ipAddress)) {
+                throw new ApolloError(`Device with the serial: ${serial} or ipAddress: ${ipAddress} already exists`);
+            } 
+
             const addDevice = new models.Device(name, serial, ipAddress);
 
             try {
                 addDevice.validate();
 
-                if (serial in devices) {
-                    throw new ApolloError(`Device with the serial: ${serial}, already exists`);
-                }
-
-                for (let serial in devices) {
-                    if (ipAddress === devices[serial].ipAddress) {
-                        throw new ApolloError(`Device with the ipAddress: ${ipAddress}, already exists`);
-                    }
-                }
-
-                devices[serial] = addDevice;
+                await addDevice.save();
                 
                 return addDevice;
             } catch (err) {
@@ -38,59 +31,25 @@ export default {
             }
         },
 
-        updateDevice: (parent, { name, serial, ipAddress }, { models }) => {
-            let updateDevice = null;
-
-            if (serial in devices) {
-                updateDevice = devices[serial];
-
-                let updateName = name || updateDevice.name;
-                let updateIpAddress = ipAddress || updateDevice.ipAddress;
-                
-                updateDevice = new models.Device(updateName, serial, updateIpAddress, updateDevice.value);
-                
-                try {
-                    updateDevice.validate();
-
-                    for (let s in devices) {
-                        if (s !== serial &&ipAddress === devices[s].ipAddress) {
-                            throw new ApolloError(`Device with the ipAddress: ${ipAddress}, already exists`);
-                        }
-                    }
-
-                    devices[serial] = updateDevice;
-                    
-                    return updateDevice;
-                } catch (err) {
-                    throw new ApolloError(err);
-                }
-            } else {
-                throw new ApolloError(`Device does not exist`);
-            }
-        },
-
-        setValue: (parent, { serial, value }) => {
+        setValue: async (parent, { serial, value }) => {
             let defined = false;
-            let device = null;
+            let updateDevice = queryDevice("{\"selector\": {\"serial\": serial}}");
 
-            if (serial in devices) {
-                device = devices[serial];
-
-                device['value'] = value;
-
-                if (value = devices[serial].value) {
-                    defined = true;
-                }
+            if (updateDevice) {
+                updateDevice.value = value;
+                await updateDevice.save();
+                defined = true;
             }
 
             return defined;
         },
 
-        deleteDevice: (parent, { serial }) => {
+        deleteDevice: async (parent, { serial }) => {
             let deleted = false;
-
-            if (serial in devices) {
-                delete devices[serial];
+            let deleteDevice = queryDevice("{\"selector\": {\"serial\": serial}}");
+            
+            if (deleteDevice) {
+                deleteDevice.remove();
                 deleted = true;
             }
 
