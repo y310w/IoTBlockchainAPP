@@ -1,5 +1,6 @@
 import { ApolloError } from 'apollo-server';
 import { checkDeviceExists, queryDevice } from '../models/device';
+import { isJsonValue } from 'apollo-utilities';
 
 export default {
     Query: {
@@ -8,15 +9,15 @@ export default {
         },
 
         device: async (parent, { serial }) => {
-            return await queryDevice("{\"selector\": {\"serial\": ${serial}}}");
+            return await queryDevice(`{\"selector\": {\"serial\": \"${serial}\"}}`);
         },
     },
 
     Mutation: {
         addDevice: async (parent, { name, serial, ipAddress }, { models }) => {
-            if (checkDeviceExists(serial, ipAddress)) {
+            if (await checkDeviceExists(serial, ipAddress)) {
                 throw new ApolloError(`Device with the serial: ${serial} or ipAddress: ${ipAddress} already exists`);
-            } 
+            }
 
             const addDevice = new models.Device(name, serial, ipAddress);
 
@@ -33,11 +34,11 @@ export default {
 
         setValue: async (parent, { serial, value }) => {
             let defined = false;
-            let updateDevice = queryDevice("{\"selector\": {\"serial\": serial}}");
+            let updateDevice = await queryDevice(`{\"selector\": {\"serial\": \"${serial}\"}}`);
 
             if (updateDevice) {
-                updateDevice.value = value;
-                await updateDevice.save();
+                updateDevice.value = String(value);
+                await updateDevice.update();
                 defined = true;
             }
 
@@ -46,7 +47,7 @@ export default {
 
         deleteDevice: async (parent, { serial }) => {
             let deleted = false;
-            let deleteDevice = queryDevice("{\"selector\": {\"serial\": serial}}");
+            let deleteDevice = await queryDevice(`{\"selector\": {\"serial\": \"${serial}\"}}`);
             
             if (deleteDevice) {
                 deleteDevice.remove();

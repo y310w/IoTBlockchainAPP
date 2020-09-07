@@ -1,11 +1,11 @@
 import utils from '../utils/fabric-utils';
 
 class Device {
-    constructor(name, serial, ipAddress, value = null) {
+    constructor(name, serial, ipAddress, value = "-1") {
         this.name = name;
         this.serial = serial;
         this.ipAddress = ipAddress;
-        this.value = value;
+        this.value = String(value);
     }
 
     validate() {
@@ -29,7 +29,7 @@ class Device {
     async save() {
         try {
             let data = {
-                channel: 'devicechannel',
+                channel: 'channelall',
                 contractName: 'device',
                 transaction: 'addDevice',
                 args: [
@@ -40,7 +40,26 @@ class Device {
                 ]
             };
 
-            const result = await utils.queryTransaction(data);
+            await utils.queryTransaction(data);
+        }
+        catch (err) {
+            console.log(err);
+        }
+    }
+
+    async update() {
+        try {
+            let data = {
+                channel: 'channelall',
+                contractName: 'device',
+                transaction: 'updateDevice',
+                args: [
+                    this.serial,
+                    this.value
+                ]
+            };
+
+            await utils.queryTransaction(data);
         }
         catch (err) {
             console.log(err);
@@ -50,7 +69,7 @@ class Device {
     async remove() {
         try {
             let data = {
-                channel: 'devicechannel',
+                channel: 'channelall',
                 contractName: 'device',
                 transaction: 'deleteDevice',
                 args: [
@@ -58,7 +77,7 @@ class Device {
                 ]
             };
 
-            const result = await utils.queryTransaction(data);
+            await utils.queryTransaction(data);
         }
         catch (err) {
             console.log(err);
@@ -70,7 +89,7 @@ class Device {
 export const queryDevice = async (query) => {
     try {
         let data = {
-            channel: 'devicechannel',
+            channel: 'channelall',
             contractName: 'device',
             transaction: 'queryDevice',
             args: [
@@ -79,8 +98,24 @@ export const queryDevice = async (query) => {
         };
         
         const result = await utils.queryTransaction(data);
-        
-        return result;
+
+        let res;
+
+        if (result.length > 1) {
+            res = [];
+
+            for (let i = 0; i < result.length; i++) {
+                if ("Record" in result[i]) {
+                    let record = result[i].Record;
+                    res.push(new Device(record.name, record.serial, record.ipAddress, record.value));
+                }
+            }
+        } else {
+            let record = result[0].Record;
+            res = new Device(record.name, record.serial, record.ipAddress, record.value);
+        }
+
+        return res;
     }
     catch (err) {
         console.log(err);
@@ -90,9 +125,9 @@ export const queryDevice = async (query) => {
 export const checkDeviceExists = async (serial, ipAddress) => {
     let found = false;
 
-    const device = queryDevice("{\"selector\": {\"serial\": ${serial}, {\"ipAddress\": ${ipAddress}}}")
-    
-    if (device) {
+    const device = await queryDevice(`{\"selector\": {\"$or\": [{\"serial\": \"${serial}\"}, {\"ipAddress\": \"${ipAddress}\"}]}}`);
+
+    if (device != undefined) {
         found = true;
     }
 

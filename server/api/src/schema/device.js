@@ -8,7 +8,6 @@ export default gql`
 
     extend type Mutation {
         addDevice(name: String!, serial: String!, ipAddress: String!): Device!
-        updateDevice(name: String!, serial: String!, ipAddress: String!): Device!
         setValue(serial: String!, value: Int!): Boolean!
         deleteDevice(serial: String!): Boolean!
     }
