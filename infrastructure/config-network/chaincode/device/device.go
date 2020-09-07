@@ -195,7 +195,7 @@ func (s *SmartContract) deleteDevice(stub shim.ChaincodeStubInterface, args []st
 func constructQueryResponseFromIterator(resultsIterator shim.StateQueryIteratorInterface) (*bytes.Buffer, error) {
 	// buffer is a JSON array containing QueryResults
 	var buffer bytes.Buffer
-	buffer.WriteString("[")
+	buffer.WriteString("{\"data\": [")
 
 	bArrayMemberAlreadyWritten := false
 	for resultsIterator.HasNext() {
@@ -208,17 +208,18 @@ func constructQueryResponseFromIterator(resultsIterator shim.StateQueryIteratorI
 			buffer.WriteString(",")
 		}
 		buffer.WriteString("{\"Key\":")
-		buffer.WriteString("\"")
-		buffer.WriteString(queryResponse.Key)
-		buffer.WriteString("\"")
+		buffer.WriteString("\"" + string(queryResponse.Key) + "\"")
 
-		buffer.WriteString(", \"Record\":")
 		// Record is a JSON object, so we write as-is
-		buffer.WriteString(string(queryResponse.Value))
+		if !bytes.Equal(queryResponse.Value, []byte{0x00}) {
+			buffer.WriteString(",\"Record\":")
+			buffer.WriteString(string(queryResponse.Value))
+		}
+		
 		buffer.WriteString("}")
 		bArrayMemberAlreadyWritten = true
 	}
-	buffer.WriteString("]")
+	buffer.WriteString("]}")
 
 	return &buffer, nil
 }

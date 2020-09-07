@@ -14,7 +14,7 @@ const getGateway = async () => {
         
         // Create a new gateway for connecting to our peer node.
         const gateway = new Gateway();
-        await gateway.connect(ccpPath, { wallet, identity: 'user1', discovery: { enabled: true, asLocalhost: true });
+        await gateway.connect(ccpPath, { wallet, identity: 'user1', discovery: { enabled: true, asLocalhost: true }});
         
         return gateway;
     } catch (err) {
@@ -27,7 +27,10 @@ const queryTransaction = async (data) => {
         const gateway = await getGateway();
         const network = await gateway.getNetwork(data.channel);
         const contract = network.getContract(data.contractName);
-        return await contract.submitTransaction(data.transaction, ...data.args);
+        let result = await contract.submitTransaction(data.transaction, ...data.args);
+        let json = JSON.parse(result.toString().replace(/\0/g, ''));
+
+        return json.data;
     } catch (err) {
         throw new Error(`Failed to submit the Transaction: ${err}`);
     }
