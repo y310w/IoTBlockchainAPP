@@ -266,7 +266,7 @@ services:
             - networkiot
         ports:
             - 7054:7054
-        command: sh -c 'fabric-ca-server start --ca.certfile /etc/hyperledger/fabric-ca-server-config/ca.device.networkiot.com-cert.pem --ca.keyfile /etc/hyperledger/fabric-ca-server-config/${DEVICE_CA_KEY} -b admin:admin -d'
+        command: sh -c 'fabric-ca-server start --ca.certfile /etc/hyperledger/fabric-ca-server-config/ca.device.networkiot.com-cert.pem --ca.keyfile /etc/hyperledger/fabric-ca-server-config/${DEVICE_CA_KEY} -b adminDevice:admin -d'
   
     caLinkage:
         image: hyperledger/fabric-ca:1.4.4
@@ -283,7 +283,7 @@ services:
             - networkiot
         ports:
             - 8054:8054
-        command: sh -c 'fabric-ca-server start --ca.certfile /etc/hyperledger/fabric-ca-server-config/ca.linkage.networkiot.com-cert.pem --ca.keyfile /etc/hyperledger/fabric-ca-server-config/${LINKAGE_CA_KEY} -b admin:admin -d'
+        command: sh -c 'fabric-ca-server start --ca.certfile /etc/hyperledger/fabric-ca-server-config/ca.linkage.networkiot.com-cert.pem --ca.keyfile /etc/hyperledger/fabric-ca-server-config/${LINKAGE_CA_KEY} -b adminLinkage:admin -d'
     
     cli:
         image: hyperledger/fabric-tools:1.4.4

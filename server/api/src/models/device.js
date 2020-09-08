@@ -29,6 +29,7 @@ class Device {
     async save() {
         try {
             let data = {
+                org: 'Device',
                 channel: 'channelall',
                 contractName: 'device',
                 transaction: 'addDevice',
@@ -50,6 +51,7 @@ class Device {
     async update() {
         try {
             let data = {
+                org: 'Device',
                 channel: 'channelall',
                 contractName: 'device',
                 transaction: 'updateDevice',
@@ -69,6 +71,7 @@ class Device {
     async remove() {
         try {
             let data = {
+                org: 'Device',
                 channel: 'channelall',
                 contractName: 'device',
                 transaction: 'deleteDevice',
@@ -89,6 +92,7 @@ class Device {
 export const queryDevice = async (query) => {
     try {
         let data = {
+            org: 'Device',
             channel: 'channelall',
             contractName: 'device',
             transaction: 'queryDevice',

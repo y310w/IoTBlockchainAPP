@@ -1,0 +1,143 @@
+{
+    "name": "BlockchainIoT",
+    "version": "1.0.0",
+    "client": {
+      "organization": "Handler",
+      "connection": {
+        "timeout": {
+          "peer": {
+            "endorser": "300"
+          }
+        }
+      }
+    },
+    "orderers": {
+      "orderer.networkiot.com": {
+        "url": "grpc://orderer.networkiot.com:7050",
+        "grpcOptions": {
+          "ssl-target-name-override": "orderer.networkiot.com",
+          "grpc-max-send-message-length": 5000
+        }
+      }
+    },
+    "organizations": {
+      "Device": {
+        "mspid": "DeviceMSP",
+        "peers": ["peer0.device.networkiot.com", "peer0.handler.networkiot.com"],
+        "certificateAuthorities": ["ca.device.networkiot.com"]
+      },
+      "Handler": {
+        "mspid": "HandlerMSP",
+        "peers": [
+          "peer0.device.networkiot.com",
+          "peer0.handler.networkiot.com",
+          "peer0.linkage.networkiot.com"
+        ],
+        "certificateAuthorities": ["ca.handler.networkiot.com"]
+      },
+      "Linkage": {
+        "mspid": "LinkageMSP",
+        "peers": ["peer0.linkage.networkiot.com", "peer0.handler.networkiot.com"],
+        "certificateAuthorities": ["ca.linkage.networkiot.com"]
+      }
+    },
+    "peers": {
+      "peer0.device.networkiot.com": {
+        "url": "grpc://peer0.device.networkiot.com:7051",
+        "tlsCACerts": {
+          "path": "crypto-config/peerOrganizations/device.networkiot.com/tlsca/tlsca.device.networkiot.com-cert.pem"
+        },
+        "grpcOptions": {
+          "ssl-target-name-override": "peer0.device.networkiot.com",
+          "grpc.keepalive_time_ms": 600000
+        }
+      },
+      "peer0.handler.networkiot.com": {
+        "url": "grpc://peer0.handler.networkiot.com:7051",
+        "tlsCACerts": {
+          "path": "crypto-config/peerOrganizations/handler.networkiot.com/tlsca/tlsca.handler.networkiot.com-cert.pem"
+        },
+        "grpcOptions": {
+          "ssl-target-name-override": "peer0.handler.networkiot.com",
+          "grpc.keepalive_time_ms": 600000
+        }
+      },
+      "peer0.linkage.networkiot.com": {
+        "url": "grpc://peer0.linkage.networkiot.com:7051",
+        "tlsCACerts": {
+          "path": "crypto-config/peerOrganizations/linkage.networkiot.com/tlsca/tlsca.linkage.networkiot.com-cert.pem"
+        },
+        "grpcOptions": {
+          "ssl-target-name-override": "peer0.linkage.networkiot.com",
+          "grpc.keepalive_time_ms": 600000
+        }
+      }
+    },
+    "certificateAuthorities": {
+      "ca.device.networkiot.com": {
+        "url": "http://ca.device.networkiot.com:7054",
+        "caName": "caDevice",
+        "tlsCACerts": {
+          "path": "crypto-config/peerOrganizations/device.networkiot.com/tlsca/tlsca.device.networkiot.com-cert.pem"
+        },
+        "httpOptions": {
+          "verify": false
+        },
+        "registrar": [
+          {
+            "enrollId": "admin",
+            "enrollSecret": "admin"
+          }
+        ]
+      },
+      "ca.handler.networkiot.com": {
+        "url": "http://ca.handler.networkiot.com:7054",
+        "caName": "caHandler",
+        "tlsCACerts": {
+          "path": "crypto-config/peerOrganizations/handler.networkiot.com/tlsca/tlsca.handler.networkiot.com-cert.pem"
+        },
+        "httpOptions": {
+          "verify": false
+        },
+        "registrar": [
+          {
+            "enrollId": "admin",
+            "enrollSecret": "admin"
+          }
+        ]
+      },
+      "ca.linkage.networkiot.com": {
+        "url": "http://ca.linkage.networkiot.com:7054",
+        "caName": "caLinkage",
+        "tlsCACerts": {
+          "path": "crypto-config/peerOrganizations/linkage.networkiot.com/tlsca/tlsca.linkage.networkiot.com-cert.pem"
+        },
+        "httpOptions": {
+          "verify": false
+        },
+        "registrar": [
+          {
+            "enrollId": "admin",
+            "enrollSecret": "admin"
+          }
+        ]
+      }
+    },
+    "channels": {
+      "DeviceChannel": {
+        "orderers": ["orderer.networkiot.com"],
+        "peers": {
+          "peer0.device.networkiot.com": {},
+          "peer0.handler.networkiot.com": {}
+        }
+      },
+      "LinkageChannel": {
+        "orderers": ["orderer.networkiot.com"],
+        "peers": {
+          "peer0.linkage.networkiot.com": {},
+          "peer0.handler.networkiot.com": {}
+        }
+      }
+    }
+  }
+  
