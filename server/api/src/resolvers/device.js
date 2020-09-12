@@ -1,6 +1,6 @@
 import { ApolloError } from 'apollo-server';
 import { checkDeviceExists, queryDevice } from '../models/device';
-import { isJsonValue } from 'apollo-utilities';
+import { updateLinkages  } from '../models/linkage';
 
 export default {
     Query: {
@@ -10,6 +10,16 @@ export default {
 
         device: async (parent, { serial }) => {
             return await queryDevice(`{\"selector\": {\"serial\": \"${serial}\"}}`);
+        },
+
+        historyDevice: async (parent, { serial }) => {
+            let device = await queryDevice(`{\"selector\": {\"serial\": \"${serial}\"}}`);
+            
+            if (device) {
+                return await device.history();
+            } else {
+                return [];
+            }
         },
     },
 
@@ -24,8 +34,10 @@ export default {
             try {
                 addDevice.validate();
 
-                await addDevice.save();
-                
+                if (!await addDevice.save()) {
+                    throw new ApolloError(`An error happend, could not add the new device`);
+                }
+
                 return addDevice;
             } catch (err) {
                 throw new ApolloError(err);
@@ -38,8 +50,9 @@ export default {
 
             if (updateDevice) {
                 updateDevice.value = String(value);
-                await updateDevice.update();
-                defined = true;
+                defined = await updateDevice.update();
+
+                updateLinkages(updateDevice.serial, updateDevice.value);
             }
 
             return defined;
@@ -50,8 +63,7 @@ export default {
             let deleteDevice = await queryDevice(`{\"selector\": {\"serial\": \"${serial}\"}}`);
             
             if (deleteDevice) {
-                deleteDevice.remove();
-                deleted = true;
+                deleted = deleteDevice.remove();
             }
 
             return deleted;

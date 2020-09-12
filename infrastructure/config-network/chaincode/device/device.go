@@ -20,7 +20,7 @@ type device struct {
 	Value		int 	`json:"value"`
 }
 
-func (s *SmartContract) Init(APIstub shim.ChaincodeStubInterface) sc.Response {
+func (s *SmartContract) Init(stub shim.ChaincodeStubInterface) sc.Response {
 	return shim.Success(nil)
 }
 
@@ -37,7 +37,9 @@ func (s *SmartContract) Invoke(stub shim.ChaincodeStubInterface) sc.Response {
 		return s.updateDevice(stub, args)
 	} else if function == "deleteDevice" {
 		return s.deleteDevice(stub, args)
-	} 
+	} else if function == "historyDevice" {
+		return s.historyDevice(stub, args)
+	}
 
 	return shim.Error("Invalid Smart Contract function name.")
 }
@@ -114,7 +116,7 @@ func (s *SmartContract) addDevice(stub shim.ChaincodeStubInterface, args []strin
 	value := []byte{0x00}
 	stub.PutState(serialNameIndexKey, value)
 
-	return shim.Success(nil)
+	return shim.Success([]byte(`{"data": true}`))
 }
 
 func (s *SmartContract) updateDevice(stub shim.ChaincodeStubInterface, args []string) sc.Response {
@@ -148,7 +150,7 @@ func (s *SmartContract) updateDevice(stub shim.ChaincodeStubInterface, args []st
 		return shim.Error(err.Error())
 	}
 
-	return shim.Success(nil)
+	return shim.Success([]byte(`{"data": true}`))
 }
 
 func (s *SmartContract) deleteDevice(stub shim.ChaincodeStubInterface, args []string) sc.Response {
@@ -189,7 +191,7 @@ func (s *SmartContract) deleteDevice(stub shim.ChaincodeStubInterface, args []st
 		return shim.Error("Failed to delete state:" + err.Error())
 	}
 
-	return shim.Success(nil)
+	return shim.Success([]byte(`{"data": true}`))
 }
 
 func constructQueryResponseFromIterator(resultsIterator shim.StateQueryIteratorInterface) (*bytes.Buffer, error) {
@@ -243,6 +245,59 @@ func getQueryResultForQueryString(stub shim.ChaincodeStubInterface, queryString 
 
 	return buffer.Bytes(), nil
 } 
+
+func (s *SmartContract) historyDevice(stub shim.ChaincodeStubInterface, args []string) sc.Response {
+	type DeviceHistory struct {
+		TxId     string   `json:"txId"`
+		Record   device   `json:"value"`
+	}
+	type Response struct {
+		Data     []DeviceHistory   `json:"data"`
+	} 
+
+	var history []DeviceHistory
+	var dev device
+	var response Response
+
+	if len(args) != 1 {
+		return shim.Error("Incorrect number of arguments. Expecting 1")
+	}
+
+	deviceId := args[0]
+	fmt.Printf("- start historyDevice: %s\n", deviceId)
+
+	// Get History
+	resultsIterator, err := stub.GetHistoryForKey(deviceId)
+	if err != nil {
+		return shim.Error(err.Error())
+	}
+	defer resultsIterator.Close()
+
+	for resultsIterator.HasNext() {
+		historyData, err := resultsIterator.Next()
+		if err != nil {
+			return shim.Error(err.Error())
+		}
+
+		var tx DeviceHistory
+		tx.TxId = historyData.TxId                     
+		json.Unmarshal(historyData.Value, &dev)     
+		if historyData.Value == nil {                  
+			var emptyDevice device
+			tx.Record = emptyDevice                 
+		} else {
+			json.Unmarshal(historyData.Value, &dev) 
+			tx.Record = dev                      
+		}
+		history = append(history, tx)              
+	}
+	fmt.Printf("- historyDevice returning:\n%s", history)
+
+	response.Data = history
+
+	historyAsBytes, _ := json.Marshal(response)     
+	return shim.Success(historyAsBytes)
+}
 
 func main() {
 	err := shim.Start(new(SmartContract))

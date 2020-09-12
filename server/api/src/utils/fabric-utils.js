@@ -36,16 +36,12 @@ const queryTransaction = async (data) => {
         const network = await gateway.getNetwork(data.channel);
         const contract = network.getContract(data.contractName);
         let result = await contract.submitTransaction(data.transaction, ...data.args);
-        
+
         result = result.toString();
 
-        if (result != undefined && result != null && result != "") {
-            let json = JSON.parse(result.toString().replace(/\0/g, ''));
+        let json = JSON.parse(result.toString().replace(/\0/g, ''));
 
-            return json.data;
-        }
-
-        return [];
+        return json.data;
     } catch (err) {
         throw new Error(`Failed to submit the Transaction: ${err}`);
     }

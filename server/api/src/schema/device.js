@@ -4,6 +4,7 @@ export default gql`
     extend type Query {
         devices: [Device!]
         device(serial: String!): Device
+        historyDevice(serial: String!): [Device]
     }
 
     extend type Mutation {
@@ -13,6 +14,7 @@ export default gql`
     }
 
     type Device {
+        txId: String
         name: String!
         serial: String!
         ipAddress: String!

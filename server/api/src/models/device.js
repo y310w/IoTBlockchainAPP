@@ -1,7 +1,9 @@
 import utils from '../utils/fabric-utils';
+import { queryLinkage } from '../models/linkage';
 
 class Device {
     constructor(name, serial, ipAddress, value = "-1") {
+        this.txId = null;
         this.name = name;
         this.serial = serial;
         this.ipAddress = ipAddress;
@@ -41,9 +43,8 @@ class Device {
                 ]
             };
 
-            await utils.queryTransaction(data);
-        }
-        catch (err) {
+            return await utils.queryTransaction(data);
+        } catch (err) {
             console.log(err);
         }
     }
@@ -61,9 +62,8 @@ class Device {
                 ]
             };
 
-            await utils.queryTransaction(data);
-        }
-        catch (err) {
+            return await utils.queryTransaction(data);
+        } catch (err) {
             console.log(err);
         }
     }
@@ -80,9 +80,43 @@ class Device {
                 ]
             };
 
-            await utils.queryTransaction(data);
+            return await utils.queryTransaction(data);
+        } catch (err) {
+            console.log(err);
         }
-        catch (err) {
+    }
+
+    async history() {
+        try {
+            let data = {
+                org: 'Device',
+                channel: 'channelall',
+                contractName: 'device',
+                transaction: 'historyDevice',
+                args: [
+                    this.serial,
+                ]
+            };
+
+            const result = await utils.queryTransaction(data);
+
+            let res = [];
+
+            if (result.length > 0) {
+                for (let i = 0; i < result.length; i++) {
+                    if ("value" in result[i]) {
+                        let record = result[i].value;
+
+                        let device = new Device(record.name, record.serial, record.ipAddress, record.value);
+                        device.txId = result[i].txId;
+
+                        res.push(device);
+                    }
+                }
+            }
+            
+            return res;
+        } catch (err) {
             console.log(err);
         }
     }
@@ -103,25 +137,26 @@ export const queryDevice = async (query) => {
         
         const result = await utils.queryTransaction(data);
 
-        let res;
+        let res = undefined;
 
-        if (result.length > 1) {
-            res = [];
-
-            for (let i = 0; i < result.length; i++) {
-                if ("Record" in result[i]) {
-                    let record = result[i].Record;
-                    res.push(new Device(record.name, record.serial, record.ipAddress, record.value));
+        if (result != null || result != undefined) {
+            if (result.length > 1) {
+                res = [];
+    
+                for (let i = 0; i < result.length; i++) {
+                    if ("Record" in result[i]) {
+                        let record = result[i].Record;
+                        res.push(new Device(record.name, record.serial, record.ipAddress, record.value));
+                    }
                 }
+            } else if (result.length == 1) {
+                let record = result[0].Record;
+                res = new Device(record.name, record.serial, record.ipAddress, record.value);
             }
-        } else {
-            let record = result[0].Record;
-            res = new Device(record.name, record.serial, record.ipAddress, record.value);
         }
-
+        
         return res;
-    }
-    catch (err) {
+    } catch (err) {
         console.log(err);
     }
 };
