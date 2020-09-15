@@ -4,18 +4,20 @@
 
 'use strict';
 
+require('dotenv').config()
+
 const { FileSystemWallet, Gateway, X509WalletMixin } = require('fabric-network');
 const path = require('path');
 
 const config = {
     Device: {
-        CONNECTION_FILE: process.env.CONNECTION_DEVICE_FILE || '/connections/device/connection_dev.json',
+        CONNECTION_FILE: process.env.CONNECTION_DEVICE_FILE || '/connections/device/connection.json',
         ADMIN: 'adminDevice',
         USER: 'userDevice',
         MSP: 'DeviceMSP'
     },
     Linkage: {
-        CONNECTION_FILE: process.env.CONNECTION_LINKAGE_FILE || '/connections/linkage/connection_dev.json',
+        CONNECTION_FILE: process.env.CONNECTION_LINKAGE_FILE || '/connections/linkage/connection.json',
         ADMIN: 'adminLinkage',
         USER: 'userLinkage',
         MSP: 'LinkageMSP'

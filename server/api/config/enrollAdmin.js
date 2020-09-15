@@ -14,13 +14,13 @@ const path = require('path');
 const config = {
     Device: {
         ADMIN: 'adminDevice',
-        CONNECTION_FILE: process.env.CONNECTION_DEVICE_FILE || 'connections/device/connection_dev.json',
+        CONNECTION_FILE: process.env.CONNECTION_DEVICE_FILE || 'connections/device/connection.json',
         CA_AUTH: 'ca.device.networkiot.com',
         MSP: 'DeviceMSP'
     },
     Linkage: {
         ADMIN: 'adminLinkage',
-        CONNECTION_FILE: process.env.CONNECTION_LINKAGE_FILE || 'connections/linkage/connection_dev.json',
+        CONNECTION_FILE: process.env.CONNECTION_LINKAGE_FILE || 'connections/linkage/connection.json',
         CA_AUTH: 'ca.linkage.networkiot.com',
         MSP: 'LinkageMSP'
     }

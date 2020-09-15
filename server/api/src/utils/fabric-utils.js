@@ -1,15 +1,15 @@
+import 'dotenv/config';
 import { FileSystemWallet, Gateway } from 'fabric-network';
-import fs from 'fs';
 import path from 'path';
 
 const config = {
     Device: {
         USER: 'userDevice',
-        CONNECTION_FILE: process.env.CONNECTION_DEVICE_FILE || 'connections/device/connection_dev.json',
+        CONNECTION_FILE: process.env.CONNECTION_DEVICE_FILE || 'connections/device/connection.json',
     },
     Linkage: {
         USER: 'userLinkage',
-        CONNECTION_FILE: process.env.CONNECTION_LINKAGE_FILE || 'connections/linkage/connection_dev.json',
+        CONNECTION_FILE: process.env.CONNECTION_LINKAGE_FILE || 'connections/linkage/connection.json',
     }
 }
 
