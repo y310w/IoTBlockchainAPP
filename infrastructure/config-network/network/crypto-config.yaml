@@ -1,0 +1,37 @@
+# ---------------------------------------------------------------------------
+# "OrdererOrgs" - Definición de las organizaciones que gestionan los nodos orderer
+# ---------------------------------------------------------------------------
+OrdererOrgs:
+  # ---------------------------------------------------------------------------
+  # OrdererIOT
+  # ---------------------------------------------------------------------------
+  - Name: Orderer
+    Domain: networkiot.com
+    EnableNodeOUs: true
+    Specs:
+      - Hostname: orderer
+
+# ---------------------------------------------------------------------------
+# "PeerOrgs" - Definición de organizaciones que gestionan nodos de peer
+# ---------------------------------------------------------------------------
+PeerOrgs:
+  # ---------------------------------------------------------------------------
+  # Device organization
+  # ---------------------------------------------------------------------------
+  - Name: Device
+    Domain: device.networkiot.com
+    EnableNodeOUs: true
+    Template:
+      Count: 2
+    Users:
+      Count: 1
+  # ---------------------------------------------------------------------------
+  # Linkage organization
+  # ---------------------------------------------------------------------------
+  - Name: Linkage
+    Domain: linkage.networkiot.com
+    EnableNodeOUs: true
+    Template:
+      Count: 2
+    Users:
+      Count: 1
