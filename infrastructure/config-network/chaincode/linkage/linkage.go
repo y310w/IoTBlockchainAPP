@@ -24,7 +24,7 @@ type linkage struct {
 	Region	 	string 	`json:"region"`
 }
 
-func (s *SmartContract) Init(APIstub shim.ChaincodeStubInterface) sc.Response {
+func (s *SmartContract) Init(stub shim.ChaincodeStubInterface) sc.Response {
 	return shim.Success(nil)
 }
 
@@ -41,7 +41,9 @@ func (s *SmartContract) Invoke(stub shim.ChaincodeStubInterface) sc.Response {
 		return s.updateLinkage(stub, args)
 	} else if function == "deleteLinkage" {
 		return s.deleteLinkage(stub, args)
-	} 
+	} else if function == "historyLinkage" {
+		return s.historyLinkage(stub, args)
+	}
 
 	return shim.Error("Invalid Smart Contract function name.")
 }
@@ -128,7 +130,7 @@ func (s *SmartContract) addLinkage(stub shim.ChaincodeStubInterface, args []stri
 	value := []byte{0x00}
 	stub.PutState(saNameIndexKey, value)
 
-	return shim.Success(nil)
+	return shim.Success([]byte(`{"data": true}`))
 }
 
 func (s *SmartContract) updateLinkage(stub shim.ChaincodeStubInterface, args []string) sc.Response {
@@ -169,7 +171,7 @@ func (s *SmartContract) updateLinkage(stub shim.ChaincodeStubInterface, args []s
 		return shim.Error(err.Error())
 	}
 
-	return shim.Success(nil)
+	return shim.Success([]byte(`{"data": true}`))
 }
 
 func (s *SmartContract) deleteLinkage(stub shim.ChaincodeStubInterface, args []string) sc.Response {
@@ -210,13 +212,13 @@ func (s *SmartContract) deleteLinkage(stub shim.ChaincodeStubInterface, args []s
 		return shim.Error("Failed to delete state:" + err.Error())
 	}
 
-	return shim.Success(nil)
+	return shim.Success([]byte(`{"data": true}`))
 }
 
 func constructQueryResponseFromIterator(resultsIterator shim.StateQueryIteratorInterface) (*bytes.Buffer, error) {
 	// buffer is a JSON array containing QueryResults
 	var buffer bytes.Buffer
-	buffer.WriteString("[")
+	buffer.WriteString("{\"data\": [")
 
 	bArrayMemberAlreadyWritten := false
 	for resultsIterator.HasNext() {
@@ -229,17 +231,18 @@ func constructQueryResponseFromIterator(resultsIterator shim.StateQueryIteratorI
 			buffer.WriteString(",")
 		}
 		buffer.WriteString("{\"Key\":")
-		buffer.WriteString("\"")
-		buffer.WriteString(queryResponse.Key)
-		buffer.WriteString("\"")
+		buffer.WriteString("\"" + string(queryResponse.Key) + "\"")
 
-		buffer.WriteString(", \"Record\":")
 		// Record is a JSON object, so we write as-is
-		buffer.WriteString(string(queryResponse.Value))
+		if !bytes.Equal(queryResponse.Value, []byte{0x00}) {
+			buffer.WriteString(",\"Record\":")
+			buffer.WriteString(string(queryResponse.Value))
+		}
+		
 		buffer.WriteString("}")
 		bArrayMemberAlreadyWritten = true
 	}
-	buffer.WriteString("]")
+	buffer.WriteString("]}")
 
 	return &buffer, nil
 }
@@ -263,6 +266,59 @@ func getQueryResultForQueryString(stub shim.ChaincodeStubInterface, queryString 
 
 	return buffer.Bytes(), nil
 } 
+
+func (s *SmartContract) historyLinkage(stub shim.ChaincodeStubInterface, args []string) sc.Response {
+	type LinkageHistory struct {
+		TxId     string    `json:"txId"`
+		Record   linkage   `json:"value"`
+	}
+	type Response struct {
+		Data     []LinkageHistory   `json:"data"`
+	} 
+
+	var history []LinkageHistory;
+	var link linkage
+	var response Response;
+
+	if len(args) != 1 {
+		return shim.Error("Incorrect number of arguments. Expecting 1")
+	}
+
+	linkageId := args[0]
+	fmt.Printf("- start historyLinkage: %s\n", linkageId)
+
+	// Get History
+	resultsIterator, err := stub.GetHistoryForKey(linkageId)
+	if err != nil {
+		return shim.Error(err.Error())
+	}
+	defer resultsIterator.Close()
+
+	for resultsIterator.HasNext() {
+		historyData, err := resultsIterator.Next()
+		if err != nil {
+			return shim.Error(err.Error())
+		}
+
+		var tx LinkageHistory
+		tx.TxId = historyData.TxId                    
+		json.Unmarshal(historyData.Value, &link)    
+		if historyData.Value == nil {                 
+			var emptyLinkage linkage
+			tx.Record = emptyLinkage                
+		} else {
+			json.Unmarshal(historyData.Value, &link)
+			tx.Record = link                     
+		}
+		history = append(history, tx)             
+	}
+	fmt.Printf("- historyLinkage returning:\n%s", history)
+
+	response.Data = history
+
+	historyAsBytes, _ := json.Marshal(response)    
+	return shim.Success(historyAsBytes)
+}
 
 func main() {
 	err := shim.Start(new(SmartContract))
