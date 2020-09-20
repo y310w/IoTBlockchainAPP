@@ -1,5 +1,6 @@
 import { ApolloError } from 'apollo-server';
 import { checkDeviceExists, queryDevice } from '../models/device';
+import { updateLinkages  } from '../models/linkage';
 
 export default {
     Query: {
@@ -8,23 +9,35 @@ export default {
         },
 
         device: async (parent, { serial }) => {
-            return await queryDevice("{\"selector\": {\"serial\": ${serial}}}");
+            return await queryDevice(`{\"selector\": {\"serial\": \"${serial}\"}}`);
+        },
+
+        historyDevice: async (parent, { serial }) => {
+            let device = await queryDevice(`{\"selector\": {\"serial\": \"${serial}\"}}`);
+            
+            if (device) {
+                return await device.history();
+            } else {
+                return [];
+            }
         },
     },
 
     Mutation: {
         addDevice: async (parent, { name, serial, ipAddress }, { models }) => {
-            if (checkDeviceExists(serial, ipAddress)) {
+            if (await checkDeviceExists(serial, ipAddress)) {
                 throw new ApolloError(`Device with the serial: ${serial} or ipAddress: ${ipAddress} already exists`);
-            } 
+            }
 
             const addDevice = new models.Device(name, serial, ipAddress);
 
             try {
                 addDevice.validate();
 
-                await addDevice.save();
-                
+                if (!await addDevice.save()) {
+                    throw new ApolloError(`An error happend, could not add the new device`);
+                }
+
                 return addDevice;
             } catch (err) {
                 throw new ApolloError(err);
@@ -33,12 +46,13 @@ export default {
 
         setValue: async (parent, { serial, value }) => {
             let defined = false;
-            let updateDevice = queryDevice("{\"selector\": {\"serial\": serial}}");
+            let updateDevice = await queryDevice(`{\"selector\": {\"serial\": \"${serial}\"}}`);
 
             if (updateDevice) {
-                updateDevice.value = value;
-                await updateDevice.save();
-                defined = true;
+                updateDevice.value = String(value);
+                defined = await updateDevice.update();
+
+                updateLinkages(updateDevice.serial, updateDevice.value);
             }
 
             return defined;
@@ -46,11 +60,10 @@ export default {
 
         deleteDevice: async (parent, { serial }) => {
             let deleted = false;
-            let deleteDevice = queryDevice("{\"selector\": {\"serial\": serial}}");
+            let deleteDevice = await queryDevice(`{\"selector\": {\"serial\": \"${serial}\"}}`);
             
             if (deleteDevice) {
-                deleteDevice.remove();
-                deleted = true;
+                deleted = deleteDevice.remove();
             }
 
             return deleted;

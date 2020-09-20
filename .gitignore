@@ -2,9 +2,6 @@
 # Created by https://www.gitignore.io/api/go,node,react,dotenv
 # Edit at https://www.gitignore.io/?templates=go,node,react,dotenv
 
-### dotenv ###
-.env
-
 ### Go ###
 # Binaries for programs and plugins
 *.exe
