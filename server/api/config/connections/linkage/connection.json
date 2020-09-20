@@ -1,0 +1,56 @@
+{
+    "name": "BlockchainIoT",
+    "version": "1.0.0",
+    "client": {
+      "organization": "Linkage",
+      "connection": {
+        "timeout": {
+          "peer": {
+            "endorser": "300"
+          }
+        }
+      }
+    },
+    "organizations": {
+      "Linkage": {
+        "mspid": "LinkageMSP",
+        "peers": ["peer0.linkage.networkiot.com", "peer1.linkage.networkiot.com"],
+        "certificateAuthorities": ["ca.linkage.networkiot.com"]
+      }
+    },
+    "peers": {
+      "peer0.linkage.networkiot.com": {
+        "url": "grpcs://localhost:9051",
+        "tlsCACerts": {
+          "path": "./config/crypto-config/peerOrganizations/linkage.networkiot.com/tlsca/tlsca.linkage.networkiot.com-cert.pem"
+        },
+        "grpcOptions": {
+          "ssl-target-name-override": "peer0.linkage.networkiot.com",
+          "hostnameOverride": "peer0.linkage.networkiot.com"
+        }
+      },
+      "peer1.linkage.networkiot.com": {
+        "url": "grpcs://localhost:10051",
+        "tlsCACerts": {
+          "path": "./config/crypto-config/peerOrganizations/linkage.networkiot.com/tlsca/tlsca.linkage.networkiot.com-cert.pem"
+        },
+        "grpcOptions": {
+          "ssl-target-name-override": "peer1.linkage.networkiot.com",
+          "hostnameOverride": "peer1.linkage.networkiot.com"
+        }
+      }
+    },
+    "certificateAuthorities": {
+      "ca.linkage.networkiot.com": {
+        "url": "https://localhost:8054",
+        "caName": "caLinkage",
+        "tlsCACerts": {
+          "path": "./config/crypto-config/peerOrganizations/linkage.networkiot.com/tlsca/tlsca.linkage.networkiot.com-cert.pem"
+        },
+        "httpOptions": {
+          "verify": false
+        }
+      }
+    }
+  }
+  
