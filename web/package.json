@@ -1,0 +1,32 @@
+{
+  "name": "iotblockchainapp",
+  "private": true,
+  "description": "Aplicación distribuida basada en Blockchain para dar soporte a IoT",
+  "version": "0.1.0",
+  "scripts": {
+    "build": "gatsby build",
+    "develop": "gatsby develop",
+    "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,md}\"",
+    "start": "npm run develop",
+    "serve": "gatsby serve",
+    "clean": "gatsby clean",
+    "test": "echo \"Write tests! -> https://gatsby.dev/unit-testing\" && exit 1"
+  },
+  "dependencies": {
+    "gatsby": "^2.24.66",
+    "gatsby-plugin-manifest": "^2.4.33",
+    "gatsby-plugin-offline": "^3.2.30",
+    "react": "^16.12.0",
+    "react-dom": "^16.12.0"
+  },
+  "devDependencies": {
+    "prettier": "2.1.2"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Thejokeri/IoTBlockchainAPP"
+  },
+  "bugs": {
+    "url": "https://github.com/Thejokeri/IoTBlockchainAPP/issues"
+  }
+}
