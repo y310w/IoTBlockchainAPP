@@ -13,11 +13,16 @@
     "test": "echo \"Write tests! -> https://gatsby.dev/unit-testing\" && exit 1"
   },
   "dependencies": {
+    "@apollo/client": "^3.2.1",
+    "bootstrap": "^4.5.2",
     "gatsby": "^2.24.66",
     "gatsby-plugin-manifest": "^2.4.33",
     "gatsby-plugin-offline": "^3.2.30",
-    "react": "^16.12.0",
-    "react-dom": "^16.12.0"
+    "isomorphic-fetch": "^3.0.0",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
+    "react-typography": "^0.16.19",
+    "reactstrap": "^8.6.0"
   },
   "devDependencies": {
     "prettier": "2.1.2"
