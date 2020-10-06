@@ -10,7 +10,7 @@ const client = new ApolloClient({
   cache: new InMemoryCache(),
   link: new HttpLink({ 
     fetch,
-    uri: 'http://iotblockchainapi.ddns.net/graphql',
+    uri: 'https://iotblockchainapi.ddns.net/graphql',
   })
 });
 
