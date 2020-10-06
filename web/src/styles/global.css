@@ -1,3 +1,7 @@
+.is-dark-text {
+  color: rgb(67, 68, 86);
+}
+
 .is-dark-text-light {
   color: rgb(128, 145, 171);
 }
@@ -38,7 +42,8 @@ body {
 }
 
 .button-form {
-  margin: 5px;
+  margin-top: 25px;
+  margin-left: 5px;
 }
 /* navbar styles */
 .is-white {
@@ -49,6 +54,16 @@ body {
 .is-dark {
   background: rgb(19, 25, 36);
   height: 60px;
+}
+
+.outer {
+  display: flex;
+  justify-content: space-between;
+}
+
+.is-white {
+  background: rgb(255, 255, 255);
+  height: 65px;
 }
 
 .table-round {
@@ -67,7 +82,7 @@ body {
   background-position: center center;
   display: block;
   box-shadow: 0px 0px 45px 0px rgba(0,0,0,0.6);
-  margin-top: 80px;
+  margin-top: 145px;
   margin-left: 20px;
   border-radius: 5px;
   box-shadow: 0px 2px 10px #0000006e;
@@ -87,13 +102,34 @@ body {
   -webkit-box-direction: normal;
   -ms-flex-direction: column;
   flex-direction: column;
+  margin-top: 20px;
   padding: 1.5rem;
   height: calc(100%);
+  box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.6);
+}
+
+.is-card-dark {
+  background: rgb(32, 42, 59) !important;
+}
+
+.card-heading {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: stretch;
+  -ms-flex-align: stretch;
+  align-items: stretch;
+  -webkit-box-pack: justify;
+  -ms-flex-pack: justify;
+  justify-content: space-between;
+  position: relative;
+  min-height: 30px;
 }
 
 /* media queries */
 @media screen and (max-width: 1600px) {
   .nav-secondary {
+    margin-top: 20px;
     position: static;
   }
 }

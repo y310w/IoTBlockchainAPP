@@ -1,19 +1,10 @@
-import React from "react"
+import React, { useState } from "react"
+import { Table } from "reactstrap";
 
-import { Table } from 'reactstrap';
-
-export default class TableData extends React.Component {
- 
-  constructor(props){
-    super(props);
-
-    this.getHeader = this.getHeader.bind(this);
-    this.getRowsData = this.getRowsData.bind(this);
-    this.getKeys = this.getKeys.bind(this);
-  }
-
-  getKeys = function(){
-    let keys = Object.keys(this.props.data[0]);
+export default function TableData(props) {
+  
+  function getKeys(props) {
+    let keys = Object.keys(props);
     let index = keys.indexOf('__typename');
 
     if (index > -1) {
@@ -22,38 +13,33 @@ export default class TableData extends React.Component {
 
     return keys;
   }
-  
-  getHeader = function(){
-    let keys = this.getKeys().map(key => key.charAt(0).toUpperCase() + key.slice(1));
 
-    return keys.map((key)=>{
-      return <th key={key}>{key}</th>
-    })
-  }
-  
-  getRowsData = function(){
-    let items = this.props.data;
-    let keys = this.getKeys();
+  const [dataState] = useState({
+    keysHeader: getKeys(props.data[0]).map(key => key.charAt(0).toUpperCase() + key.slice(1)),
+    keys: getKeys(props.data[0]),
+    items: props.data
+  })
 
-    return items.map((row, index)=>{
-      return <tr key={index}><RenderRow key={index} data={row} keys={keys}/></tr>
-    })
-  }
+  const headers = dataState.keysHeader.map((key) => {
+    return <th key={key}>{key}</th>
+  })
+
+  const rows = dataState.items.map((row, index) => {
+    return <tr key={index}><RenderRow key={index} data={row} keys={dataState.keys}/></tr>
+  })
   
-  render() {
-    return (
-      <Table dark className="table-round">
-        <thead>
-          <tr>
-            {this.getHeader()}
-          </tr>
-        </thead>
-        <tbody>
-          {this.getRowsData()}
-        </tbody>
-      </Table>
-    );
-  }
+  return (
+    <Table dark className="table-round">
+      <thead>
+        <tr>
+          {headers}
+        </tr>
+      </thead>
+      <tbody>
+        {rows}
+      </tbody>
+    </Table>
+  );
 }
 
 const RenderRow = (props) =>{

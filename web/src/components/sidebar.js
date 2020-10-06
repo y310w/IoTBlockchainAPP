@@ -1,12 +1,11 @@
 import React from "react"
-
 import {
   Container,
   Navbar,
   Nav,
   NavItem,
   NavLink
-} from 'reactstrap';
+} from "reactstrap";
 
 export default function Sidebar() {
   return (
