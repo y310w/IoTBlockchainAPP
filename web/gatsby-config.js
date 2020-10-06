@@ -8,7 +8,7 @@ module.exports = {
     {
       resolve: `gatsby-plugin-manifest`,
       options: {
-        name: `IoT Blockchain APP`,
+        name: `IoTBlockchainAPP`,
         short_name: `IoTBlockchainAPP`,
         start_url: `/`,
         background_color: `#123863`,
