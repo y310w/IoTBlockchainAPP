@@ -16,7 +16,7 @@
 }
 
 .text-large {
-  font-size: 1.25rem;
+  font-size: 1.5rem;
 }
 
 .text-medium {
@@ -39,6 +39,16 @@
 body {
   background: rgb(20, 33, 53) !important;
   color: rgb(255, 255, 255);
+}
+
+p {
+  text-align: justify;
+  text-justify: inter-word;
+  font-size: large;
+}
+
+.text-container {
+  margin-top: 1.5%;
 }
 
 .button-form {
