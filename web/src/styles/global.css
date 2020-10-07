@@ -42,7 +42,7 @@ body {
 }
 
 .button-form {
-  margin-top: 25px;
+  margin-top: 31px;
   margin-left: 5px;
 }
 /* navbar styles */
@@ -124,6 +124,10 @@ body {
   justify-content: space-between;
   position: relative;
   min-height: 30px;
+}
+
+.td-reduce {
+  word-break: break-all;
 }
 
 /* media queries */

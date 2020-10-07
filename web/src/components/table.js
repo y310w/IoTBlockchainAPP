@@ -30,8 +30,10 @@ export default function TableData(props) {
     return props.keys.map((key, index)=>{
       if (key === "Editar") {
         return <td key={index}><Button color="warning" onClick={editDataRow} value={props.index}>Editar</Button></td>
+      } else if (key === "txId"){
+        return <td key={props.data[key]} className="td-reduce">{props.data[key].toString()}</td>
       } else {
-        return <td key={props.data[key]}>{props.data[key]}</td>
+        return <td key={props.data[key]}>{props.data[key].toString()}</td>
       }
     })
   }

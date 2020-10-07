@@ -122,7 +122,7 @@ export default function FormDevice(props) {
           <FormGroup>
             <Label for="value">Valor</Label>
             { mode !== "add"
-              ? <Input type="number" name="value" id="value" placeholder="-1" value={deviceState.value} onChange={handleInputChange} />
+              ? <Input type="number" name="value" id="value" placeholder="Valor" value={deviceState.value} onChange={handleInputChange} />
               : <Input type="number" name="value" id="value" placeholder="-1" disabled/>
             }
           </FormGroup> 
