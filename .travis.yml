@@ -4,4 +4,4 @@ node_js:
 install:
   - npm install --prefix web 
 script:
-  - npm run --prefix web test
+  - npm run --prefix web test -- -u
