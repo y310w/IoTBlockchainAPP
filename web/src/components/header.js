@@ -6,10 +6,12 @@ import {
   NavItem,
   NavLink
 } from "reactstrap";
+import SEO from "./seo"
 
 export default function Header() {
   return (
     <div>
+      <SEO/>
       <Navbar className="is-white">
         <NavbarBrand className="text-large is-dark-text"> IoTBlockchainApp </NavbarBrand>
         <Nav navbar>

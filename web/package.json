@@ -18,9 +18,11 @@
     "gatsby": "^2.24.66",
     "gatsby-plugin-manifest": "^2.4.33",
     "gatsby-plugin-offline": "^3.2.30",
+    "gatsby-plugin-react-helmet": "^3.3.13",
     "isomorphic-fetch": "^3.0.0",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
+    "react-helmet": "^6.1.0",
     "react-typography": "^0.16.19",
     "reactstrap": "^8.6.0"
   },
