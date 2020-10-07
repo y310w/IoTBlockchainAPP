@@ -6,7 +6,7 @@ import Header from "../header"
 describe("Header", () => {
   it("renders correctly", () => {
     const tree = renderer
-      .create(<Header title="Test" description="Test" author="Test"/>)
+      .create(<Header test="true"/>)
       .toJSON()
     expect(tree).toMatchSnapshot()
   })

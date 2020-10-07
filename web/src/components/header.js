@@ -8,10 +8,12 @@ import {
 } from "reactstrap";
 import SEO from "./seo"
 
-export default function Header() {
+export default function Header(props) {
+  const test = props ? (props.test === 'true') : false;
+
   return (
     <div>
-      <SEO/>
+      { !test && <SEO/>}
       <Navbar className="is-white">
         <NavbarBrand className="text-large is-dark-text"> IoTBlockchainApp </NavbarBrand>
         <Nav navbar>
