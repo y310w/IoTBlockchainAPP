@@ -4,13 +4,19 @@ import { Helmet } from "react-helmet"
 import { useStaticQuery, graphql } from "gatsby"
 
 const SEO = ({ title, description, author }) => {
-  const { site } = useStaticQuery(query)
+  let defaultTitle;
+  let defaultDescription;
+  let defaultAuthor;
 
-  const {
-    defaultTitle,
-    defaultDescription,
-    defaultAuthor,
-  } = site.siteMetadata
+  if (title && description && author) {
+    const { site } = useStaticQuery(query)
+
+    const {
+      defaultTitle,
+      defaultDescription,
+      defaultAuthor,
+    } = site.siteMetadata
+  }
 
   const seo = {
     title: title || defaultTitle,
