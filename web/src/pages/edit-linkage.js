@@ -52,8 +52,6 @@ export default function EditLinkage({ location }) {
   const [disable] = useMutation(DISABLE_LINKAGE, {onCompleted: successMessage});
   const [deleteLinkage] = useMutation(REMOVE_LINKAGE, {onCompleted: successMessage});
 
-  console.log(data);
-
   function successMessage() {
     let message;
 
