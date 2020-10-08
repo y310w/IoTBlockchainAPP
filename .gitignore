@@ -144,4 +144,5 @@ sketch
 crypto-config
 wallet
 
+__snapshots__/
 # End of https://www.gitignore.io/api/go,node,react,dotenv
