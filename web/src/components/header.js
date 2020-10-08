@@ -24,6 +24,11 @@ export default function Header(props) {
       </Navbar>
       <Navbar className="is-dark">
         <NavbarBrand href="/" className="text-large is-light-text letter-spacing"> Dashboard </NavbarBrand>
+        <Nav navbar>
+          <NavItem>
+              <NavLink href="https://iotblockchainapi.ddns.net/graphql" className="text-small is-light-text letter-spacing"> GraphQL API </NavLink>
+          </NavItem>
+        </Nav>
       </Navbar>
     </div>
   )
