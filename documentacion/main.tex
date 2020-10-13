@@ -1,12 +1,7 @@
-\documentclass[a4paper,11pt]{book}
-%\documentclass[a4paper,twoside,11pt,titlepage]{book}
+\documentclass[a4paper,11pt]{article}
 \usepackage{listings}
 \usepackage[utf8]{inputenc}
 \usepackage[spanish]{babel}
-
-% \usepackage[style=list, number=none]{glossary} %
-%\usepackage{titlesec}
-%\usepackage{pailatino}
 
 \decimalpoint
 \usepackage{dcolumn}
@@ -15,32 +10,28 @@
 \addto\shorthandsspanish{\let\esperiod\es@period@code}
 \makeatother
 
-
-%\usepackage[chapter]{algorithm}
 \RequirePackage{verbatim}
-%\RequirePackage[Glenn]{fncychap}
 \usepackage{fancyhdr}
 \usepackage{graphicx}
 \usepackage{afterpage}
 
 \usepackage{longtable}
 
-\usepackage[pdfborder={000}]{hyperref} %referencia
+\usepackage[pdfborder={000}]{hyperref}
 
 % ********************************************************************
 % Re-usable information
 % ********************************************************************
-\newcommand{\myTitle}{Título del proyecto\xspace}
-\newcommand{\myDegree}{Grado en ...\xspace}
-\newcommand{\myName}{Nombre Apllido1 Apellido2 (alumno)\xspace}
-\newcommand{\myProf}{Nombre Apllido1 Apellido2 (tutor1)\xspace}
-\newcommand{\myOtherProf}{Nombre Apllido1 Apellido2 (tutor2)\xspace}
-%\newcommand{\mySupervisor}{Put name here\xspace}
+\newcommand{\myTitle}{Aplicación Distribuida Basada en Blockchain para dar soporte a IoT\xspace}
+\newcommand{\mySubTitle}{Desarrollo de un registro distribuido para IoT usando la tecnología Blockchain\xspace}
+\newcommand{\myDegree}{Grado en Ingeniería Informática\xspace}
+\newcommand{\myName}{Fernando Rafael Talavera Mendoza)\xspace}
+\newcommand{\myProf}{Pedro Ángel Castillo Valdivieso\xspace}
 \newcommand{\myFaculty}{Escuela Técnica Superior de Ingenierías Informática y de
 Telecomunicación\xspace}
 \newcommand{\myFacultyShort}{E.T.S. de Ingenierías Informática y de
 Telecomunicación\xspace}
-\newcommand{\myDepartment}{Departamento de ...\xspace}
+\newcommand{\myDepartment}{Departamento de Arquitectura y Tecnología de Computadores\xspace}
 \newcommand{\myUni}{\protect{Universidad de Granada}\xspace}
 \newcommand{\myLocation}{Granada\xspace}
 \newcommand{\myTime}{\today\xspace}
@@ -48,12 +39,12 @@ Telecomunicación\xspace}
 
 
 \hypersetup{
-pdfauthor = {\myName (email (en) ugr (punto) es)},
-pdftitle = {\myTitle},
-pdfsubject = {},
-pdfkeywords = {palabra_clave1, palabra_clave2, palabra_clave3, ...},
-pdfcreator = {LaTeX con el paquete ....},
-pdfproducer = {pdflatex}
+    pdfauthor = {\myName ftm1997@correo.ugr.es},
+    pdftitle = {\myTitle},
+    pdfsubject = {\mySubTitle},
+    pdfkeywords = {palabra_clave1, palabra_clave2, palabra_clave3, ...},
+    pdfcreator = {LaTeX con el paquete ....},
+    pdfproducer = {pdflatex}
 }
 
 %\hyphenation{}
@@ -79,17 +70,10 @@ pdfproducer = {pdflatex}
 \fancyhead[LO]{\leftmark}
 \fancyhead[RE]{\rightmark}
 \fancyhead[RO,LE]{\textbf{\thepage}}
-\renewcommand{\chaptermark}[1]{\markboth{\textbf{#1}}{}}
-\renewcommand{\sectionmark}[1]{\markright{\textbf{\thesection. #1}}}
 
 \setlength{\headheight}{1.5\headheight}
 
 \newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
-%Definimos los tipos teorema, ejemplo y definición podremos usar estos tipos
-%simplemente poniendo \begin{teorema} \end{teorema} ...
-\newtheorem{teorema}{Teorema}[chapter]
-\newtheorem{ejemplo}{Ejemplo}[chapter]
-\newtheorem{definicion}{Definición}[chapter]
 
 \definecolor{gray97}{gray}{.97}
 \definecolor{gray75}{gray}{.75}
@@ -152,7 +136,7 @@ pdfproducer = {pdflatex}
 \newcommand{\bigrule}{\titlerule[0.5mm]}
 
 
-%Para conseguir que en las páginas en blanco no ponga cabecerass
+%Para conseguir que en las páginas en blanco no ponga cabeceras
 \makeatletter
 \def\clearpage{%
   \ifvmode
@@ -170,37 +154,38 @@ pdfproducer = {pdflatex}
 }
 \makeatother
 
+\usepackage{afterpage}
+\newcommand\myemptypage{
+    \null
+    \thispagestyle{empty}
+    \addtocounter{page}{-1}
+    \newpage
+    }
+
 \usepackage{pdfpages}
 \begin{document}
 \input{portada/portada}
 \input{prefacios/prefacio}
-%\frontmatter
+
+\myemptypage
+\myemptypage
+\thispagestyle{empty}
+
 %\tableofcontents
 %\listoffigures
 %\listoftables
-%
-%\mainmatter
-%\setlength{\parskip}{5pt}
 
 %\input{capitulos/01_Introduccion}
-%
-%\input{capitulos/02_EspecificacionRequisitos}
-%
-%\input{capitulos/03_Planificacion}
-%
-%\input{capitulos/04_Analisis}
-%
-%\input{capitulos/05_Diseno}
-%
-%\input{capitulos/06_Implementacion}
-%
-%\input{capitulos/07_Pruebas}
-%
-%\input{capitulos/08_Conclusiones}
-%
-%%\chapter{Conclusiones y Trabajos Futuros}
-%
-%
+
+%\input{capitulos/02_EstadoArte}
+
+%\input{capitulos/03_Propuesta}
+
+%\input{capitulos/04_Conclusiones}
+
+%\chapter{Conclusiones y Trabajos Futuros}
+
+
 %%\nocite{*}
 %\bibliography{bibliografia/bibliografia}\addcontentsline{toc}{chapter}{Bibliografía}
 %\bibliographystyle{miunsrturl}
@@ -211,7 +196,7 @@ pdfproducer = {pdflatex}
 %\input{glosario/entradas_glosario}
 % \addcontentsline{toc}{chapter}{Glosario}
 % \printglossary
-\chapter*{}
-\thispagestyle{empty}
+%\chapter*{}
+%\thispagestyle{empty}
 
 \end{document}
