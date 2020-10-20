@@ -14,8 +14,9 @@
 \usepackage{fancyhdr}
 \usepackage{graphicx}
 \usepackage{afterpage}
-
+\usepackage{dirtytalk}
 \usepackage{longtable}
+\usepackage[font=scriptsize,labelfont=bf]{caption}
 
 \usepackage[pdfborder={000}]{hyperref}
 
@@ -47,29 +48,14 @@ Telecomunicación\xspace}
     pdfproducer = {pdflatex}
 }
 
-%\hyphenation{}
-
-
-%\usepackage{doxygen/doxygen}
-%\usepackage{pdfpages}
 \usepackage{url}
 \usepackage{colortbl,longtable}
 \usepackage[stable]{footmisc}
-%\usepackage{index}
-
-%\makeindex
-%\usepackage[style=long, cols=2,border=plain,toc=true,number=none]{glossary}
-% \makeglossary
-
-% Definición de comandos que me son tiles:
-%\renewcommand{\indexname}{Índice alfabético}
-%\renewcommand{\glossaryname}{Glosario}
 
 \pagestyle{fancy}
 \fancyhf{}
-\fancyhead[LO]{\leftmark}
-\fancyhead[RE]{\rightmark}
-\fancyhead[RO,LE]{\textbf{\thepage}}
+\fancyhead[LO]{\nouppercase{\leftmark}}
+\fancyfoot[LE,RO]{\thepage}
 
 \setlength{\headheight}{1.5\headheight}
 
@@ -135,7 +121,6 @@ Telecomunicación\xspace}
 
 \newcommand{\bigrule}{\titlerule[0.5mm]}
 
-
 %Para conseguir que en las páginas en blanco no ponga cabeceras
 \makeatletter
 \def\clearpage{%
@@ -154,49 +139,48 @@ Telecomunicación\xspace}
 }
 \makeatother
 
-\usepackage{afterpage}
 \newcommand\myemptypage{
     \null
     \thispagestyle{empty}
     \addtocounter{page}{-1}
     \newpage
-    }
+}
 
 \usepackage{pdfpages}
 \begin{document}
 \input{portada/portada}
 \input{prefacios/prefacio}
 
+\tableofcontents
+\listoffigures
+\listoftables
+
 \myemptypage
-\myemptypage
-\thispagestyle{empty}
 
-%\tableofcontents
-%\listoffigures
-%\listoftables
+\input{capitulos/01_Introduccion}
+\input{capitulos/02_HerramientasBlockchain}
+\input{capitulos/03_Propuesta}
+\input{capitulos/04_Desarrollo}
+\input{capitulos/05_Conclusiones}
 
-%\input{capitulos/01_Introduccion}
-
-%\input{capitulos/02_EstadoArte}
-
-%\input{capitulos/03_Propuesta}
-
-%\input{capitulos/04_Conclusiones}
-
-%\chapter{Conclusiones y Trabajos Futuros}
-
-
-%%\nocite{*}
+%\nocite{*}
 %\bibliography{bibliografia/bibliografia}\addcontentsline{toc}{chapter}{Bibliografía}
 %\bibliographystyle{miunsrturl}
-%
+
+%https://en.bitcoin.it/wiki/B-money
+%https://en.wikipedia.org/wiki/Hashcash
+%https://en.wikipedia.org/wiki/Peer-to-peer
+%https://www.geeksforgeeks.org/proof-of-work-pow-consensus/
+%https://www.ibm.com/blogs/internet-of-things/what-is-the-iot/
+%https://www.raspberrypi.org/help/what-%20is-a-raspberry-pi/
+%https://www.raspberrypi.org/products/raspberry-pi-4-model-b/specifications/
+%https://opensource.com/resources/raspberry-pi
+%Mastering Bitcoin
+
 %\appendix
 %\input{apendices/manual_usuario/manual_usuario}
 %%\input{apendices/paper/paper}
 %\input{glosario/entradas_glosario}
 % \addcontentsline{toc}{chapter}{Glosario}
 % \printglossary
-%\chapter*{}
-%\thispagestyle{empty}
-
 \end{document}
