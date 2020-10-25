@@ -129,14 +129,12 @@ la funcionalidad que estén llevando acabo. Un nodo bitcoin realiza las siguient
     \item Servicios de cartera
 \end{itemize}
 
-\begin{figure}
+\begin{figure}[ht!]
     \centering
     \includegraphics[width=4cm]{imagenes/introduccion/nodo_bitcoin}
     \caption{Un nodo de red bitcoin con las cuatro funciones}
     \label{fig:funciones-nodo}
 \end{figure}
-
-\vspace{5mm}
 
 \noindent Todos los nodos incluyen funciones de enrutamiento, validan y propagan transacciones y bloques. Los nodos 
 completos, también mantienen una copia completa y actualizada de la Blockchain. Se encargan también de verificar de 
@@ -280,7 +278,7 @@ objetivo, más difícil es generar un bloque.
 
 \subsection{Internet de las Cosas (IoT)}
 
-El internet de las Cosas, o también conocido cómo Internet of Things, consiste en dispositivos que generan procesos, e 
+El Internet de las Cosas, o también conocido cómo Internet of Things, consiste en dispositivos que generan procesos, e 
 intercambian grandes cantidades de información a través de Internet. Recolectan y comparten datos sobre cómo son 
 utilizados y sobre el medio que los rodea. Esta información puede ser utilizada para detertar patrones, hacer 
 recomendaciones y detectar posibles problemas antes de que ocurran.
@@ -295,6 +293,30 @@ meteorológicas y proporcionar rastreo y conectividad en los automóviles.
 
 \noindent  Los objetos y sistemas inteligentes permiten automatizar ciertas tareas, especialmente cuando éstas son 
 repetitivas, mundanas, requieren mucho tiempo o incluso son peligrosas.
+
+\subsection{La seguridad del Blockchain en IoT}
+
+El uso de la tecnología Blockchain dentro del ambito de los dispositivos IoT, ha tomado un papel importante en la 
+gestión, control y seguridad. En esta sección, vamos a describir como la tecnología Blockchain puede ser clave para
+proporcionr soluciones de seguridad a los problemas actuales del Internet de las Cosas.
+
+\begin{itemize}
+    \item \textbf{Espacio de direcciones}: Blockchain tiene 160-bit de espacio de direcciones, a diferencia de IPv6
+    que solo tiene 128-bit. Esto es debido a que el hash de la clave pública generada por ECDSA (Elliptic Cruve Digital
+    Algorithm) es de 20 bytes o 160-bits. Por lo tanto, podemos alojar alrededor de \(1,46*10^{48}\) direcciones para 
+    dispositivos IoT. Lo que hace que sea más escalable a diferencia de IPv6. 
+    \item \textbf{Identidad y administración}: Blockchain tiene la capacidad de resolver estos desafíos de manera fácil, 
+    segura y eficiente. Se ha utilizado ampliamente para proporcionar un registro de identidad fiable y autorizado, 
+    el seguimiento de la propiedad y la supervisión de productos, bienes y activos.
+    \item \textbf{Autenticación e integridad de los datos}: Por su diseño, los datos transmitidos siempre estarán
+    criptográficamente probados y firmados, garantizando así la autenticación e integridad de los datos.
+    \item \textbf{Autenticación, autorización y privacidad}: Provee una solución efectiva en autorización, privacidad en
+    los datos y la habilidad de suminstrar reglas de autenticación decentralizada. 
+    \item \textbf{Comunicaciones seguras}: Los protocolos que utilizan las IoT son HTTP, MQTT, CoAP o XMPP, y no son 
+    seguros por diseño y por tanto, son envueltos por una capa DTLS o TLS. Con Blockchain, la gestión y distribución 
+    de claves se elimina totalmente, y cada dispositivo IoT tendrá su par de claves simétricas, para conectarse a la 
+    Blockchain.
+\end{itemize}
 
 \subsection{¿Qué es una Raspberry Pi?}
 
@@ -316,8 +338,8 @@ que he podido trabajar antes con diferentes modelos de la marca.
 \subsection{Conclusión}
 
 En este capítulo hemos dado una introducción al proyecto. Hemos hablado sobre la tecnología Blockchain, apoyandonos 
-con el concepto de Bitcoin. Para pasar ha comentar sobre el Internet de las Cosas y los dispositivos que voy a utilizar 
-como prueba de concepto. A continuación, indagararemos más sobre otras tecnologías que han aplicado el Blockchain y 
-trataremos la seguridad que ofrece el mismo a los dispositivos IoT.
+con el concepto de Bitcoin. Para pasar ha comentar sobre el Internet de las Cosas, y su combinación con el Blockchain, 
+También hemos comentado sobre los dispositivos que voy a utilizar como prueba de concepto. A continuación, indagararemos 
+más sobre otras tecnologías que han aplicado el Blockchain y plataformas.
 
 \newpage
