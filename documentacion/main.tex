@@ -17,6 +17,11 @@
 \usepackage{dirtytalk}
 \usepackage{longtable}
 \usepackage[font=scriptsize,labelfont=bf]{caption}
+\usepackage[
+backend=biber,
+sorting=ynt
+]{biblatex}
+\addbibresource{bibliografia.bib}
 
 \usepackage[pdfborder={000}]{hyperref}
 
@@ -163,24 +168,9 @@ Telecomunicación\xspace}
 \input{capitulos/04_Desarrollo}
 \input{capitulos/05_Conclusiones}
 
-%\nocite{*}
-%\bibliography{bibliografia/bibliografia}\addcontentsline{toc}{chapter}{Bibliografía}
-%\bibliographystyle{miunsrturl}
+\myemptypage
 
-%https://en.bitcoin.it/wiki/B-money
-%https://en.wikipedia.org/wiki/Hashcash
-%https://en.wikipedia.org/wiki/Peer-to-peer
-%https://www.geeksforgeeks.org/proof-of-work-pow-consensus/
-%https://www.ibm.com/blogs/internet-of-things/what-is-the-iot/
-%https://www.raspberrypi.org/help/what-%20is-a-raspberry-pi/
-%https://www.raspberrypi.org/products/raspberry-pi-4-model-b/specifications/
-%https://opensource.com/resources/raspberry-pi
-%Mastering Bitcoin
+\section{Bibliografia y webgrafía}
+\printbibliography
 
-%\appendix
-%\input{apendices/manual_usuario/manual_usuario}
-%%\input{apendices/paper/paper}
-%\input{glosario/entradas_glosario}
-% \addcontentsline{toc}{chapter}{Glosario}
-% \printglossary
 \end{document}

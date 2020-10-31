@@ -1,20 +1,21 @@
 \section{Introducción}
 
 Con el crecimiento de dispositivos inteligentes y las redes de alta velocidad, el Internet de las Cosas se ha convertido
-en una tecnología con gran influencia, aceptación e impacto dentro de mercados del sector. 
+en una tecnología con gran influencia, aceptación e impacto dentro de mercados del sector \cite{khan2018iot}. 
 
 \vspace{5mm}
 
 \noindent Ello representa una red interconectada donde dispositivos incorporados con sensores, están interconectados a 
 través de una red privada o pública. Intercambiando datos comprometedores, críticos para la seguridad y protección, así 
-como información sensible a la privacidad y, por lo tanto, son objetivos atractivos para diversos ciberataques.
+como información sensible a la privacidad y, por lo tanto, son objetivos atractivos para diversos ciberataques 
+\cite{dorri2017blockchain}. 
 
 \vspace{5mm}
 
 \noindent Un claro ejemplo fue el famoso ciberataque hacía el proveedor de DNS estadounidense Dyn. El ataque se originó 
 de decenas de millones de direcciones IP, y que al menos parte del tráfico provenía de dispositivos IoT. Estos últimos 
 habían sido infectados con un malware llamado Mirai, que se encargaba de controlar los dispositivos en linea y lanzar 
-ataques de denegación de servicio distribuido (DDoS).
+ataques de denegación de servicio distribuido (DDoS) \cite{kshetri2017can}. 
 
 \vspace{5mm}
 
@@ -22,16 +23,15 @@ ataques de denegación de servicio distribuido (DDoS).
 consecuencia son más vulnerables a ataques. Por ello, en este proyecto vamos a indagar, sobre cómo la tecnología 
 emergente Blockchain, puede aportar beneficios con el objetivo de fortalecer la seguridad del Internet de las Cosas 
 (IoT). Diversas compañias están tomando iniciativas para integrar la tecnología Blockchain en su produccción y 
-suministro (p. ej., IBM, Cisco, Bosch, etc).   
-
+suministro (p. ej., IBM, Cisco, Bosch, etc) \cite{kshetri2017can}.   
 
 \subsection{Motivación} \label{motivacion}
 
 La finalidad de este proyecto es realizar una labor de investigación sobre la tecnología Blockchain, su funcionalidad, 
 tipos de herramientas y capacidades de desarrollo. Para elaborar un prototipo funcional de infraestructura distribuida 
-de gestión de dispositivos IoT (Rapsberry Pi) dentro de una red domótica local. La arquitectura distribuida asegurará 
-la comunicación y sincronización de los datos entre los dispositivos, con el fin de llevarlo a dominios que están 
-adaptando la tecnología IoT en sus labores de negocio.
+de gestión de dispositivos IoT (Rapsberry Pi) dentro de una red domótica local \cite{huh2017managing}. La arquitectura 
+distribuida asegurará la comunicación y sincronización de los datos entre los dispositivos, con el fin de llevarlo a 
+dominios que están adaptando la tecnología IoT en sus labores de negocio.
 
 \vspace{5mm}
 
@@ -51,7 +51,7 @@ inmutable y trazable de los dispositivo dentro de la red.
 \noindent La configuración, establecida por el usuario, se encargará de indicar políticas entre los sensores 
 y actuadores. El primero recogerá los valores del entorno y el otro efectuará la acción pertinente. Así por ejemplo, 
 el sensor puede detectar una temperatura determinada dentro de la habitación, y en el caso de que sobre pase un 
-umbral, se mandaría una señal al actuador, para encender el aire acondicionado.
+umbral, se mandaría una señal al actuador, para encender el aire acondicionado. \cite{huh2017managing}
 
 \vspace{5mm}
 
@@ -65,7 +65,7 @@ Los objetivos del trabajo son los siguientes:
 
 \begin{itemize}
     \item Realizar un estudio de la tecnología Blockchain y el papel que puede tomar en el escenario del Internet de 
-    las cosas, a nivel de soluciones, beneficios y desafíos. 
+    las cosas, a nivel de soluciones, beneficios y desafíos \cite{khan2018iot, reyna2018blockchain}. 
     \item Seleccionar las herramientas existentes en el mercado para desarrollar la infraestructura, y la propia 
     aplicación.
     \item Elaborar un prototipo para implementar una red distribuida de gestión de dispositivos IoT y una aplicación
@@ -82,19 +82,21 @@ distribuido". \label{fnlabel}} y HashCash\footnote{Hashcash es un sistema de pru
 limitar el spam de correo electrónico y los ataques de denegación de servicio, y más recientemente se ha dado a 
 conocer por su uso en bitcoin (y otras criptodivisas) como parte del algoritmo de minería. Hashcash fue propuesto 
 en 1997 por Adam Back. \label{fnlabel}} para crear un sistema completamente descentralizado de dinero  electrónico 
-que no depende de una autoridad central para la emisión de moneda o liquidación y validación de las transacciones.
+que no depende de una autoridad central para la emisión de moneda o liquidación y validación de las transacciones 
+\cite{antonopoulos2014mastering, bmoney, hashcash}.
 
 \vspace{5mm}
 
 \noindent Los usuarios pueden transferir y almacenar bitcoins entre los participantes en la red Bitcoin usando el 
 protocolo bitcoin. El protocolo bitcoin está disponible como software de código abierto, y se puede ejecutar en 
-cualquier dispositivo, lo que hace que la tecnología sea fácilmente accesible.
+cualquier dispositivo, lo que hace que la tecnología sea fácilmente accesible \cite{antonopoulos2014mastering}.
 
 \vspace{5mm}
 
 \noindent A diferencia de las divisas tradicionales, los bitcoins son enteramente virtuales. Los usuarios poseen una 
 clave virtual que le permite verificar la propiedad las transacciones en la red de bitcoin, desbloqueando el valor para 
-gastarlo y transferirlo a un nuevos destinatarios. Esas llaves se guardan en una cartera digital. 
+gastarlo y transferirlo a un nuevos destinatarios \cite{antonopoulos2014mastering}. Esas llaves se guardan en una 
+cartera digital. 
 
 \vspace{5mm}
 
@@ -115,12 +117,13 @@ que los participantes, en este caso computadoras, son iguales entre sí y que la
 se comparte entre los nodos. No existe un sistema centralizado, son participantes igualmente privilegiados y 
 equipotentes en la aplicación. Los nodos de la red proveen y consumen servicios al mismo tiempo, con reciprocidad que 
 actúa como incentivo para la participación. Las redes peer-to-peer son intrínsecamente resistentes, descentralizadas y 
-abiertas. 
+abiertas \cite{antonopoulos2014mastering, peer-to-peer}. 
  
 \vspace{5mm}
 
 \noindent La red bitcoin está formada por una red de nodos P2P. Los nodos pueden asumir diferentes roles dependiendo de 
-la funcionalidad que estén llevando acabo. Un nodo bitcoin realiza las siguientes funciones (ver fig.\ref{fig:funciones-nodo}): 
+la funcionalidad que estén llevando acabo. Un nodo bitcoin realiza las siguientes funciones 
+(ver fig.\ref{fig:funciones-nodo}): 
 
 \begin{itemize}
     \item Enrutamiento
@@ -132,7 +135,7 @@ la funcionalidad que estén llevando acabo. Un nodo bitcoin realiza las siguient
 \begin{figure}[ht!]
     \centering
     \includegraphics[width=4cm]{imagenes/introduccion/nodo_bitcoin}
-    \caption{Un nodo de red bitcoin con las cuatro funciones}
+    \caption{Un nodo de red bitcoin con las cuatro funciones. Fuente: \cite{antonopoulos2014mastering}}
     \label{fig:funciones-nodo}
 \end{figure}
 
@@ -163,7 +166,7 @@ otros protocolos, como los protocolos de piscinas mineras especializadas y los p
 \begin{figure}[ht!]
     \centering
     \includegraphics[width=10cm]{imagenes/introduccion/diferentes_nodos_red_extendida}
-    \caption{Diferentes tipos de nodos en una red extendida bitcoin}
+    \caption{Diferentes tipos de nodos en una red extendida bitcoin. Fuente: \cite{antonopoulos2014mastering}}
 \end{figure}
 
 \subsubsection{Blockchain}
@@ -172,7 +175,7 @@ La tecnología Blockchain, o también conocido como Distributed Ledger Technolog
 transacciones vinculados hacia atrás. Cada bloque es identificado por un hash, generado por el algoritmo criptográfico 
 SHA256, almacenado en la cabecera del bloque. Cada bloque está enlazado con el anterior bloque (bloque padre) a través 
 de su hash en la cabecera del bloque. Dicha secuencia, crea una cadena hasta llegar al primer bloque, conocido como 
-el bloque génesis.
+el bloque génesis \cite{antonopoulos2014mastering}.
 
 \vspace{5mm}
 
@@ -185,7 +188,7 @@ Finalmente, un bloque hijo pasa a formar parte del Blockchain y la división se 
 \noindent La DLT es inmutable debido a que, en la cabecera del bloque, contiene el hash del padre y, por lo tanto, 
 afecta al bloque actual. La identidad del hijo cambia si la del padre también lo hace. Cuando cambia el padre, el 
 hash del padre cambia, y por tanto hay que modificar la cabecera del bloque. Esto a su vez cambia el hash del hijo y 
-por tanto requiere un cambio en el puntero del nieto y así sucesivamente.
+por tanto requiere un cambio en el puntero del nieto y así sucesivamente \cite{antonopoulos2014mastering}.
 
 \vspace{5mm}
 
@@ -197,14 +200,15 @@ hace que la historia profunda de la cadena de bloques sea inmutable.
 
 La minería es la encargada de validar nuevas transacciones, comprobando si son fradulentas, y se registran en el 
 libro de contabilidad global. Asimismo, se ocupa de añadir nuevos bitcoins a la oferta monetaria, ya que los 
-mineros proporcionan potencia de procesamiento a la red de bitcoin a cambio de la oportunidad de ser recompensados.
+mineros proporcionan potencia de procesamiento a la red de bitcoin a cambio de la oportunidad de ser recompensados 
+\cite{antonopoulos2014mastering}.
 
 \vspace{5mm}
 
 \noindent Cada 10 minutos se \say{extrae} un nuevo bloque que contiene las transacciones que se han producido desde el 
 último, añadiendo así esas transacciones a la cadena de bloques. Las transacciones que pasan a formar parte de un bloque 
 y se añaden a la cadena de bloques se consideran \say{confirmadas} lo que permite a los nuevos propietarios de bitcoin 
-gastar el bitcoin recibido en esas transacciones.
+gastar el bitcoin recibido en esas transacciones \cite{antonopoulos2014mastering}.
 
 \vspace{5mm}
 
@@ -219,13 +223,14 @@ en la cadena de bloques, es la base del modelo de seguridad de Bitcoin.
 
 \noindent La minería es el principal proceso de la cámara de compensación descentralizada, por el cual las transacciones 
 son validadas y autorizadas. La minería asegura el sistema de bitcoin y permite el surgimiento de consenso en toda la 
-red sin una autoridad central.
+red sin una autoridad central \cite{antonopoulos2014mastering}.
 
 \subsubsection*{Consenso decentralizado}
 
 A diferencia de los sistemas de pagos tradicionales, el Bitcoin no tiene una autoridad central sino que cada nodo tiene
 una copia completa de un libro de cuentas público como registro de autoridad. Cada nodo de la red comparte la 
-información transmitida y, en conclusión, ensamblará una copia del mismo libro público de todos los demás.
+información transmitida y, en conclusión, ensamblará una copia del mismo libro público de todos los demás 
+\cite{antonopoulos2014mastering}.
 
 \vspace{5mm}
 
@@ -245,7 +250,7 @@ independiente en los nodos de la red:
 \subsubsection*{Algoritmo Proof-of-Work}
 
 La idea de PoW fue publicada por primera vez en 1993 por Cynthia Dwork y Moni Naor, y posteriormente fue 
-aplicada por Satoshi Nakamoto en el Bitcoin en 2008. 
+aplicada por Satoshi Nakamoto en el Bitcoin en 2008 \cite{proof-of-work}. 
 
 \vspace{5mm}
 
@@ -261,7 +266,7 @@ número menor que el de B.}
 \noindent La respuesta al problema debe ser un número menor que el hash del bloque para que sea aceptado, conocido como 
 el \say{hash del objetivo}. Un hash del objetivo es un número que el encabezamiento de un bloque de hash debe ser igual 
 o menor que el de un nuevo bloque, junto con la recompensa, para ser otorgado a un minero. Cuanto más bajo es un 
-objetivo, más difícil es generar un bloque.
+objetivo, más difícil es generar un bloque \cite{proof-of-work}.
 
 \vspace{5mm}
 
@@ -281,13 +286,13 @@ objetivo, más difícil es generar un bloque.
 El Internet de las Cosas, o también conocido cómo Internet of Things, consiste en dispositivos que generan procesos, e 
 intercambian grandes cantidades de información a través de Internet. Recolectan y comparten datos sobre cómo son 
 utilizados y sobre el medio que los rodea. Esta información puede ser utilizada para detertar patrones, hacer 
-recomendaciones y detectar posibles problemas antes de que ocurran.
+recomendaciones y detectar posibles problemas antes de que ocurran \cite{what-is-iot, novo2018blockchain}.
 
 \vspace{5mm}
 
 \noindent Desde usos personales como zapatos inteligentes para proveer apoyo al seguimiento y análisis de los datos de 
 actitud física, como servicios a la comunidad: control de la cirugía en los hospitales, detectar condiciones 
-meteorológicas y proporcionar rastreo y conectividad en los automóviles.
+meteorológicas y proporcionar rastreo y conectividad en los automóviles \cite{khan2018iot}.
 
 \vspace{5mm}
 
@@ -298,7 +303,8 @@ repetitivas, mundanas, requieren mucho tiempo o incluso son peligrosas.
 
 El uso de la tecnología Blockchain dentro del ambito de los dispositivos IoT, ha tomado un papel importante en la 
 gestión, control y seguridad. En esta sección, vamos a describir como la tecnología Blockchain puede ser clave para
-proporcionr soluciones de seguridad a los problemas actuales del Internet de las Cosas.
+proporcionr soluciones de seguridad a los problemas actuales del Internet de las Cosas 
+\cite{khan2018iot, reyna2018blockchain}.
 
 \begin{itemize}
     \item \textbf{Espacio de direcciones}: Blockchain tiene 160-bit de espacio de direcciones, a diferencia de IPv6
@@ -323,12 +329,13 @@ proporcionr soluciones de seguridad a los problemas actuales del Internet de las
 La Rasberry Pi es un ordenador de bajo coste hecho por la Raspberry Pi Foundation, del tamaño de una tarjeta de crédito, 
 permite aprender programación, construir proyectos de hardware, hacer automatización del hogar, e incluso a nivel 
 industrial. Además, tiene la capacidad de interactuar con el mundo exterior, y se ha utilizado en una amplia gama de 
-proyectos de creación digital, desde máquinas de música hasta estaciones meteorológicas.
+proyectos de creación digital, desde máquinas de música hasta estaciones meteorológicas \cite{what-is-rasp}.
 
 \vspace{5mm}
 
-\noindent El primer modelo lanzado al mercado, tenía una CPU de un solo núcleo de 700MHz y 256MB de RAM, hasta hoy en 
-día que tenemos el modelo 4 con Quad core de 1.5GHz y con diferentes versiones de 2GB, 4GB y 8GB DDR4 de RAM.
+\noindent El primer modelo lanzado al mercado, tenía una CPU de un solo núcleo de 700MHz y 256MB de RAM 
+\cite{what-is-rasp2}, hasta hoy en día que tenemos el modelo 4 con Quad core de 1.5GHz y con diferentes versiones de 
+2GB, 4GB y 8GB DDR4 de RAM \cite{rasp-model-4-specifications}.
 
 \vspace{5mm}
 
