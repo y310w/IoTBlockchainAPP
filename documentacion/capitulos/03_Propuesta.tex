@@ -49,8 +49,8 @@ activación.
     \item[] RF-3.4. El usuario podrá habilitar un enlace, y se mandará una señal de activación al actuador. 
     \item[] RF-3.5. El usuario podrá deshabilitar un enlace, y se mandará una señal de desactivación al actuador.
     \item[] RF-3.6. El usuario podrá consultar todos los enlaces añadidos a la aplicación.
-    \item[] RF-3.6. El usuario podrá consultar los datos del enlace indicando el ID del mismo.
-    \item[] RF-3.7. El usuario podrá consultar el historial de un enlace indicando el ID del mismo.
+    \item[] RF-3.7. El usuario podrá consultar los datos del enlace indicando el ID del mismo.
+    \item[] RF-3.8. El usuario podrá consultar el historial de un enlace indicando el ID del mismo.
 \end{itemize}
 
 \subsubsection{Requisitos no funcionales.}
@@ -70,8 +70,8 @@ activación.
     código abierto para mejorar la calidad de las páginas web \cite{lighthouse}. \label{fnlabel}}.
     \item[] RNF-7. La interfaz ha de ser clara e intuitiva.
     \item[] RNF-8. Se realizarán test a la aplicación.
-    \item[] RNF-8. No se requerirá de conocimientos previos para el uso de la aplicación.
-    \item[] RNF-9. La API tiene que ser accesible desde la aplicación, para realizar cualquier petición directamente
+    \item[] RNF-9. No se requerirá de conocimientos previos para el uso de la aplicación.
+    \item[] RNF-10. La API tiene que ser accesible desde la aplicación, para realizar cualquier petición directamente
     a la red Blockchain.
 \end{itemize}
 
@@ -84,6 +84,10 @@ activación.
     el tiempo atmosférico, etc. Los sensores se van a encargar de recoger eso datos del exterior y manejarlos.
     \item \textbf{Dispositivo}: es el actor que realiza un mecanismo con una función específica. Podemos diferenciar entre sensores
     y actuadores.
+    \item \textbf{Enlace}: es el actor que está formado por dos dispositivos, un sensor y un actuador. Un enlace va a estar 
+    condicionado por el cumplimiento de la condición establecida por el usuario. Por defecto, el enlace creado va a estar habilitado. 
+    Cuando un sensor recibe un valor, se comprobará cada uno de sus enlaces establecidos. En el caso de que se cumpla la condición, 
+    el enlace se habilita y se mandará una señal de activación al actuador.
     \item \textbf{Usuario}: es el actor que puede usar las principales funcionalidades que ofrece la aplicación una vez que 
     tenga un certificado de autoridad dentro de la red Blockchain. Podrá llevar una gestión de sus dispositivos y enlaces dentro
     de la aplicación y gracias a la tecnología Blockchain, podrá ver toda la trazabilidad de las transacciones realizadas y 
@@ -91,6 +95,10 @@ activación.
     \item \textbf{Administrador}: es el actor encargado de la gestión de usuarios, se encargará de administrar todo lo relacionado
     con los certificados de autoridad de cada usuario del sistema.
 \end{itemize}
+
+\subsubsection{Diagramas de casos de uso.}
+
+\newpage
 
 \subsubsection{Especificación de casos de uso.}
 
@@ -571,11 +579,11 @@ activación.
             \hline 
             \textbf{Tipo}           &   Primario y esencial. \\ 
             \hline
-            \textbf{Referencias}    &       \\ 
+            \textbf{Referencias}    &   RF-2.2., RF-2.3. \\ 
             \hline
-            \textbf{Precondición}   &       \\ 
+            \textbf{Precondición}   &   El dispositivo debe de estar registrado en el sistema y tiene que ser un sensor. \\ 
             \hline
-            \textbf{Postcondición}  &       \\ 
+            \textbf{Postcondición}  &   El valor del sensor se habrá modificado y se habrá comprobado las condiciones de sus enlaces. \\ 
             \hline
         \end{tabular}
         
@@ -585,7 +593,8 @@ activación.
             \hline
             \rowcolor{SeaGreen} \textbf{Propósito} \\
             \hline
-            \multicolumn{1}{|p{12cm}|}{} \\ [0.5ex]
+            \multicolumn{1}{|p{12cm}|}{El entorno o el usuario podrá modificar los valores de entrada de un sensor para habilitar o 
+            deshabilitar enlaces en el cual se encuentre involucrado.} \\ [0.5ex]
             \hline
         \end{tabular}
         
@@ -595,7 +604,8 @@ activación.
             \hline
             \rowcolor{SeaGreen} \textbf{Resumen} \\
             \hline
-            \multicolumn{1}{|p{12cm}|}{} \\ [0.5ex]
+            \multicolumn{1}{|p{12cm}|}{Los datos que se obtiene del entorno o los datos que introduce un usuario a un sensor, el sensor guardará el dato obtenido y 
+            se comprobará los enlaces que esté involucrado el dispositivo, para habilitar o deshabilitar el enlace de acuerdo a la condición establecida en el enlace.} \\ [0.5ex]
             \hline
         \end{tabular}
         
@@ -605,11 +615,13 @@ activación.
             \cline{1-4}
             \rowcolor{SeaGreen} \multicolumn{4}{|l|}{\textbf{Curso Normal}} \\
             \cline{1-4}
-            \textbf{1} & Actor1: Acción realizada por el actor &  &  \\
+            \textbf{1} & Entorno o Usuario: Introduce el dato de entrada al sensor. &  &  \\
             \hline
-            \textbf{2} & Actor1: Acción realizada por el actor & \textbf{3} & Acción realizada por el sistema \\
+            \textbf{2} & Dispositivo (Sensor): guarda el valor de entrada. &  & \\
             \hline
-             & & & \\
+             & & \textbf{3} & El sistema guarda el dato. \\
+            \hline
+             & & \textbf{4} & El sistema comprueba los enlaces. \\
             \hline
         \end{tabular}
         
@@ -619,11 +631,11 @@ activación.
             \cline{1-4}
             \rowcolor{SeaGreen} \multicolumn{4}{|l|}{\textbf{Otros datos}} \\
             \cline{1-4}
-            \textbf{Frecuencia \newline esperada} &  & \textbf{Rendimiento} &  \\
+            \textbf{Frecuencia \newline esperada} & Muy Alta & \textbf{Rendimiento} & Alta \\
             \hline
-            \textbf{Importancia} & & \textbf{Urgencia} & \\
+            \textbf{Importancia} & Muy Alta & \textbf{Urgencia} & Alta\\
             \hline
-            \textbf{Estado} & & \textbf{Estabilidad} & \\
+            \textbf{Estado} & & \textbf{Estabilidad} & Alta \\
             \hline
         \end{tabular}
         
@@ -633,23 +645,23 @@ activación.
     
     \newpage
     
-    \item Caso de uso 8: 
+    \item Caso de uso 8: Borrar un dispositivo.
     
     \begin{table}[h!]
         \centering
         \begin{tabular}{|l|p{0.753\textwidth}|}
             \hline
-            \textbf{Casos de Uso}   &   (CU\_08). \\
+            \textbf{Casos de Uso}   &   Borrar un dispositivo (CU\_08). \\
             \hline 
-            \textbf{Actores}        &       \\ 
+            \textbf{Actores}        &   Dispositivo (Principal) y Usuario (Secundario). \\ 
             \hline 
             \textbf{Tipo}           &   Primario y esencial. \\ 
             \hline
-            \textbf{Referencias}    &       \\ 
+            \textbf{Referencias}    &   RF-2.4.\\ 
             \hline
-            \textbf{Precondición}   &       \\ 
+            \textbf{Precondición}   &   El dispositivo de estar registrado en el sistema. \\ 
             \hline
-            \textbf{Postcondición}  &       \\ 
+            \textbf{Postcondición}  &   Se ha borrado el dispositivo. \\ 
             \hline
         \end{tabular}
         
@@ -659,7 +671,7 @@ activación.
             \hline
             \rowcolor{SeaGreen} \textbf{Propósito} \\
             \hline
-            \multicolumn{1}{|p{12cm}|}{} \\ [0.5ex]
+            \multicolumn{1}{|p{12cm}|}{El usuario podrá borrar el dispositivo seleccionado. } \\ [0.5ex]
             \hline
         \end{tabular}
         
@@ -669,7 +681,7 @@ activación.
             \hline
             \rowcolor{SeaGreen} \textbf{Resumen} \\
             \hline
-            \multicolumn{1}{|p{12cm}|}{} \\ [0.5ex]
+            \multicolumn{1}{|p{12cm}|}{El sistema facilitará al usuario la opción de borrar un dispositivo.} \\ [0.5ex]
             \hline
         \end{tabular}
         
@@ -679,11 +691,9 @@ activación.
             \cline{1-4}
             \rowcolor{SeaGreen} \multicolumn{4}{|l|}{\textbf{Curso Normal}} \\
             \cline{1-4}
-            \textbf{1} & Actor1: Acción realizada por el actor &  &  \\
+            \textbf{1} & Usuario: Selecciona el dispositivo a borrar. &  &  \\
             \hline
-            \textbf{2} & Actor1: Acción realizada por el actor & \textbf{3} & Acción realizada por el sistema \\
-            \hline
-             & & & \\
+             & & \textbf{2} & El sistema borra el dispositivo. \\
             \hline
         \end{tabular}
         
@@ -693,37 +703,37 @@ activación.
             \cline{1-4}
             \rowcolor{SeaGreen} \multicolumn{4}{|l|}{\textbf{Otros datos}} \\
             \cline{1-4}
-            \textbf{Frecuencia \newline esperada} &  & \textbf{Rendimiento} &  \\
+            \textbf{Frecuencia \newline esperada} & Baja & \textbf{Rendimiento} & Media \\
             \hline
-            \textbf{Importancia} & & \textbf{Urgencia} & \\
+            \textbf{Importancia} & Media & \textbf{Urgencia} & Baja \\
             \hline
-            \textbf{Estado} & & \textbf{Estabilidad} & \\
+            \textbf{Estado} & & \textbf{Estabilidad} & Alta \\
             \hline
         \end{tabular}
         
-        \caption{Caso de uso 8:}
+        \caption{Caso de uso 8: Borrar un dispositivo.}
         \label{table:caso-de-uso-8}
     \end{table}
     
     \newpage
 
-    \item Caso de uso 9: 
+    \item Caso de uso 9: Consultar dispositivos.
     
     \begin{table}[h!]
         \centering
         \begin{tabular}{|l|p{0.753\textwidth}|}
             \hline
-            \textbf{Casos de Uso}   &   (CU\_09). \\
+            \textbf{Casos de Uso}   &   Consultar dispositivos (CU\_09). \\
             \hline 
-            \textbf{Actores}        &       \\ 
+            \textbf{Actores}        &   Dispositivo (Principal) y Usuario (Secundario). \\ 
             \hline 
             \textbf{Tipo}           &   Primario y esencial. \\ 
             \hline
-            \textbf{Referencias}    &       \\ 
+            \textbf{Referencias}    &   RF-2.5. \\ 
             \hline
-            \textbf{Precondición}   &       \\ 
+            \textbf{Precondición}   &   \\ 
             \hline
-            \textbf{Postcondición}  &       \\ 
+            \textbf{Postcondición}  &   El usuario obtendrá una lista de dispositivos. \\ 
             \hline
         \end{tabular}
         
@@ -733,7 +743,7 @@ activación.
             \hline
             \rowcolor{SeaGreen} \textbf{Propósito} \\
             \hline
-            \multicolumn{1}{|p{12cm}|}{} \\ [0.5ex]
+            \multicolumn{1}{|p{12cm}|}{Permitir al usuario poder consultar los dispositivos guardados.} \\ [0.5ex]
             \hline
         \end{tabular}
         
@@ -743,7 +753,7 @@ activación.
             \hline
             \rowcolor{SeaGreen} \textbf{Resumen} \\
             \hline
-            \multicolumn{1}{|p{12cm}|}{} \\ [0.5ex]
+            \multicolumn{1}{|p{12cm}|}{El usuario podrá consultar los dispositivos guardados y ver los datos de cada uno de ellos.} \\ [0.5ex]
             \hline
         \end{tabular}
         
@@ -753,23 +763,9 @@ activación.
             \cline{1-4}
             \rowcolor{SeaGreen} \multicolumn{4}{|l|}{\textbf{Curso Normal}} \\
             \cline{1-4}
-            \textbf{1} & Actor1: Acción realizada por el actor &  &  \\
+            \textbf{1} & Usuario: solicita consultar los dispositivos. &  &  \\
             \hline
-            \textbf{2} & Actor1: Acción realizada por el actor & \textbf{3} & Acción realizada por el sistema \\
-            \hline
-             & & & \\
-            \hline
-        \end{tabular}
-        
-        \vspace{5mm}
-        
-        \begin{tabular}{|p{0.01\textwidth}|p{.954\textwidth}|}
-            \cline{1-2}
-            \rowcolor{SeaGreen} \multicolumn{2}{|l|}{\textbf{Cursos Alternos}} \\
-            \cline{1-2}
-             &  \\
-            \hline
-             &  \\
+             & & \textbf{2} & El sistema devuelve una lista de los dispositivos guardados. \\
             \hline
         \end{tabular}
         
@@ -779,37 +775,37 @@ activación.
             \cline{1-4}
             \rowcolor{SeaGreen} \multicolumn{4}{|l|}{\textbf{Otros datos}} \\
             \cline{1-4}
-            \textbf{Frecuencia \newline esperada} &  & \textbf{Rendimiento} &  \\
+            \textbf{Frecuencia \newline esperada} & Alta & \textbf{Rendimiento} & Media \\
             \hline
-            \textbf{Importancia} & & \textbf{Urgencia} & \\
+            \textbf{Importancia} & Media & \textbf{Urgencia} & Baja \\
             \hline
-            \textbf{Estado} & & \textbf{Estabilidad} & \\
+            \textbf{Estado} & & \textbf{Estabilidad} & Alta \\
             \hline
         \end{tabular}
         
-        \caption{Caso de uso 9:}
+        \caption{Caso de uso 9: Consultar dispositivos.}
         \label{table:caso-de-uso-9}
     \end{table}
     
     \newpage
     
-    \item Caso de uso 10: 
+    \item Caso de uso 10: Consultar los datos de un dispositivo.
     
     \begin{table}[h!]
         \centering
         \begin{tabular}{|l|p{0.753\textwidth}|}
             \hline
-            \textbf{Casos de Uso}   &   (CU\_10). \\
+            \textbf{Casos de Uso}   &   Consultar los datos de un dispositivo (CU\_10). \\
             \hline 
-            \textbf{Actores}        &       \\ 
+            \textbf{Actores}        &   Dispositivo (Principal) y Usuario (Secundario). \\ 
             \hline 
             \textbf{Tipo}           &   Primario y esencial. \\ 
             \hline
-            \textbf{Referencias}    &       \\ 
+            \textbf{Referencias}    &   RF-2.6. \\ 
             \hline
-            \textbf{Precondición}   &       \\ 
+            \textbf{Precondición}   &   El dispositivo debe de estar registrado en el sistema. \\ 
             \hline
-            \textbf{Postcondición}  &       \\ 
+            \textbf{Postcondición}  &   El usuario obtendrá los datos del dispositivo. \\ 
             \hline
         \end{tabular}
         
@@ -819,7 +815,7 @@ activación.
             \hline
             \rowcolor{SeaGreen} \textbf{Propósito} \\
             \hline
-            \multicolumn{1}{|p{12cm}|}{} \\ [0.5ex]
+            \multicolumn{1}{|p{12cm}|}{Permitir al usuario poder consultar los datos de un dispositivo.} \\ [0.5ex]
             \hline
         \end{tabular}
         
@@ -829,7 +825,8 @@ activación.
             \hline
             \rowcolor{SeaGreen} \textbf{Resumen} \\
             \hline
-            \multicolumn{1}{|p{12cm}|}{} \\ [0.5ex]
+            \multicolumn{1}{|p{12cm}|}{El usuario seleccionará el dispositivo que quiere consultar y el sistema se lo 
+            proporcionará.} \\ [0.5ex]
             \hline
         \end{tabular}
         
@@ -839,11 +836,11 @@ activación.
             \cline{1-4}
             \rowcolor{SeaGreen} \multicolumn{4}{|l|}{\textbf{Curso Normal}} \\
             \cline{1-4}
-            \textbf{1} & Actor1: Acción realizada por el actor &  &  \\
+            \textbf{1} & Usuario: solicita consultar los datos del dispositivo. &  &  \\
             \hline
-            \textbf{2} & Actor1: Acción realizada por el actor & \textbf{3} & Acción realizada por el sistema \\
+             & & \textbf{2} & El sistema comprueba si existe el dispositivo. \\
             \hline
-             & & & \\
+             & & \textbf{3} & El sistema devuelve los datos del dispositivo guardado. \\
             \hline
         \end{tabular}
         
@@ -853,37 +850,37 @@ activación.
             \cline{1-4}
             \rowcolor{SeaGreen} \multicolumn{4}{|l|}{\textbf{Otros datos}} \\
             \cline{1-4}
-            \textbf{Frecuencia \newline esperada} &  & \textbf{Rendimiento} &  \\
+            \textbf{Frecuencia \newline esperada} & Alta & \textbf{Rendimiento} & Media \\
             \hline
-            \textbf{Importancia} & & \textbf{Urgencia} & \\
+            \textbf{Importancia} & Media & \textbf{Urgencia} & Baja\\
             \hline
-            \textbf{Estado} & & \textbf{Estabilidad} & \\
+            \textbf{Estado} & & \textbf{Estabilidad} & Alta \\
             \hline
         \end{tabular}
         
-        \caption{Caso de uso 10:}
+        \caption{Caso de uso 10: Consultar los datos de un dispositivo.}
         \label{table:caso-de-uso-10}
     \end{table}
     
     \newpage
 
-    \item Caso de uso 11: 
+    \item Caso de uso 11: Consultar el historial de un dispositivo.
     
     \begin{table}[h!]
         \centering
         \begin{tabular}{|l|p{0.753\textwidth}|}
             \hline
-            \textbf{Casos de Uso}   &   (CU\_11). \\
+            \textbf{Casos de Uso}   &   Consultar el historial de un dispositivo (CU\_11). \\
             \hline 
-            \textbf{Actores}        &       \\ 
+            \textbf{Actores}        &   Dispositivo (Principal) y Usuario (Secundario). \\ 
             \hline 
             \textbf{Tipo}           &   Primario y esencial. \\
             \hline
-            \textbf{Referencias}    &       \\ 
+            \textbf{Referencias}    &   RF-2.7. \\ 
             \hline
-            \textbf{Precondición}   &       \\ 
+            \textbf{Precondición}   &   El dispositivo debe de estar registrado en el sistema. \\ 
             \hline
-            \textbf{Postcondición}  &       \\ 
+            \textbf{Postcondición}  &   El usuario obtendrá el historial de un dispositivo. \\ 
             \hline
         \end{tabular}
         
@@ -893,7 +890,7 @@ activación.
             \hline
             \rowcolor{SeaGreen} \textbf{Propósito} \\
             \hline
-            \multicolumn{1}{|p{12cm}|}{} \\ [0.5ex]
+            \multicolumn{1}{|p{12cm}|}{Permitir al usuario consultar el historial de un dispositivo.} \\ [0.5ex]
             \hline
         \end{tabular}
         
@@ -903,7 +900,9 @@ activación.
             \hline
             \rowcolor{SeaGreen} \textbf{Resumen} \\
             \hline
-            \multicolumn{1}{|p{12cm}|}{} \\ [0.5ex]
+            \multicolumn{1}{|p{12cm}|}{Gracias al tecnología Blockchain, se puede obtener todas las transacciones
+            realizadas y con ello poder ver los diferentes cambios que ha tenido un dispositivo, desde su momento
+            de creación hasta ahora.} \\ [0.5ex]
             \hline
         \end{tabular}
         
@@ -913,11 +912,11 @@ activación.
             \cline{1-4}
             \rowcolor{SeaGreen} \multicolumn{4}{|l|}{\textbf{Curso Normal}} \\
             \cline{1-4}
-            \textbf{1} & Actor1: Acción realizada por el actor &  &  \\
+            \textbf{1} & Usuario: solicita consultar el historial del dispositivo. &  &  \\
             \hline
-            \textbf{2} & Actor1: Acción realizada por el actor & \textbf{3} & Acción realizada por el sistema \\
+             & & \textbf{2} & El sistema comprueba si existe el dispositivo. \\
             \hline
-             & & & \\
+             & & \textbf{3} & El sistema devuelve el historial del dispositivo guardado. \\
             \hline
         \end{tabular}
         
@@ -927,37 +926,38 @@ activación.
             \cline{1-4}
             \rowcolor{SeaGreen} \multicolumn{4}{|l|}{\textbf{Otros datos}} \\
             \cline{1-4}
-            \textbf{Frecuencia \newline esperada} &  & \textbf{Rendimiento} &  \\
+            \textbf{Frecuencia \newline esperada} & Alta & \textbf{Rendimiento} & Media \\
             \hline
-            \textbf{Importancia} & & \textbf{Urgencia} & \\
+            \textbf{Importancia} & Media & \textbf{Urgencia} & Baja \\
             \hline
-            \textbf{Estado} & & \textbf{Estabilidad} & \\
+            \textbf{Estado} & & \textbf{Estabilidad} & Alta \\
             \hline
         \end{tabular}
         
-        \caption{Caso de uso 11:}
+        \caption{Caso de uso 11: Consultar el historial de un dispositivo.}
         \label{table:caso-de-uso-11}
     \end{table}
     
     \newpage
     
-    \item Caso de uso 12: 
+    \item Caso de uso 12: Añadir un enlace.
     
     \begin{table}[h!]
         \centering
         \begin{tabular}{|l|p{0.753\textwidth}|}
             \hline
-            \textbf{Casos de Uso}   &   (CU\_12). \\
+            \textbf{Casos de Uso}   &   Añadir un enlace (CU\_12). \\
             \hline 
-            \textbf{Actores}        &       \\ 
+            \textbf{Actores}        &   Enlace (Principal) y Usuario (Secundario). \\ 
             \hline 
             \textbf{Tipo}           &   Primario y esencial. \\ 
             \hline
-            \textbf{Referencias}    &       \\ 
+            \textbf{Referencias}    &   RF-3.1. \\ 
             \hline
-            \textbf{Precondición}   &       \\ 
+            \textbf{Precondición}   &   No debe de existir un enlace con el mismo sensor y actuador, además deben
+            de existir ambos dispositivos. \\ 
             \hline
-            \textbf{Postcondición}  &       \\ 
+            \textbf{Postcondición}  &   Se añade el nuevo enlace y está habilitado. \\ 
             \hline
         \end{tabular}
         
@@ -967,7 +967,7 @@ activación.
             \hline
             \rowcolor{SeaGreen} \textbf{Propósito} \\
             \hline
-            \multicolumn{1}{|p{12cm}|}{} \\ [0.5ex]
+            \multicolumn{1}{|p{12cm}|}{El usuario podrá añadir un nuevo enlace que no esté regitrado anteriormente.} \\ [0.5ex]
             \hline
         \end{tabular}
         
@@ -977,7 +977,9 @@ activación.
             \hline
             \rowcolor{SeaGreen} \textbf{Resumen} \\
             \hline
-            \multicolumn{1}{|p{12cm}|}{} \\ [0.5ex]
+            \multicolumn{1}{|p{12cm}|}{El usuario introducirá el número serial del sensor y del actuador, una región dónde se localice 
+            dicho enlace y por último, una condición. Dicha condición va a estar formado por una variable "value", acompañado de un 
+            operador de comparación y un valor numérico. Se generará un ID que es el hash del número serial del sensor y el actuador.} \\ [0.5ex]
             \hline
         \end{tabular}
         
@@ -987,11 +989,11 @@ activación.
             \cline{1-4}
             \rowcolor{SeaGreen} \multicolumn{4}{|l|}{\textbf{Curso Normal}} \\
             \cline{1-4}
-            \textbf{1} & Actor1: Acción realizada por el actor &  &  \\
+            \textbf{1} & Usuario: introducirá los datos del enlace. &  &  \\
             \hline
-            \textbf{2} & Actor1: Acción realizada por el actor & \textbf{3} & Acción realizada por el sistema \\
+            & & \textbf{2} & El sistema comprueba los datos introducidos. \\
             \hline
-             & & & \\
+            & & \textbf{3} & El sistema valida los datos y guarda el nuevo enlace en la red Blockchain. \\
             \hline
         \end{tabular}
         
@@ -1001,37 +1003,37 @@ activación.
             \cline{1-4}
             \rowcolor{SeaGreen} \multicolumn{4}{|l|}{\textbf{Otros datos}} \\
             \cline{1-4}
-            \textbf{Frecuencia \newline esperada} &  & \textbf{Rendimiento} &  \\
+            \textbf{Frecuencia \newline esperada} & Alta & \textbf{Rendimiento} & Media \\
             \hline
-            \textbf{Importancia} & & \textbf{Urgencia} & \\
+            \textbf{Importancia} & Media & \textbf{Urgencia} & Baja \\
             \hline
-            \textbf{Estado} & & \textbf{Estabilidad} & \\
+            \textbf{Estado} & & \textbf{Estabilidad} & Alta \\
             \hline
         \end{tabular}
         
-        \caption{Caso de uso 12:}
+        \caption{Caso de uso 12: Añadir un enlace.}
         \label{table:caso-de-uso-12}
     \end{table}
     
     \newpage
 
-    \item Caso de uso 13: 
+    \item Caso de uso 13: Modificar un enlace.
     
     \begin{table}[h!]
         \centering
         \begin{tabular}{|l|p{0.753\textwidth}|}
             \hline
-            \textbf{Casos de Uso}   &   (CU\_13). \\
+            \textbf{Casos de Uso}   &   Modificar un enlace (CU\_13). \\
             \hline 
-            \textbf{Actores}        &       \\ 
+            \textbf{Actores}        &   Enlace (Principal) y Usuario (Secundario). \\ 
             \hline 
             \textbf{Tipo}           &   Primario y esencial. \\
             \hline
-            \textbf{Referencias}    &       \\ 
+            \textbf{Referencias}    &   RF-3.2., RF-3.4., RF-3.5. \\ 
             \hline
-            \textbf{Precondición}   &       \\ 
+            \textbf{Precondición}   &   El enlace debe de estar registrado en el sistema. \\ 
             \hline
-            \textbf{Postcondición}  &       \\ 
+            \textbf{Postcondición}  &   Los datos del enlace se habrán actualizado. \\ 
             \hline
         \end{tabular}
         
@@ -1041,7 +1043,7 @@ activación.
             \hline
             \rowcolor{SeaGreen} \textbf{Propósito} \\
             \hline
-            \multicolumn{1}{|p{12cm}|}{} \\ [0.5ex]
+            \multicolumn{1}{|p{12cm}|}{El usuario podrá modificar la región, el estado o la condición del enlace.} \\ [0.5ex]
             \hline
         \end{tabular}
         
@@ -1051,7 +1053,7 @@ activación.
             \hline
             \rowcolor{SeaGreen} \textbf{Resumen} \\
             \hline
-            \multicolumn{1}{|p{12cm}|}{} \\ [0.5ex]
+            \multicolumn{1}{|p{12cm}|}{El usuario, verá los datos del enlace, modificará lo que desee y el sistema actualizará esos datos.} \\ [0.5ex]
             \hline
         \end{tabular}
         
@@ -1061,11 +1063,11 @@ activación.
             \cline{1-4}
             \rowcolor{SeaGreen} \multicolumn{4}{|l|}{\textbf{Curso Normal}} \\
             \cline{1-4}
-            \textbf{1} & Actor1: Acción realizada por el actor &  &  \\
+            \textbf{1} & Usuario: introducirá los datos del enlace. &  &  \\
             \hline
-            \textbf{2} & Actor1: Acción realizada por el actor & \textbf{3} & Acción realizada por el sistema \\
+            & & \textbf{2} & El sistema comprueba los datos introducidos. \\
             \hline
-             & & & \\
+            & & \textbf{3} & El sistema valida los datos y guarda el nuevo enlace en la red Blockchain. \\
             \hline
         \end{tabular}
         
@@ -1075,37 +1077,37 @@ activación.
             \cline{1-4}
             \rowcolor{SeaGreen} \multicolumn{4}{|l|}{\textbf{Otros datos}} \\
             \cline{1-4}
-            \textbf{Frecuencia \newline esperada} &  & \textbf{Rendimiento} &  \\
+            \textbf{Frecuencia \newline esperada} & Muy Alta & \textbf{Rendimiento} & Alta \\
             \hline
-            \textbf{Importancia} & & \textbf{Urgencia} & \\
+            \textbf{Importancia} & Muy Alta & \textbf{Urgencia} & Alta\\
             \hline
-            \textbf{Estado} & & \textbf{Estabilidad} & \\
+            \textbf{Estado} & & \textbf{Estabilidad} & Alta \\
             \hline
         \end{tabular}
         
-        \caption{Caso de uso 13:}
+        \caption{Caso de uso 13: Modificar un enlace.}
         \label{table:caso-de-uso-13}
     \end{table}
     
     \newpage
-    
-    \item Caso de uso 14: 
+
+    \item Caso de uso 14: Borrar un enlace.
     
     \begin{table}[h!]
         \centering
         \begin{tabular}{|l|p{0.753\textwidth}|}
             \hline
-            \textbf{Casos de Uso}   &   (CU\_14). \\
+            \textbf{Casos de Uso}   &   Borrar un enlace (CU\_14). \\
             \hline 
-            \textbf{Actores}        &       \\ 
+            \textbf{Actores}        &   Enlace (Principal) y Usuario (Secundario). \\ 
             \hline 
             \textbf{Tipo}           &   Primario y esencial. \\ 
             \hline
-            \textbf{Referencias}    &       \\ 
+            \textbf{Referencias}    &   RF-3.3. \\ 
             \hline
-            \textbf{Precondición}   &       \\ 
+            \textbf{Precondición}   &   El enlace de estar registrado en el sistema. \\ 
             \hline
-            \textbf{Postcondición}  &       \\ 
+            \textbf{Postcondición}  &   Se ha borrado el enlace. \\ 
             \hline
         \end{tabular}
         
@@ -1115,7 +1117,7 @@ activación.
             \hline
             \rowcolor{SeaGreen} \textbf{Propósito} \\
             \hline
-            \multicolumn{1}{|p{12cm}|}{} \\ [0.5ex]
+            \multicolumn{1}{|p{12cm}|}{El usuario podrá borrar el enlace seleccionado. } \\ [0.5ex]
             \hline
         \end{tabular}
         
@@ -1125,7 +1127,7 @@ activación.
             \hline
             \rowcolor{SeaGreen} \textbf{Resumen} \\
             \hline
-            \multicolumn{1}{|p{12cm}|}{} \\ [0.5ex]
+            \multicolumn{1}{|p{12cm}|}{El sistema facilitará al usuario la opción de borrar un enlace.} \\ [0.5ex]
             \hline
         \end{tabular}
         
@@ -1135,11 +1137,9 @@ activación.
             \cline{1-4}
             \rowcolor{SeaGreen} \multicolumn{4}{|l|}{\textbf{Curso Normal}} \\
             \cline{1-4}
-            \textbf{1} & Actor1: Acción realizada por el actor &  &  \\
+            \textbf{1} & Usuario: Selecciona el enlace a borrar. &  &  \\
             \hline
-            \textbf{2} & Actor1: Acción realizada por el actor & \textbf{3} & Acción realizada por el sistema \\
-            \hline
-             & & & \\
+             & & \textbf{2} & El sistema borra el enlace. \\
             \hline
         \end{tabular}
         
@@ -1149,37 +1149,113 @@ activación.
             \cline{1-4}
             \rowcolor{SeaGreen} \multicolumn{4}{|l|}{\textbf{Otros datos}} \\
             \cline{1-4}
-            \textbf{Frecuencia \newline esperada} &  & \textbf{Rendimiento} &  \\
+            \textbf{Frecuencia \newline esperada} & Baja & \textbf{Rendimiento} & Media \\
             \hline
-            \textbf{Importancia} & & \textbf{Urgencia} & \\
+            \textbf{Importancia} & Media & \textbf{Urgencia} & Baja \\
             \hline
-            \textbf{Estado} & & \textbf{Estabilidad} & \\
+            \textbf{Estado} & & \textbf{Estabilidad} & Alta \\
             \hline
         \end{tabular}
         
-        \caption{Caso de uso 14:}
+        \caption{Caso de uso 8: Borrar un enlace.}
+        \label{table:caso-de-uso-8}
+    \end{table}
+    
+    \newpage
+    
+    \item Caso de uso 15: Habilitar un enlace.
+    
+    \begin{table}[h!]
+        \centering
+        \begin{tabular}{|l|p{0.753\textwidth}|}
+            \hline
+            \textbf{Casos de Uso}   &   Habilitar un enlace (CU\_15). \\
+            \hline 
+            \textbf{Actores}        &   Enlace (Principal), Dispositivo (Secundario) y Usuario (Secundario). \\ 
+            \hline 
+            \textbf{Tipo}           &   Primario y esencial. \\ 
+            \hline
+            \textbf{Referencias}    &   RF-3.4. \\ 
+            \hline
+            \textbf{Precondición}   &   El enlace debe de estar registrado en el sistema. \\ 
+            \hline
+            \textbf{Postcondición}  &   El enlace se habilita. \\ 
+            \hline
+        \end{tabular}
+        
+        \vspace{5mm}
+        
+        \begin{tabular}{|p{\textwidth}|}
+            \hline
+            \rowcolor{SeaGreen} \textbf{Propósito} \\
+            \hline
+            \multicolumn{1}{|p{12cm}|}{El usuario y el sensor, podrán habilitar el enlace.} \\ [0.5ex]
+            \hline
+        \end{tabular}
+        
+        \vspace{5mm}
+        
+        \begin{tabular}{|p{\textwidth}|}
+            \hline
+            \rowcolor{SeaGreen} \textbf{Resumen} \\
+            \hline
+            \multicolumn{1}{|p{12cm}|}{El enlace se podrá habilitar dependiendo de el valor de entrada recibido por el
+            sensor, en el caso de que se cumpla la condición. También el usuario podrá habilitar el enlace. Cuando se habilite,
+            se mandará una petición HTTP para activar el actuador.} \\ [0.5ex]
+            \hline
+        \end{tabular}
+        
+        \vspace{5mm}
+        
+        \begin{tabular}{|p{0.01\textwidth}|p{0.438\textwidth}|p{0.01\textwidth}|p{0.438\textwidth}|}
+            \cline{1-4}
+            \rowcolor{SeaGreen} \multicolumn{4}{|l|}{\textbf{Curso Normal}} \\
+            \cline{1-4}
+            \textbf{1} & Dispositivo o Usuario: solicita habilitar el enlace. &  &  \\
+            \hline
+             & & \textbf{2} & El sistema habilita el enlace. \\
+            \hline
+             & & \textbf{3} & El sistema manda la petición HTTP. \\
+            \hline
+        \end{tabular}
+        
+        \vspace{5mm}
+        
+        \begin{tabular}{|p{0.224\textwidth}|p{0.224\textwidth}|p{0.224\textwidth}|p{0.224\textwidth}|}
+            \cline{1-4}
+            \rowcolor{SeaGreen} \multicolumn{4}{|l|}{\textbf{Otros datos}} \\
+            \cline{1-4}
+            \textbf{Frecuencia \newline esperada} & Muy Alta & \textbf{Rendimiento} & Alta \\
+            \hline
+            \textbf{Importancia} & Muy Alta & \textbf{Urgencia} & Alta\\
+            \hline
+            \textbf{Estado} & & \textbf{Estabilidad} & Alta \\
+            \hline
+        \end{tabular}
+        
+        \caption{Caso de uso 14: Habilitar un enlace.}
         \label{table:caso-de-uso-14}
     \end{table}
     
     \newpage
 
-    \item Caso de uso 15: 
+    \item Caso de uso 16: Deshabilitar un enlace.
     
     \begin{table}[h!]
         \centering
         \begin{tabular}{|l|p{0.753\textwidth}|}
             \hline
-            \textbf{Casos de Uso}   &   (CU\_15). \\
+            \textbf{Casos de Uso}   &   Deshabilitar un enlace (CU\_16). \\
             \hline 
-            \textbf{Actores}        &       \\ 
+            \textbf{Actores}        &   Enlace (Principal), Dispositivo (Secundario) y Usuario (Secundario). \\ 
             \hline 
             \textbf{Tipo}           &   Primario y esencial. \\
             \hline
-            \textbf{Referencias}    &       \\ 
+            \textbf{Referencias}    &   RF-3.5. \\ 
             \hline
-            \textbf{Precondición}   &       \\ 
+            \textbf{Precondición}   &   El enlace debe de estar registrado en el sistema. \\ 
             \hline
-            \textbf{Postcondición}  &       \\ 
+            \textbf{Postcondición}  &   El enlace se deshabilita. \\ 
             \hline
         \end{tabular}
         
@@ -1189,7 +1265,7 @@ activación.
             \hline
             \rowcolor{SeaGreen} \textbf{Propósito} \\
             \hline
-            \multicolumn{1}{|p{12cm}|}{} \\ [0.5ex]
+            \multicolumn{1}{|p{12cm}|}{El usuario y el sensor, podrán deshabilitar el enlace.} \\ [0.5ex]
             \hline
         \end{tabular}
         
@@ -1199,7 +1275,9 @@ activación.
             \hline
             \rowcolor{SeaGreen} \textbf{Resumen} \\
             \hline
-            \multicolumn{1}{|p{12cm}|}{} \\ [0.5ex]
+            \multicolumn{1}{|p{12cm}|}{El enlace se podrá deshabilitar dependiendo de el valor de entrada recibido por el
+            sensor, en el caso de que no se cumpla la condición. También el usuario podrá deshabilitar el enlace. Cuando se 
+            deshabilite, se mandará una petición HTTP para desactivar el actuador.} \\ [0.5ex]
             \hline
         \end{tabular}
         
@@ -1209,11 +1287,11 @@ activación.
             \cline{1-4}
             \rowcolor{SeaGreen} \multicolumn{4}{|l|}{\textbf{Curso Normal}} \\
             \cline{1-4}
-            \textbf{1} & Actor1: Acción realizada por el actor &  &  \\
+            \textbf{1} & Dispositivo o Usuario: solicita deshabilitar el enlace. &  &  \\
             \hline
-            \textbf{2} & Actor1: Acción realizada por el actor & \textbf{3} & Acción realizada por el sistema \\
+             & & \textbf{2} & El sistema deshabilita el enlace. \\
             \hline
-             & & & \\
+             & & \textbf{3} & El sistema manda la petición HTTP. \\
             \hline
         \end{tabular}
         
@@ -1223,37 +1301,37 @@ activación.
             \cline{1-4}
             \rowcolor{SeaGreen} \multicolumn{4}{|l|}{\textbf{Otros datos}} \\
             \cline{1-4}
-            \textbf{Frecuencia \newline esperada} &  & \textbf{Rendimiento} &  \\
+            \textbf{Frecuencia \newline esperada} & Muy Alta & \textbf{Rendimiento} & Alta \\
             \hline
-            \textbf{Importancia} & & \textbf{Urgencia} & \\
+            \textbf{Importancia} & Muy Alta & \textbf{Urgencia} & Alta\\
             \hline
-            \textbf{Estado} & & \textbf{Estabilidad} & \\
+            \textbf{Estado} & & \textbf{Estabilidad} & Alta \\
             \hline
         \end{tabular}
         
-        \caption{Caso de uso 15:}
+        \caption{Caso de uso 15: Deshabilitar un enlace.}
         \label{table:caso-de-uso-15}
     \end{table}
     
     \newpage
     
-    \item Caso de uso 16: 
+    \item Caso de uso 17: Consultar enlaces.
     
     \begin{table}[h!]
         \centering
         \begin{tabular}{|l|p{0.753\textwidth}|}
             \hline
-            \textbf{Casos de Uso}   &   (CU\_16). \\
+            \textbf{Casos de Uso}   &   Consultar enlaces (CU\_17). \\
             \hline 
-            \textbf{Actores}        &       \\ 
+            \textbf{Actores}        &   Enlace (Principal) y Usuario (Secundario). \\ 
             \hline 
             \textbf{Tipo}           &   Primario y esencial. \\ 
             \hline
-            \textbf{Referencias}    &       \\ 
+            \textbf{Referencias}    &   RF-3.6. \\ 
             \hline
-            \textbf{Precondición}   &       \\ 
+            \textbf{Precondición}   &   \\ 
             \hline
-            \textbf{Postcondición}  &       \\ 
+            \textbf{Postcondición}  &   El usuario obtendrá una lista de enlaces. \\ 
             \hline
         \end{tabular}
         
@@ -1263,7 +1341,7 @@ activación.
             \hline
             \rowcolor{SeaGreen} \textbf{Propósito} \\
             \hline
-            \multicolumn{1}{|p{12cm}|}{} \\ [0.5ex]
+            \multicolumn{1}{|p{12cm}|}{Permitir al usuario poder consultar los enlaces guardados.} \\ [0.5ex]
             \hline
         \end{tabular}
         
@@ -1273,7 +1351,8 @@ activación.
             \hline
             \rowcolor{SeaGreen} \textbf{Resumen} \\
             \hline
-            \multicolumn{1}{|p{12cm}|}{} \\ [0.5ex]
+            \multicolumn{1}{|p{12cm}|}{El usuario podrá consultar los enlaces guardados y ver los datos de 
+            cada uno de ellos} \\ [0.5ex]
             \hline
         \end{tabular}
         
@@ -1283,11 +1362,9 @@ activación.
             \cline{1-4}
             \rowcolor{SeaGreen} \multicolumn{4}{|l|}{\textbf{Curso Normal}} \\
             \cline{1-4}
-            \textbf{1} & Actor1: Acción realizada por el actor &  &  \\
+            \textbf{1} & Usuario: solicita consultar los enlaces. &  &  \\
             \hline
-            \textbf{2} & Actor1: Acción realizada por el actor & \textbf{3} & Acción realizada por el sistema \\
-            \hline
-             & & & \\
+            & & \textbf{2} & El sistema devuelve una lista de los enlaces guardados. \\
             \hline
         \end{tabular}
         
@@ -1297,37 +1374,37 @@ activación.
             \cline{1-4}
             \rowcolor{SeaGreen} \multicolumn{4}{|l|}{\textbf{Otros datos}} \\
             \cline{1-4}
-            \textbf{Frecuencia \newline esperada} &  & \textbf{Rendimiento} &  \\
+            \textbf{Frecuencia \newline esperada} & Alta & \textbf{Rendimiento} & Media \\
             \hline
-            \textbf{Importancia} & & \textbf{Urgencia} & \\
+            \textbf{Importancia} & Media & \textbf{Urgencia} & Baja \\
             \hline
-            \textbf{Estado} & & \textbf{Estabilidad} & \\
+            \textbf{Estado} & & \textbf{Estabilidad} & Alta \\
             \hline
         \end{tabular}
         
-        \caption{Caso de uso 16:}
+        \caption{Caso de uso 16: Consultar enlaces.}
         \label{table:caso-de-uso-16}
     \end{table}
     
     \newpage
 
-    \item Caso de uso 17: 
+    \item Caso de uso 18: Consultar los datos de un enlace.
     
     \begin{table}[h!]
         \centering
         \begin{tabular}{|l|p{0.753\textwidth}|}
             \hline
-            \textbf{Casos de Uso}   &   (CU\_17). \\
+            \textbf{Casos de Uso}   &   Consultar los datos de un enlace (CU\_18). \\
             \hline 
-            \textbf{Actores}        &       \\ 
+            \textbf{Actores}        &   Enlace (Principal) y Usuario (Secundario). \\ 
             \hline 
             \textbf{Tipo}           &   Primario y esencial. \\
             \hline
-            \textbf{Referencias}    &       \\ 
+            \textbf{Referencias}    &   RF-3.7. \\ 
             \hline
-            \textbf{Precondición}   &       \\ 
+            \textbf{Precondición}   &   El enlace debe de estar registrado en el sistema. \\ 
             \hline
-            \textbf{Postcondición}  &       \\ 
+            \textbf{Postcondición}  &   El usuario obtendrá los datos del enlace. \\ 
             \hline
         \end{tabular}
         
@@ -1337,7 +1414,7 @@ activación.
             \hline
             \rowcolor{SeaGreen} \textbf{Propósito} \\
             \hline
-            \multicolumn{1}{|p{12cm}|}{} \\ [0.5ex]
+            \multicolumn{1}{|p{12cm}|}{Permitir al usuario poder consultar los datos de un enlace.} \\ [0.5ex]
             \hline
         \end{tabular}
         
@@ -1347,7 +1424,8 @@ activación.
             \hline
             \rowcolor{SeaGreen} \textbf{Resumen} \\
             \hline
-            \multicolumn{1}{|p{12cm}|}{} \\ [0.5ex]
+            \multicolumn{1}{|p{12cm}|}{El usuario seleccionará el enlace que quiere consultar y el sistema se lo 
+            proporcionará.} \\ [0.5ex]
             \hline
         \end{tabular}
         
@@ -1357,11 +1435,11 @@ activación.
             \cline{1-4}
             \rowcolor{SeaGreen} \multicolumn{4}{|l|}{\textbf{Curso Normal}} \\
             \cline{1-4}
-            \textbf{1} & Actor1: Acción realizada por el actor &  &  \\
+            \textbf{1} & Usuario: solicita consultar los datos del enlace. &  &  \\
             \hline
-            \textbf{2} & Actor1: Acción realizada por el actor & \textbf{3} & Acción realizada por el sistema \\
+            & & \textbf{2} & El sistema comprueba si existe el enlace. \\
             \hline
-             & & & \\
+            & & \textbf{3} & El sistema devuelve los datos del enlace guardado. \\
             \hline
         \end{tabular}
         
@@ -1371,37 +1449,37 @@ activación.
             \cline{1-4}
             \rowcolor{SeaGreen} \multicolumn{4}{|l|}{\textbf{Otros datos}} \\
             \cline{1-4}
-            \textbf{Frecuencia \newline esperada} &  & \textbf{Rendimiento} &  \\
+            \textbf{Frecuencia \newline esperada} & Alta & \textbf{Rendimiento} & Media \\
             \hline
-            \textbf{Importancia} & & \textbf{Urgencia} & \\
+            \textbf{Importancia} & Media & \textbf{Urgencia} & Baja\\
             \hline
-            \textbf{Estado} & & \textbf{Estabilidad} & \\
+            \textbf{Estado} & & \textbf{Estabilidad} & Alta \\
             \hline
         \end{tabular}
         
-        \caption{Caso de uso 17:}
+        \caption{Caso de uso 17: Consultar los datos de un enlace.}
         \label{table:caso-de-uso-17}
     \end{table}
     
     \newpage
     
-    \item Caso de uso 18: 
+    \item Caso de uso 19: Consultar el historial de un enlace.
     
     \begin{table}[h!]
         \centering
         \begin{tabular}{|l|p{0.753\textwidth}|}
             \hline
-            \textbf{Casos de Uso}   &   (CU\_18). \\
+            \textbf{Casos de Uso}   &   Consultar el historial de un enlace (CU\_19). \\
             \hline 
-            \textbf{Actores}        &       \\ 
+            \textbf{Actores}        &   Enlace (Principal) y Usuario (Secundario). \\ 
             \hline 
             \textbf{Tipo}           &   Primario y esencial. \\ 
             \hline
-            \textbf{Referencias}    &       \\ 
+            \textbf{Referencias}    &   RF-3.8. \\ 
             \hline
-            \textbf{Precondición}   &       \\ 
+            \textbf{Precondición}   &   El dispositivo debe de estar registrado en el sistema. \\ 
             \hline
-            \textbf{Postcondición}  &       \\ 
+            \textbf{Postcondición}  &   El usuario obtendrá el historial de un dispositivo. \\ 
             \hline
         \end{tabular}
         
@@ -1411,7 +1489,7 @@ activación.
             \hline
             \rowcolor{SeaGreen} \textbf{Propósito} \\
             \hline
-            \multicolumn{1}{|p{12cm}|}{} \\ [0.5ex]
+            \multicolumn{1}{|p{12cm}|}{Permitir al usuario consultar el historial de un dispositivo.} \\ [0.5ex]
             \hline
         \end{tabular}
         
@@ -1421,7 +1499,9 @@ activación.
             \hline
             \rowcolor{SeaGreen} \textbf{Resumen} \\
             \hline
-            \multicolumn{1}{|p{12cm}|}{} \\ [0.5ex]
+            \multicolumn{1}{|p{12cm}|}{Gracias al tecnología Blockchain, se puede obtener todas las transacciones
+            realizadas y con ello poder ver los diferentes cambios que ha tenido un enlace, desde su momento
+            de creación hasta ahora.} \\ [0.5ex]
             \hline
         \end{tabular}
         
@@ -1431,11 +1511,11 @@ activación.
             \cline{1-4}
             \rowcolor{SeaGreen} \multicolumn{4}{|l|}{\textbf{Curso Normal}} \\
             \cline{1-4}
-            \textbf{1} & Actor1: Acción realizada por el actor &  &  \\
+            \textbf{1} & Usuario: solicita consultar el historial del enlace. &  &  \\
             \hline
-            \textbf{2} & Actor1: Acción realizada por el actor & \textbf{3} & Acción realizada por el sistema \\
+            & & \textbf{2} & El sistema comprueba si existe el enlace. \\
             \hline
-             & & & \\
+            & & \textbf{3} & El sistema devuelve el historial del enlace guardado. \\
             \hline
         \end{tabular}
         
@@ -1445,94 +1525,20 @@ activación.
             \cline{1-4}
             \rowcolor{SeaGreen} \multicolumn{4}{|l|}{\textbf{Otros datos}} \\
             \cline{1-4}
-            \textbf{Frecuencia \newline esperada} &  & \textbf{Rendimiento} &  \\
+            \textbf{Frecuencia \newline esperada} & Alta & \textbf{Rendimiento} & Media \\
             \hline
-            \textbf{Importancia} & & \textbf{Urgencia} & \\
+            \textbf{Importancia} & Media & \textbf{Urgencia} & Baja \\
             \hline
-            \textbf{Estado} & & \textbf{Estabilidad} & \\
+            \textbf{Estado} & & \textbf{Estabilidad} & Alta \\
             \hline
         \end{tabular}
         
-        \caption{Caso de uso 18:}
+        \caption{Caso de uso 18: Consultar el historial de un enlace.}
         \label{table:caso-de-uso-18}
     \end{table}
     
     \newpage
-
-    \item Caso de uso 19: 
-    
-    \begin{table}[h!]
-        \centering
-        \begin{tabular}{|l|p{0.753\textwidth}|}
-            \hline
-            \textbf{Casos de Uso}   &   (CU\_19). \\
-            \hline 
-            \textbf{Actores}        &       \\ 
-            \hline 
-            \textbf{Tipo}           &   Primario y esencial. \\
-            \hline
-            \textbf{Referencias}    &       \\ 
-            \hline
-            \textbf{Precondición}   &       \\ 
-            \hline
-            \textbf{Postcondición}  &       \\ 
-            \hline
-        \end{tabular}
-        
-        \vspace{5mm}
-        
-        \begin{tabular}{|p{\textwidth}|}
-            \hline
-            \rowcolor{SeaGreen} \textbf{Propósito} \\
-            \hline
-            \multicolumn{1}{|p{12cm}|}{} \\ [0.5ex]
-            \hline
-        \end{tabular}
-        
-        \vspace{5mm}
-        
-        \begin{tabular}{|p{\textwidth}|}
-            \hline
-            \rowcolor{SeaGreen} \textbf{Resumen} \\
-            \hline
-            \multicolumn{1}{|p{12cm}|}{} \\ [0.5ex]
-            \hline
-        \end{tabular}
-        
-        \vspace{5mm}
-        
-        \begin{tabular}{|p{0.01\textwidth}|p{0.438\textwidth}|p{0.01\textwidth}|p{0.438\textwidth}|}
-            \cline{1-4}
-            \rowcolor{SeaGreen} \multicolumn{4}{|l|}{\textbf{Curso Normal}} \\
-            \cline{1-4}
-            \textbf{1} & Actor1: Acción realizada por el actor &  &  \\
-            \hline
-            \textbf{2} & Actor1: Acción realizada por el actor & \textbf{3} & Acción realizada por el sistema \\
-            \hline
-             & & & \\
-            \hline
-        \end{tabular}
-        
-        \vspace{5mm}
-        
-        \begin{tabular}{|p{0.224\textwidth}|p{0.224\textwidth}|p{0.224\textwidth}|p{0.224\textwidth}|}
-            \cline{1-4}
-            \rowcolor{SeaGreen} \multicolumn{4}{|l|}{\textbf{Otros datos}} \\
-            \cline{1-4}
-            \textbf{Frecuencia \newline esperada} &  & \textbf{Rendimiento} &  \\
-            \hline
-            \textbf{Importancia} & & \textbf{Urgencia} & \\
-            \hline
-            \textbf{Estado} & & \textbf{Estabilidad} & \\
-            \hline
-        \end{tabular}
-        
-        \caption{Caso de uso 19:}
-        \label{table:caso-de-uso-19}
-    \end{table}
 \end{itemize}
-
-\subsubsection{Diagramas de casos de uso.}
 
 \subsubsection{Diagramas de clase.}
 
