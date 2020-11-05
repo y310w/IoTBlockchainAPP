@@ -25,6 +25,7 @@ sorting=ynt
 
 \usepackage[pdfborder={000}]{hyperref}
 \usepackage[dvipsnames]{xcolor}
+\usepackage{csquotes}
 
 % ********************************************************************
 % Re-usable information
@@ -43,17 +44,6 @@ Telecomunicación\xspace}
 \newcommand{\myLocation}{Granada\xspace}
 \newcommand{\myTime}{\today\xspace}
 \newcommand{\myVersion}{Version 0.1\xspace}
-
-
-\hypersetup{
-    pdfauthor = {\myName ftm1997@correo.ugr.es},
-    pdftitle = {\myTitle},
-    pdfsubject = {\mySubTitle},
-    pdfkeywords = {palabra_clave1, palabra_clave2, palabra_clave3, ...},
-    pdfcreator = {LaTeX con el paquete ....},
-    pdfproducer = {pdflatex}
-}
-
 \usepackage{url}
 \usepackage{colortbl,longtable}
 \usepackage[stable]{footmisc}
@@ -61,7 +51,7 @@ Telecomunicación\xspace}
 \pagestyle{fancy}
 \fancyhf{}
 \fancyhead[LO]{\nouppercase{\leftmark}}
-\fancyfoot[LE,RO]{\thepage}
+\fancyfoot[L,RO]{\thepage}
 
 \setlength{\headheight}{1.5\headheight}
 
