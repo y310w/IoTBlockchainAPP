@@ -1,17 +1,1547 @@
-\section{Sistema propuesto}
+\section{Sistema propuesto.}
 
-\subsection{Análisis de Requisitos de Usuario}
+En esta sección vamos a exponer los requisitos extraidos del análisis de la descripción del proyecto, que se van a 
+especificar en los requisitos funcionales y no funcionales, los caso de uso, sus actores y diagramas de clase y secuencia.
+Se comentará sobre la arquitectura que se ha elaborado para la prueba de concepto y qué planificación y presupuesto se
+ha llevado a cabo.
 
-\subsection{Diagramas y descripción de casos de uso}
+\subsection{Análisis de requerimientos.}
 
-\subsection{Requisitos funcionales}
+\subsubsection{Requisitos funcionales.}
 
-\subsection{Requisitos no funcionales}
+\paragraph{RF-1. Gestión de usuarios.} Habrá dos actores principales: los usuarios finales y el administrador.
 
-\subsection{Arquitectura del sistema}
+\begin{itemize}
+    \item[] RF-1.1. El usuario podrá solicitar darse de alta.
+    \item[] RF-1.2. El usuario podrá solicitar darse de baja.
+    \item[] RF-1.3. El administrador podrá dar de alta a un usuario en la red Blockchain.
+    \item[] RF-1.4. El administrador podrá revocar el certificado de un usuario en la red Blockchain.
+    \item[] RF-1.5. El administrador podrá renovar el certificado de un usuario en la red Blockchain.
+\end{itemize}
 
-\subsection{Planificación y Presupuesto del proyecto}
+\paragraph{RF-2. Gestión de dispositivos.} El sistema permitirá la gestión de dispositivos IoT de los usuarios, dentro de 
+la aplicación. Podemos catalogar los dispositivos entre: sensores y actuadores.
 
-\subsection{Conclusión}
+\begin{itemize}
+    \item[] RF-2.1. El usuario tendrá permitido añadir un dispositivo indicando un nombre, su número serial y su dirección
+    IP.
+    \item[] RF-2.2. El usuario podrá establecer un valor númerico al sensor como valor de entrada y se comprobará las 
+    condiciones de sus enlaces en el cual se encuentre involucrado.
+    \item[] RF-2.3. El usuario no podrá establecer un valor númerico al actuador, se dejará por defecto el -1.
+    \item[] RF-2.4. El usuario podrá borrar el dispositivo de la red, indicando el número serial.
+    \item[] RF-2.5. El usuario podrá consultar todos los dispositivos añadidos a la aplicación.
+    \item[] RF-2.6. El usuario podrá consultar los datos del dispositivo indicando el número serial.
+    \item[] RF-2.7. El usuario podrá consultar el historial de un dispositivos indicando el número serial.
+\end{itemize}
+
+\paragraph{RF-3. Gestión de enlaces.} El sistema permitirá la gestión de enlaces de dispositivos IoT dentro de la 
+aplicación. Los enlaces  viene a representar la relación que hay entre un sensor y un actuador, mediante una condición de 
+activación.
+
+\begin{itemize}
+    \item[] RF-3.1. El usuario tendrá permitido añadir un enlace indicando los dispositivos que lo forman (el número 
+    serial del sensor y el número serial del actuador), la región donde se encuentre los dispositivo, y una condición, 
+    formada por una variable, acompañado de un operador de comparación y un valor númerico. Al añadirse, tendrá su estado 
+    activado por defecto.
+    \item[] RF-3.2. El usuario podrá actualizar un enlace, indicando su ID (hash del número serial del sensor y el 
+    actuador). Podrá cambiar la condición y la región.
+    \item[] RF-3.3. El usuario podrá borrar un enlace, indicando su ID.
+    \item[] RF-3.4. El usuario podrá habilitar un enlace, y se mandará una señal de activación al actuador. 
+    \item[] RF-3.5. El usuario podrá deshabilitar un enlace, y se mandará una señal de desactivación al actuador.
+    \item[] RF-3.6. El usuario podrá consultar todos los enlaces añadidos a la aplicación.
+    \item[] RF-3.6. El usuario podrá consultar los datos del enlace indicando el ID del mismo.
+    \item[] RF-3.7. El usuario podrá consultar el historial de un enlace indicando el ID del mismo.
+\end{itemize}
+
+\subsubsection{Requisitos no funcionales.}
+
+\begin{itemize}
+    \item[] RNF-1. La aplicación ha de ser accesible desde fuera de la red local, con cualquier dispositivo, smartphone, 
+    table, portatil o sobremesa
+    \item[] RNF-2. La aplicación tiene que ser compatible con diferentes navegadores.
+    \item[] RNF-3. Se establecerán conexiones seguras dentro de la aplicación, cifrando las peticiones HTTP.
+    \item[] RNF-4. La aplicación tiene que cumplir los criterios de PWA, tiene que trabajar de forma offline, mandar
+    notificaciones y soportar la sincronización en segundo plano.
+    \item[] RNF-5. La aplicación tiene que adaptarse a cualquier dimension de pantalla, es decir, tiene que ser responsive.
+    \item[] RNF-6. La aplicación tiene que cumplir niveles de rendimiento, accesibilidad y SEO\footnote{ SEO significa 
+    Search Engine Optimization (optimización de motores de búsqueda), que es la práctica de aumentar la cantidad y la 
+    calidad del tráfico se un sitio web a través de los resultados orgánicos de los motores de búsqueda \cite{what-is-seo}. 
+    \label{fnlabel}} aceptables, utilizando la aplicación LightHouse\footnote{ Es una herramienta elaborada por Google de 
+    código abierto para mejorar la calidad de las páginas web \cite{lighthouse}. \label{fnlabel}}.
+    \item[] RNF-7. La interfaz ha de ser clara e intuitiva.
+    \item[] RNF-8. Se realizarán test a la aplicación.
+    \item[] RNF-8. No se requerirá de conocimientos previos para el uso de la aplicación.
+    \item[] RNF-9. La API tiene que ser accesible desde la aplicación, para realizar cualquier petición directamente
+    a la red Blockchain.
+\end{itemize}
+
+\subsection{Especificación.}
+
+\subsubsection{Actores de los casos de uso.}
+
+\begin{itemize}
+    \item \textbf{Entorno}: es el actor vinculado al medio ambiente, se incluye lo referente al aire, la temperatura, la humedad,
+    el tiempo atmosférico, etc. Los sensores se van a encargar de recoger eso datos del exterior y manejarlos.
+    \item \textbf{Dispositivo}: es el actor que realiza un mecanismo con una función específica. Podemos diferenciar entre sensores
+    y actuadores.
+    \item \textbf{Usuario}: es el actor que puede usar las principales funcionalidades que ofrece la aplicación una vez que 
+    tenga un certificado de autoridad dentro de la red Blockchain. Podrá llevar una gestión de sus dispositivos y enlaces dentro
+    de la aplicación y gracias a la tecnología Blockchain, podrá ver toda la trazabilidad de las transacciones realizadas y 
+    resistente a modificaciones.
+    \item \textbf{Administrador}: es el actor encargado de la gestión de usuarios, se encargará de administrar todo lo relacionado
+    con los certificados de autoridad de cada usuario del sistema.
+\end{itemize}
+
+\subsubsection{Especificación de casos de uso.}
+
+\begin{itemize}
+    \item Caso de uso 1: Solicitar dar de alta a un usuario.
+    
+    \begin{table}[h!]
+        \centering
+        \begin{tabular}{|l|p{0.753\textwidth}|}
+            \hline
+            \textbf{Casos de Uso}   &   Dar de alta a un usuario (CU\_01). \\
+            \hline 
+            \textbf{Actores}        &   Usuario (Principal) y Administrador (Secundario). \\ 
+            \hline 
+            \textbf{Tipo}           &   Primario y esencial. \\
+            \hline
+            \textbf{Referencias}    &   RF-1.1., RF-1.3. \\ 
+            \hline
+            \textbf{Precondición}   &   El usuario no debe de tener un certificado de autoridad asociada en la red. \\ 
+            \hline
+            \textbf{Postcondición}  &   El usuario tendrá un certificado de autoridad. \\ 
+            \hline
+        \end{tabular}
+        
+        \vspace{5mm}
+        
+        \begin{tabular}{|p{\textwidth}|}
+            \hline
+            \rowcolor{SeaGreen} \textbf{Propósito} \\
+            \hline
+            \multicolumn{1}{|p{12cm}|}{El usuario obtendrá el certificado de autoridad para poder realizar operaciones en el sistema, firmando las 
+            transacciones.} \\ [0.5ex]
+            \hline
+        \end{tabular}
+        
+        \vspace{5mm}
+        
+        \begin{tabular}{|p{\textwidth}|}
+            \hline
+            \rowcolor{SeaGreen} \textbf{Resumen} \\
+            \hline
+            \multicolumn{1}{|p{12cm}|}{El usuario solicitará al administrador la petición de darse de alta del sistem. El administrador se encargará de 
+            crear el certificado de autoridad del usuario y lo guardará en la cartera, para que el usuario pueda realizar acciones en la 
+            aplicación.} \\ [0.5ex]
+            \hline
+        \end{tabular}
+        
+        \vspace{5mm}
+        
+        \begin{tabular}{|p{0.01\textwidth}|p{0.438\textwidth}|p{0.01\textwidth}|p{0.438\textwidth}|}
+            \cline{1-4}
+            \rowcolor{SeaGreen} \multicolumn{4}{|l|}{\textbf{Curso Normal}} \\
+            \cline{1-4}
+            \textbf{1} & Usuario: manda petición de darse de alta. & & \\
+            \hline
+            \textbf{2} & Administrador: manda petición para crear el certificado de autoridad. & & \\
+            \hline
+             & & \textbf{3} & El sistema crea el certificado de autoridad. \\
+            \hline
+             & & \textbf{4} & El sistema guarda el certificado en la cartera (wallet). \\
+            \hline
+        \end{tabular}
+        
+        \vspace{5mm}
+        
+        \begin{tabular}{|p{0.224\textwidth}|p{0.224\textwidth}|p{0.224\textwidth}|p{0.224\textwidth}|}
+            \cline{1-4}
+            \rowcolor{SeaGreen} \multicolumn{4}{|l|}{\textbf{Otros datos}} \\
+            \cline{1-4}
+            \textbf{Frecuencia \newline esperada} & Media & \textbf{Rendimiento} &  \\
+            \hline
+            \textbf{Importancia} & Alta & \textbf{Urgencia} & Alta \\
+            \hline
+            \textbf{Estado} & & \textbf{Estabilidad} & Alta \\
+            \hline
+        \end{tabular}
+        
+        \caption{Caso de uso 1: Dar de alta a un usuario.}
+        \label{table:caso-de-uso-1}
+    \end{table}
+    
+    \newpage
+    
+    \item Caso de uso 2: Solicitar dar de baja a un usuario. 
+    
+    \begin{table}[h!]
+        \centering
+        \begin{tabular}{|l|p{0.753\textwidth}|}
+            \hline
+            \textbf{Casos de Uso}   &   Dar de baja a un usuario (CU\_02). \\
+            \hline 
+            \textbf{Actores}        &   Usuario (Principal) y Administrador (Secundario). \\ 
+            \hline 
+            \textbf{Tipo}           &   Primario y esencial. \\
+            \hline
+            \textbf{Referencias}    &   RF-1.2., RF-1.4.\\ 
+            \hline
+            \textbf{Precondición}   &   El usuario debe de tener un certificado de autoridad asociada en la red.\\ 
+            \hline
+            \textbf{Postcondición}  &   El usuario no tendra un certificado de autoridad.\\ 
+            \hline
+        \end{tabular}
+        
+        \vspace{5mm}
+        
+        \begin{tabular}{|p{\textwidth}|}
+            \hline
+            \rowcolor{SeaGreen} \textbf{Propósito} \\
+            \hline
+            \multicolumn{1}{|p{12cm}|}{El usuario perderá el certificado de autoridad y por tanto no podrá realizar
+            ninguna operación en la red.} \\ [0.5ex]
+            \hline
+        \end{tabular}
+        
+        \vspace{5mm}
+        
+        \begin{tabular}{|p{\textwidth}|}
+            \hline
+            \rowcolor{SeaGreen} \textbf{Resumen} \\
+            \hline
+            \multicolumn{1}{|p{12cm}|}{El usuario solicitará al administrador la petición de darse de baja del sistema. El administrador
+            se encargará de revocar el certificado de autoridad del usuario. El certificado de autoridad se borrará de la cartera (wallet).} \\ [0.5ex]
+            \hline
+        \end{tabular}
+        
+        \vspace{5mm}
+        
+        \begin{tabular}{|p{0.01\textwidth}|p{0.438\textwidth}|p{0.01\textwidth}|p{0.438\textwidth}|}
+            \cline{1-4}
+            \rowcolor{SeaGreen} \multicolumn{4}{|l|}{\textbf{Curso Normal}} \\
+            \cline{1-4}
+            \textbf{1} & Usuario: manda petición de darse de baja. & & \\
+            \hline
+            \textbf{2} & Administrador: manda petición para revocar el certificado de autoridad. & & \\
+            \hline
+             & & \textbf{3} & El sistema revoca el certificado de autoridad. \\
+            \hline
+             & & \textbf{4} & El sistema borra el certificado de la cartera (wallet). \\
+            \hline
+        \end{tabular}
+        
+        \vspace{5mm}
+        
+        \begin{tabular}{|p{0.224\textwidth}|p{0.224\textwidth}|p{0.224\textwidth}|p{0.224\textwidth}|}
+            \cline{1-4}
+            \rowcolor{SeaGreen} \multicolumn{4}{|l|}{\textbf{Otros datos}} \\
+            \cline{1-4}
+            \textbf{Frecuencia \newline esperada} & Media & \textbf{Rendimiento} &  \\
+            \hline
+            \textbf{Importancia} & Alta & \textbf{Urgencia} & Alta \\
+            \hline
+            \textbf{Estado} & & \textbf{Estabilidad} & Alta \\
+            \hline
+        \end{tabular}
+        
+        \caption{Caso de uso 2: Solicitar dar de baja a un usuario.}
+        \label{table:caso-de-uso-2}
+    \end{table}
+
+    \newpage
+
+    \item Caso de uso 3: Dar de alta a un usuario. 
+    
+    \begin{table}[h!]
+        \centering
+        \begin{tabular}{|l|p{0.753\textwidth}|}
+            \hline
+            \textbf{Casos de Uso}   &   Dar de alta a un usuario (CU\_03). \\
+            \hline 
+            \textbf{Actores}        &   Administrador (Principal) y Usuario (Secundario)\\ 
+            \hline 
+            \textbf{Tipo}           &   Primario y esencial. \\ 
+            \hline
+            \textbf{Referencias}    &   RF-1.3., RF-1.1. \\ 
+            \hline
+            \textbf{Precondición}   &   El Administrador debe de recibir una solicitud de dar de alta. \\ 
+            \hline
+            \textbf{Postcondición}  &   El certificado de autoridad se guarda en el sistema. \\ 
+            \hline
+        \end{tabular}
+        
+        \vspace{5mm}
+        
+        \begin{tabular}{|p{\textwidth}|}
+            \hline
+            \rowcolor{SeaGreen} \textbf{Propósito} \\
+            \hline
+            \multicolumn{1}{|p{12cm}|}{El administrador mandará la solicitud al sistema, para crear el certificado de autoridad.} \\ [0.5ex]
+            \hline
+        \end{tabular}
+        
+        \vspace{5mm}
+        
+        \begin{tabular}{|p{\textwidth}|}
+            \hline
+            \rowcolor{SeaGreen} \textbf{Resumen} \\
+            \hline
+            \multicolumn{1}{|p{12cm}|}{El administrador se encargará de crear el certificado de autoridad del usuario y
+            lo guardará en la cartera, para que el usuario pueda realizar acciones en la aplicación.} \\ [0.5ex]
+            \hline
+        \end{tabular}
+        
+        \vspace{5mm}
+        
+        \begin{tabular}{|p{0.01\textwidth}|p{0.438\textwidth}|p{0.01\textwidth}|p{0.438\textwidth}|}
+            \cline{1-4}
+            \rowcolor{SeaGreen} \multicolumn{4}{|l|}{\textbf{Curso Normal}} \\
+            \cline{1-4}
+            \textbf{1} & Administrador: manda petición para crear el certificado de autoridad. &  &  \\
+            \hline
+             & & \textbf{2} & El sistema crea el certificado de autoridad. \\
+            \hline
+             & & \textbf{3} & El sistema guarda el certificado en la cartera (wallet). \\
+            \hline
+        \end{tabular}
+        
+        \vspace{5mm}
+        
+        \begin{tabular}{|p{0.224\textwidth}|p{0.224\textwidth}|p{0.224\textwidth}|p{0.224\textwidth}|}
+            \cline{1-4}
+            \rowcolor{SeaGreen} \multicolumn{4}{|l|}{\textbf{Otros datos}} \\
+            \cline{1-4}
+            \textbf{Frecuencia \newline esperada} & Media & \textbf{Rendimiento} &  \\
+            \hline
+            \textbf{Importancia} & Alta & \textbf{Urgencia} & Alta \\
+            \hline
+            \textbf{Estado} & & \textbf{Estabilidad} & Alta \\
+            \hline
+        \end{tabular}
+        
+        \caption{Caso de uso 3: Dar de alta a un usuario.}
+        \label{table:caso-de-uso-3}
+    \end{table}
+    
+    \newpage
+    
+    \item Caso de uso 4: Dar de baja a un usuario.
+    
+    \begin{table}[h!]
+        \centering
+        \begin{tabular}{|l|p{0.753\textwidth}|}
+            \hline
+            \textbf{Casos de Uso}   &   Dar de baja a un usuario (CU\_04). \\
+            \hline 
+            \textbf{Actores}        &   Administrador (Principal) y Usuario (Secundario). \\ 
+            \hline 
+            \textbf{Tipo}           &   Primario y esencial. \\ 
+            \hline
+            \textbf{Referencias}    &   RF-1.4., RF-1.2.\\ 
+            \hline
+            \textbf{Precondición}   &   Debe de existir un certificado de autoridad asociado al usuario.\\ 
+            \hline
+            \textbf{Postcondición}  &   Se revoca el certificado.\\ 
+            \hline
+        \end{tabular}
+        
+        \vspace{5mm}
+        
+        \begin{tabular}{|p{\textwidth}|}
+            \hline
+            \rowcolor{SeaGreen} \textbf{Propósito} \\
+            \hline
+            \multicolumn{1}{|p{12cm}|}{El administrador mandará la solicitud al sistema, para revocar el certificado
+            de autoridad del usuario.} \\ [0.5ex]
+            \hline
+        \end{tabular}
+        
+        \vspace{5mm}
+        
+        \begin{tabular}{|p{\textwidth}|}
+            \hline
+            \rowcolor{SeaGreen} \textbf{Resumen} \\
+            \hline
+            \multicolumn{1}{|p{12cm}|}{El administrador se encargará de revocar el certificado de autoridad del usuario.
+            El certificado de autoridad se borrará de la cartera (wallet).} \\ [0.5ex]
+            \hline
+        \end{tabular}
+        
+        \vspace{5mm}
+        
+        \begin{tabular}{|p{0.01\textwidth}|p{0.438\textwidth}|p{0.01\textwidth}|p{0.438\textwidth}|}
+            \cline{1-4}
+            \rowcolor{SeaGreen} \multicolumn{4}{|l|}{\textbf{Curso Normal}} \\
+            \cline{1-4}
+            \textbf{1} & Administrador: manda petición para revocar el certificado de autoridad. &  &  \\
+            \hline
+             & & \textbf{2} & El sistema revoca el certificado de autoridad. \\
+            \hline
+             & & \textbf{3} & El sistema borra el certificado de autoridad de la carter (wallet). \\
+            \hline
+        \end{tabular}
+        
+        \vspace{5mm}
+        
+        \begin{tabular}{|p{0.224\textwidth}|p{0.224\textwidth}|p{0.224\textwidth}|p{0.224\textwidth}|}
+            \cline{1-4}
+            \rowcolor{SeaGreen} \multicolumn{4}{|l|}{\textbf{Otros datos}} \\
+            \cline{1-4}
+            \textbf{Frecuencia \newline esperada} & Media & \textbf{Rendimiento} &  \\
+            \hline
+            \textbf{Importancia} & Alta & \textbf{Urgencia} & Alta \\
+            \hline
+            \textbf{Estado} & & \textbf{Estabilidad} & Alta \\
+            \hline
+        \end{tabular}
+        
+        \caption{Caso de uso 4: Dar de baja a un usuario.}
+        \label{table:caso-de-uso-4}
+    \end{table}
+    
+    \newpage
+
+    \item Caso de uso 5: Renovar el certificado de autoridad del usuario.
+    
+    \begin{table}[h!]
+        \centering
+        \begin{tabular}{|l|p{0.753\textwidth}|}
+            \hline
+            \textbf{Casos de Uso}   &   Renovar el certificado de autoridad del usuario (CU\_05). \\
+            \hline 
+            \textbf{Actores}        &   Administrador (Principal) y Usuario (Secundario). \\ 
+            \hline 
+            \textbf{Tipo}           &   Primario y esencial. \\ 
+            \hline
+            \textbf{Referencias}    &   RF-1.5., RF-1.4.\\ 
+            \hline
+            \textbf{Precondición}   &  Debe de existir un certificado de autoridad asociado al usuario y tiene que 
+            haber expirado la fecha de finalización del certificado. \\ 
+            \hline
+            \textbf{Postcondición}  &  Se emite un nuevo certificado de autoridad para el usuario. \\ 
+            \hline
+        \end{tabular}
+        
+        \vspace{5mm}
+        
+        \begin{tabular}{|p{\textwidth}|}
+            \hline
+            \rowcolor{SeaGreen} \textbf{Propósito} \\
+            \hline
+            \multicolumn{1}{|p{12cm}|}{El administrador mandará la solicitud al sistema, para renovar el 
+            certificado de autoridad del usuario.} \\ [0.5ex]
+            \hline
+        \end{tabular}
+        
+        \vspace{5mm}
+        
+        \begin{tabular}{|p{\textwidth}|}
+            \hline
+            \rowcolor{SeaGreen} \textbf{Resumen} \\
+            \hline
+            \multicolumn{1}{|p{12cm}|}{El administrado manda la petición de renovación, que consiste en la emisión de un nuevo 
+            certificado para que el sistema (CA) extienda la vida útil de la misma más allá de la fecha de finalización del certificado
+            original.} \\ [0.5ex]
+            \hline
+        \end{tabular}
+        
+        \vspace{5mm}
+        
+        \begin{tabular}{|p{0.01\textwidth}|p{0.438\textwidth}|p{0.01\textwidth}|p{0.438\textwidth}|}
+            \cline{1-4}
+            \rowcolor{SeaGreen} \multicolumn{4}{|l|}{\textbf{Curso Normal}} \\
+            \cline{1-4}
+            \textbf{1} & Administrador: comprueba la fecha de expiración del certificado. &  &  \\
+            \hline
+            \textbf{2} & Administrador: manda la petición para renovar el certificado. & & \\
+            \hline
+             & & \textbf{3} & El sistema renueva el certificado de autoridad. \\
+            \hline
+             & & \textbf{4} & El sistema guarda el certificado en la cartera (wallet). \\
+             \hline
+        \end{tabular}
+        
+        \vspace{5mm}
+        
+        \begin{tabular}{|p{0.224\textwidth}|p{0.224\textwidth}|p{0.224\textwidth}|p{0.224\textwidth}|}
+            \cline{1-4}
+            \rowcolor{SeaGreen} \multicolumn{4}{|l|}{\textbf{Otros datos}} \\
+            \cline{1-4}
+            \textbf{Frecuencia \newline esperada} & Media & \textbf{Rendimiento} & Alta \\
+            \hline
+            \textbf{Importancia} & Alta & \textbf{Urgencia} & Media \\
+            \hline
+            \textbf{Estado} & & \textbf{Estabilidad} & Alta \\
+            \hline
+        \end{tabular}
+        
+        \caption{Caso de uso 5: Renovar el certificado de autoridad del usuario.}
+        \label{table:caso-de-uso-5}
+    \end{table}
+    
+    \newpage
+    
+    \item Caso de uso 6: Añadir un dispositivo.
+    
+    \begin{table}[h!]
+        \centering
+        \begin{tabular}{|l|p{0.753\textwidth}|}
+            \hline
+            \textbf{Casos de Uso}   &   Añadir un dispositivo (CU\_06). \\
+            \hline 
+            \textbf{Actores}        &   Dispositivo (Principal). \\ 
+            \hline 
+            \textbf{Tipo}           &   Primario y esencial. \\ 
+            \hline
+            \textbf{Referencias}    &   RF-2.1. \\ 
+            \hline
+            \textbf{Precondición}   &   No debe de existir un dispositivo con el mismo número serial o direccón IP en el sistema. \\ 
+            \hline
+            \textbf{Postcondición}  &   Se añade el nuevo dispositivo con valor -1. \\ 
+            \hline
+        \end{tabular}
+        
+        \vspace{5mm}
+        
+        \begin{tabular}{|p{\textwidth}|}
+            \hline
+            \rowcolor{SeaGreen} \textbf{Propósito} \\
+            \hline
+            \multicolumn{1}{|p{12cm}|}{El usuario podrá añadir un dispositivo que no esté registrado anteriormente.} \\ [0.5ex]
+            \hline
+        \end{tabular}
+        
+        \vspace{5mm}
+        
+        \begin{tabular}{|p{\textwidth}|}
+            \hline
+            \rowcolor{SeaGreen} \textbf{Resumen} \\
+            \hline
+            \multicolumn{1}{|p{12cm}|}{El usuario introducirá los datos asociados con el dispositivo, que son el nombre, el número serial 
+            y la dirección IP. Se comprobará que no haya un dispositivo existente con el número serial y la dirección IP iguales, en ese 
+            caso se añadirá el dispositivo con el atributo valor -1 por defecto.} \\ [0.5ex]
+            \hline
+        \end{tabular}
+        
+        \vspace{5mm}
+        
+        \begin{tabular}{|p{0.01\textwidth}|p{0.438\textwidth}|p{0.01\textwidth}|p{0.438\textwidth}|}
+            \cline{1-4}
+            \rowcolor{SeaGreen} \multicolumn{4}{|l|}{\textbf{Curso Normal}} \\
+            \cline{1-4}
+            \textbf{1} & Usuario: introducirá los datos del dispositivo. &  &  \\
+            \hline
+             & & \textbf{2} & El sistema comprueba los datos introducidos. \\
+            \hline
+             & & \textbf{3} & El sistema valida los datos y guarda el nuevo dispositivo en la red Blockchain. \\
+            \hline
+        \end{tabular}
+        
+        \vspace{5mm}
+        
+        \begin{tabular}{|p{0.224\textwidth}|p{0.224\textwidth}|p{0.224\textwidth}|p{0.224\textwidth}|}
+            \cline{1-4}
+            \rowcolor{SeaGreen} \multicolumn{4}{|l|}{\textbf{Otros datos}} \\
+            \cline{1-4}
+            \textbf{Frecuencia \newline esperada} & Alta & \textbf{Rendimiento} & Media \\
+            \hline
+            \textbf{Importancia} & Media & \textbf{Urgencia} & Baja \\
+            \hline
+            \textbf{Estado} & & \textbf{Estabilidad} & Alta \\
+            \hline
+        \end{tabular}
+        
+        \caption{Caso de uso 6: Añadir un dispositivo.}
+        \label{table:caso-de-uso-6}
+    \end{table}
+    
+    \newpage
+
+    \item Caso de uso 7: Modificar el valor de entrada de un sensor.
+    
+    \begin{table}[h!]
+        \centering
+        \begin{tabular}{|l|p{0.753\textwidth}|}
+            \hline
+            \textbf{Casos de Uso}   &   Modificar el valor de entrada de un sensor (CU\_07). \\
+            \hline 
+            \textbf{Actores}        &   Dispositivo (Principal), Entorno (Secundario) y Usuario (Secundario). \\ 
+            \hline 
+            \textbf{Tipo}           &   Primario y esencial. \\ 
+            \hline
+            \textbf{Referencias}    &       \\ 
+            \hline
+            \textbf{Precondición}   &       \\ 
+            \hline
+            \textbf{Postcondición}  &       \\ 
+            \hline
+        \end{tabular}
+        
+        \vspace{5mm}
+        
+        \begin{tabular}{|p{\textwidth}|}
+            \hline
+            \rowcolor{SeaGreen} \textbf{Propósito} \\
+            \hline
+            \multicolumn{1}{|p{12cm}|}{} \\ [0.5ex]
+            \hline
+        \end{tabular}
+        
+        \vspace{5mm}
+        
+        \begin{tabular}{|p{\textwidth}|}
+            \hline
+            \rowcolor{SeaGreen} \textbf{Resumen} \\
+            \hline
+            \multicolumn{1}{|p{12cm}|}{} \\ [0.5ex]
+            \hline
+        \end{tabular}
+        
+        \vspace{5mm}
+        
+        \begin{tabular}{|p{0.01\textwidth}|p{0.438\textwidth}|p{0.01\textwidth}|p{0.438\textwidth}|}
+            \cline{1-4}
+            \rowcolor{SeaGreen} \multicolumn{4}{|l|}{\textbf{Curso Normal}} \\
+            \cline{1-4}
+            \textbf{1} & Actor1: Acción realizada por el actor &  &  \\
+            \hline
+            \textbf{2} & Actor1: Acción realizada por el actor & \textbf{3} & Acción realizada por el sistema \\
+            \hline
+             & & & \\
+            \hline
+        \end{tabular}
+        
+        \vspace{5mm}
+        
+        \begin{tabular}{|p{0.224\textwidth}|p{0.224\textwidth}|p{0.224\textwidth}|p{0.224\textwidth}|}
+            \cline{1-4}
+            \rowcolor{SeaGreen} \multicolumn{4}{|l|}{\textbf{Otros datos}} \\
+            \cline{1-4}
+            \textbf{Frecuencia \newline esperada} &  & \textbf{Rendimiento} &  \\
+            \hline
+            \textbf{Importancia} & & \textbf{Urgencia} & \\
+            \hline
+            \textbf{Estado} & & \textbf{Estabilidad} & \\
+            \hline
+        \end{tabular}
+        
+        \caption{Caso de uso 7: Modificar el valor de entrada de un sensor.}
+        \label{table:caso-de-uso-7}
+    \end{table}
+    
+    \newpage
+    
+    \item Caso de uso 8: 
+    
+    \begin{table}[h!]
+        \centering
+        \begin{tabular}{|l|p{0.753\textwidth}|}
+            \hline
+            \textbf{Casos de Uso}   &   (CU\_08). \\
+            \hline 
+            \textbf{Actores}        &       \\ 
+            \hline 
+            \textbf{Tipo}           &   Primario y esencial. \\ 
+            \hline
+            \textbf{Referencias}    &       \\ 
+            \hline
+            \textbf{Precondición}   &       \\ 
+            \hline
+            \textbf{Postcondición}  &       \\ 
+            \hline
+        \end{tabular}
+        
+        \vspace{5mm}
+        
+        \begin{tabular}{|p{\textwidth}|}
+            \hline
+            \rowcolor{SeaGreen} \textbf{Propósito} \\
+            \hline
+            \multicolumn{1}{|p{12cm}|}{} \\ [0.5ex]
+            \hline
+        \end{tabular}
+        
+        \vspace{5mm}
+        
+        \begin{tabular}{|p{\textwidth}|}
+            \hline
+            \rowcolor{SeaGreen} \textbf{Resumen} \\
+            \hline
+            \multicolumn{1}{|p{12cm}|}{} \\ [0.5ex]
+            \hline
+        \end{tabular}
+        
+        \vspace{5mm}
+        
+        \begin{tabular}{|p{0.01\textwidth}|p{0.438\textwidth}|p{0.01\textwidth}|p{0.438\textwidth}|}
+            \cline{1-4}
+            \rowcolor{SeaGreen} \multicolumn{4}{|l|}{\textbf{Curso Normal}} \\
+            \cline{1-4}
+            \textbf{1} & Actor1: Acción realizada por el actor &  &  \\
+            \hline
+            \textbf{2} & Actor1: Acción realizada por el actor & \textbf{3} & Acción realizada por el sistema \\
+            \hline
+             & & & \\
+            \hline
+        \end{tabular}
+        
+        \vspace{5mm}
+        
+        \begin{tabular}{|p{0.224\textwidth}|p{0.224\textwidth}|p{0.224\textwidth}|p{0.224\textwidth}|}
+            \cline{1-4}
+            \rowcolor{SeaGreen} \multicolumn{4}{|l|}{\textbf{Otros datos}} \\
+            \cline{1-4}
+            \textbf{Frecuencia \newline esperada} &  & \textbf{Rendimiento} &  \\
+            \hline
+            \textbf{Importancia} & & \textbf{Urgencia} & \\
+            \hline
+            \textbf{Estado} & & \textbf{Estabilidad} & \\
+            \hline
+        \end{tabular}
+        
+        \caption{Caso de uso 8:}
+        \label{table:caso-de-uso-8}
+    \end{table}
+    
+    \newpage
+
+    \item Caso de uso 9: 
+    
+    \begin{table}[h!]
+        \centering
+        \begin{tabular}{|l|p{0.753\textwidth}|}
+            \hline
+            \textbf{Casos de Uso}   &   (CU\_09). \\
+            \hline 
+            \textbf{Actores}        &       \\ 
+            \hline 
+            \textbf{Tipo}           &   Primario y esencial. \\ 
+            \hline
+            \textbf{Referencias}    &       \\ 
+            \hline
+            \textbf{Precondición}   &       \\ 
+            \hline
+            \textbf{Postcondición}  &       \\ 
+            \hline
+        \end{tabular}
+        
+        \vspace{5mm}
+        
+        \begin{tabular}{|p{\textwidth}|}
+            \hline
+            \rowcolor{SeaGreen} \textbf{Propósito} \\
+            \hline
+            \multicolumn{1}{|p{12cm}|}{} \\ [0.5ex]
+            \hline
+        \end{tabular}
+        
+        \vspace{5mm}
+        
+        \begin{tabular}{|p{\textwidth}|}
+            \hline
+            \rowcolor{SeaGreen} \textbf{Resumen} \\
+            \hline
+            \multicolumn{1}{|p{12cm}|}{} \\ [0.5ex]
+            \hline
+        \end{tabular}
+        
+        \vspace{5mm}
+        
+        \begin{tabular}{|p{0.01\textwidth}|p{0.438\textwidth}|p{0.01\textwidth}|p{0.438\textwidth}|}
+            \cline{1-4}
+            \rowcolor{SeaGreen} \multicolumn{4}{|l|}{\textbf{Curso Normal}} \\
+            \cline{1-4}
+            \textbf{1} & Actor1: Acción realizada por el actor &  &  \\
+            \hline
+            \textbf{2} & Actor1: Acción realizada por el actor & \textbf{3} & Acción realizada por el sistema \\
+            \hline
+             & & & \\
+            \hline
+        \end{tabular}
+        
+        \vspace{5mm}
+        
+        \begin{tabular}{|p{0.01\textwidth}|p{.954\textwidth}|}
+            \cline{1-2}
+            \rowcolor{SeaGreen} \multicolumn{2}{|l|}{\textbf{Cursos Alternos}} \\
+            \cline{1-2}
+             &  \\
+            \hline
+             &  \\
+            \hline
+        \end{tabular}
+        
+        \vspace{5mm}
+        
+        \begin{tabular}{|p{0.224\textwidth}|p{0.224\textwidth}|p{0.224\textwidth}|p{0.224\textwidth}|}
+            \cline{1-4}
+            \rowcolor{SeaGreen} \multicolumn{4}{|l|}{\textbf{Otros datos}} \\
+            \cline{1-4}
+            \textbf{Frecuencia \newline esperada} &  & \textbf{Rendimiento} &  \\
+            \hline
+            \textbf{Importancia} & & \textbf{Urgencia} & \\
+            \hline
+            \textbf{Estado} & & \textbf{Estabilidad} & \\
+            \hline
+        \end{tabular}
+        
+        \caption{Caso de uso 9:}
+        \label{table:caso-de-uso-9}
+    \end{table}
+    
+    \newpage
+    
+    \item Caso de uso 10: 
+    
+    \begin{table}[h!]
+        \centering
+        \begin{tabular}{|l|p{0.753\textwidth}|}
+            \hline
+            \textbf{Casos de Uso}   &   (CU\_10). \\
+            \hline 
+            \textbf{Actores}        &       \\ 
+            \hline 
+            \textbf{Tipo}           &   Primario y esencial. \\ 
+            \hline
+            \textbf{Referencias}    &       \\ 
+            \hline
+            \textbf{Precondición}   &       \\ 
+            \hline
+            \textbf{Postcondición}  &       \\ 
+            \hline
+        \end{tabular}
+        
+        \vspace{5mm}
+        
+        \begin{tabular}{|p{\textwidth}|}
+            \hline
+            \rowcolor{SeaGreen} \textbf{Propósito} \\
+            \hline
+            \multicolumn{1}{|p{12cm}|}{} \\ [0.5ex]
+            \hline
+        \end{tabular}
+        
+        \vspace{5mm}
+        
+        \begin{tabular}{|p{\textwidth}|}
+            \hline
+            \rowcolor{SeaGreen} \textbf{Resumen} \\
+            \hline
+            \multicolumn{1}{|p{12cm}|}{} \\ [0.5ex]
+            \hline
+        \end{tabular}
+        
+        \vspace{5mm}
+        
+        \begin{tabular}{|p{0.01\textwidth}|p{0.438\textwidth}|p{0.01\textwidth}|p{0.438\textwidth}|}
+            \cline{1-4}
+            \rowcolor{SeaGreen} \multicolumn{4}{|l|}{\textbf{Curso Normal}} \\
+            \cline{1-4}
+            \textbf{1} & Actor1: Acción realizada por el actor &  &  \\
+            \hline
+            \textbf{2} & Actor1: Acción realizada por el actor & \textbf{3} & Acción realizada por el sistema \\
+            \hline
+             & & & \\
+            \hline
+        \end{tabular}
+        
+        \vspace{5mm}
+        
+        \begin{tabular}{|p{0.224\textwidth}|p{0.224\textwidth}|p{0.224\textwidth}|p{0.224\textwidth}|}
+            \cline{1-4}
+            \rowcolor{SeaGreen} \multicolumn{4}{|l|}{\textbf{Otros datos}} \\
+            \cline{1-4}
+            \textbf{Frecuencia \newline esperada} &  & \textbf{Rendimiento} &  \\
+            \hline
+            \textbf{Importancia} & & \textbf{Urgencia} & \\
+            \hline
+            \textbf{Estado} & & \textbf{Estabilidad} & \\
+            \hline
+        \end{tabular}
+        
+        \caption{Caso de uso 10:}
+        \label{table:caso-de-uso-10}
+    \end{table}
+    
+    \newpage
+
+    \item Caso de uso 11: 
+    
+    \begin{table}[h!]
+        \centering
+        \begin{tabular}{|l|p{0.753\textwidth}|}
+            \hline
+            \textbf{Casos de Uso}   &   (CU\_11). \\
+            \hline 
+            \textbf{Actores}        &       \\ 
+            \hline 
+            \textbf{Tipo}           &   Primario y esencial. \\
+            \hline
+            \textbf{Referencias}    &       \\ 
+            \hline
+            \textbf{Precondición}   &       \\ 
+            \hline
+            \textbf{Postcondición}  &       \\ 
+            \hline
+        \end{tabular}
+        
+        \vspace{5mm}
+        
+        \begin{tabular}{|p{\textwidth}|}
+            \hline
+            \rowcolor{SeaGreen} \textbf{Propósito} \\
+            \hline
+            \multicolumn{1}{|p{12cm}|}{} \\ [0.5ex]
+            \hline
+        \end{tabular}
+        
+        \vspace{5mm}
+        
+        \begin{tabular}{|p{\textwidth}|}
+            \hline
+            \rowcolor{SeaGreen} \textbf{Resumen} \\
+            \hline
+            \multicolumn{1}{|p{12cm}|}{} \\ [0.5ex]
+            \hline
+        \end{tabular}
+        
+        \vspace{5mm}
+        
+        \begin{tabular}{|p{0.01\textwidth}|p{0.438\textwidth}|p{0.01\textwidth}|p{0.438\textwidth}|}
+            \cline{1-4}
+            \rowcolor{SeaGreen} \multicolumn{4}{|l|}{\textbf{Curso Normal}} \\
+            \cline{1-4}
+            \textbf{1} & Actor1: Acción realizada por el actor &  &  \\
+            \hline
+            \textbf{2} & Actor1: Acción realizada por el actor & \textbf{3} & Acción realizada por el sistema \\
+            \hline
+             & & & \\
+            \hline
+        \end{tabular}
+        
+        \vspace{5mm}
+        
+        \begin{tabular}{|p{0.224\textwidth}|p{0.224\textwidth}|p{0.224\textwidth}|p{0.224\textwidth}|}
+            \cline{1-4}
+            \rowcolor{SeaGreen} \multicolumn{4}{|l|}{\textbf{Otros datos}} \\
+            \cline{1-4}
+            \textbf{Frecuencia \newline esperada} &  & \textbf{Rendimiento} &  \\
+            \hline
+            \textbf{Importancia} & & \textbf{Urgencia} & \\
+            \hline
+            \textbf{Estado} & & \textbf{Estabilidad} & \\
+            \hline
+        \end{tabular}
+        
+        \caption{Caso de uso 11:}
+        \label{table:caso-de-uso-11}
+    \end{table}
+    
+    \newpage
+    
+    \item Caso de uso 12: 
+    
+    \begin{table}[h!]
+        \centering
+        \begin{tabular}{|l|p{0.753\textwidth}|}
+            \hline
+            \textbf{Casos de Uso}   &   (CU\_12). \\
+            \hline 
+            \textbf{Actores}        &       \\ 
+            \hline 
+            \textbf{Tipo}           &   Primario y esencial. \\ 
+            \hline
+            \textbf{Referencias}    &       \\ 
+            \hline
+            \textbf{Precondición}   &       \\ 
+            \hline
+            \textbf{Postcondición}  &       \\ 
+            \hline
+        \end{tabular}
+        
+        \vspace{5mm}
+        
+        \begin{tabular}{|p{\textwidth}|}
+            \hline
+            \rowcolor{SeaGreen} \textbf{Propósito} \\
+            \hline
+            \multicolumn{1}{|p{12cm}|}{} \\ [0.5ex]
+            \hline
+        \end{tabular}
+        
+        \vspace{5mm}
+        
+        \begin{tabular}{|p{\textwidth}|}
+            \hline
+            \rowcolor{SeaGreen} \textbf{Resumen} \\
+            \hline
+            \multicolumn{1}{|p{12cm}|}{} \\ [0.5ex]
+            \hline
+        \end{tabular}
+        
+        \vspace{5mm}
+        
+        \begin{tabular}{|p{0.01\textwidth}|p{0.438\textwidth}|p{0.01\textwidth}|p{0.438\textwidth}|}
+            \cline{1-4}
+            \rowcolor{SeaGreen} \multicolumn{4}{|l|}{\textbf{Curso Normal}} \\
+            \cline{1-4}
+            \textbf{1} & Actor1: Acción realizada por el actor &  &  \\
+            \hline
+            \textbf{2} & Actor1: Acción realizada por el actor & \textbf{3} & Acción realizada por el sistema \\
+            \hline
+             & & & \\
+            \hline
+        \end{tabular}
+        
+        \vspace{5mm}
+        
+        \begin{tabular}{|p{0.224\textwidth}|p{0.224\textwidth}|p{0.224\textwidth}|p{0.224\textwidth}|}
+            \cline{1-4}
+            \rowcolor{SeaGreen} \multicolumn{4}{|l|}{\textbf{Otros datos}} \\
+            \cline{1-4}
+            \textbf{Frecuencia \newline esperada} &  & \textbf{Rendimiento} &  \\
+            \hline
+            \textbf{Importancia} & & \textbf{Urgencia} & \\
+            \hline
+            \textbf{Estado} & & \textbf{Estabilidad} & \\
+            \hline
+        \end{tabular}
+        
+        \caption{Caso de uso 12:}
+        \label{table:caso-de-uso-12}
+    \end{table}
+    
+    \newpage
+
+    \item Caso de uso 13: 
+    
+    \begin{table}[h!]
+        \centering
+        \begin{tabular}{|l|p{0.753\textwidth}|}
+            \hline
+            \textbf{Casos de Uso}   &   (CU\_13). \\
+            \hline 
+            \textbf{Actores}        &       \\ 
+            \hline 
+            \textbf{Tipo}           &   Primario y esencial. \\
+            \hline
+            \textbf{Referencias}    &       \\ 
+            \hline
+            \textbf{Precondición}   &       \\ 
+            \hline
+            \textbf{Postcondición}  &       \\ 
+            \hline
+        \end{tabular}
+        
+        \vspace{5mm}
+        
+        \begin{tabular}{|p{\textwidth}|}
+            \hline
+            \rowcolor{SeaGreen} \textbf{Propósito} \\
+            \hline
+            \multicolumn{1}{|p{12cm}|}{} \\ [0.5ex]
+            \hline
+        \end{tabular}
+        
+        \vspace{5mm}
+        
+        \begin{tabular}{|p{\textwidth}|}
+            \hline
+            \rowcolor{SeaGreen} \textbf{Resumen} \\
+            \hline
+            \multicolumn{1}{|p{12cm}|}{} \\ [0.5ex]
+            \hline
+        \end{tabular}
+        
+        \vspace{5mm}
+        
+        \begin{tabular}{|p{0.01\textwidth}|p{0.438\textwidth}|p{0.01\textwidth}|p{0.438\textwidth}|}
+            \cline{1-4}
+            \rowcolor{SeaGreen} \multicolumn{4}{|l|}{\textbf{Curso Normal}} \\
+            \cline{1-4}
+            \textbf{1} & Actor1: Acción realizada por el actor &  &  \\
+            \hline
+            \textbf{2} & Actor1: Acción realizada por el actor & \textbf{3} & Acción realizada por el sistema \\
+            \hline
+             & & & \\
+            \hline
+        \end{tabular}
+        
+        \vspace{5mm}
+        
+        \begin{tabular}{|p{0.224\textwidth}|p{0.224\textwidth}|p{0.224\textwidth}|p{0.224\textwidth}|}
+            \cline{1-4}
+            \rowcolor{SeaGreen} \multicolumn{4}{|l|}{\textbf{Otros datos}} \\
+            \cline{1-4}
+            \textbf{Frecuencia \newline esperada} &  & \textbf{Rendimiento} &  \\
+            \hline
+            \textbf{Importancia} & & \textbf{Urgencia} & \\
+            \hline
+            \textbf{Estado} & & \textbf{Estabilidad} & \\
+            \hline
+        \end{tabular}
+        
+        \caption{Caso de uso 13:}
+        \label{table:caso-de-uso-13}
+    \end{table}
+    
+    \newpage
+    
+    \item Caso de uso 14: 
+    
+    \begin{table}[h!]
+        \centering
+        \begin{tabular}{|l|p{0.753\textwidth}|}
+            \hline
+            \textbf{Casos de Uso}   &   (CU\_14). \\
+            \hline 
+            \textbf{Actores}        &       \\ 
+            \hline 
+            \textbf{Tipo}           &   Primario y esencial. \\ 
+            \hline
+            \textbf{Referencias}    &       \\ 
+            \hline
+            \textbf{Precondición}   &       \\ 
+            \hline
+            \textbf{Postcondición}  &       \\ 
+            \hline
+        \end{tabular}
+        
+        \vspace{5mm}
+        
+        \begin{tabular}{|p{\textwidth}|}
+            \hline
+            \rowcolor{SeaGreen} \textbf{Propósito} \\
+            \hline
+            \multicolumn{1}{|p{12cm}|}{} \\ [0.5ex]
+            \hline
+        \end{tabular}
+        
+        \vspace{5mm}
+        
+        \begin{tabular}{|p{\textwidth}|}
+            \hline
+            \rowcolor{SeaGreen} \textbf{Resumen} \\
+            \hline
+            \multicolumn{1}{|p{12cm}|}{} \\ [0.5ex]
+            \hline
+        \end{tabular}
+        
+        \vspace{5mm}
+        
+        \begin{tabular}{|p{0.01\textwidth}|p{0.438\textwidth}|p{0.01\textwidth}|p{0.438\textwidth}|}
+            \cline{1-4}
+            \rowcolor{SeaGreen} \multicolumn{4}{|l|}{\textbf{Curso Normal}} \\
+            \cline{1-4}
+            \textbf{1} & Actor1: Acción realizada por el actor &  &  \\
+            \hline
+            \textbf{2} & Actor1: Acción realizada por el actor & \textbf{3} & Acción realizada por el sistema \\
+            \hline
+             & & & \\
+            \hline
+        \end{tabular}
+        
+        \vspace{5mm}
+        
+        \begin{tabular}{|p{0.224\textwidth}|p{0.224\textwidth}|p{0.224\textwidth}|p{0.224\textwidth}|}
+            \cline{1-4}
+            \rowcolor{SeaGreen} \multicolumn{4}{|l|}{\textbf{Otros datos}} \\
+            \cline{1-4}
+            \textbf{Frecuencia \newline esperada} &  & \textbf{Rendimiento} &  \\
+            \hline
+            \textbf{Importancia} & & \textbf{Urgencia} & \\
+            \hline
+            \textbf{Estado} & & \textbf{Estabilidad} & \\
+            \hline
+        \end{tabular}
+        
+        \caption{Caso de uso 14:}
+        \label{table:caso-de-uso-14}
+    \end{table}
+    
+    \newpage
+
+    \item Caso de uso 15: 
+    
+    \begin{table}[h!]
+        \centering
+        \begin{tabular}{|l|p{0.753\textwidth}|}
+            \hline
+            \textbf{Casos de Uso}   &   (CU\_15). \\
+            \hline 
+            \textbf{Actores}        &       \\ 
+            \hline 
+            \textbf{Tipo}           &   Primario y esencial. \\
+            \hline
+            \textbf{Referencias}    &       \\ 
+            \hline
+            \textbf{Precondición}   &       \\ 
+            \hline
+            \textbf{Postcondición}  &       \\ 
+            \hline
+        \end{tabular}
+        
+        \vspace{5mm}
+        
+        \begin{tabular}{|p{\textwidth}|}
+            \hline
+            \rowcolor{SeaGreen} \textbf{Propósito} \\
+            \hline
+            \multicolumn{1}{|p{12cm}|}{} \\ [0.5ex]
+            \hline
+        \end{tabular}
+        
+        \vspace{5mm}
+        
+        \begin{tabular}{|p{\textwidth}|}
+            \hline
+            \rowcolor{SeaGreen} \textbf{Resumen} \\
+            \hline
+            \multicolumn{1}{|p{12cm}|}{} \\ [0.5ex]
+            \hline
+        \end{tabular}
+        
+        \vspace{5mm}
+        
+        \begin{tabular}{|p{0.01\textwidth}|p{0.438\textwidth}|p{0.01\textwidth}|p{0.438\textwidth}|}
+            \cline{1-4}
+            \rowcolor{SeaGreen} \multicolumn{4}{|l|}{\textbf{Curso Normal}} \\
+            \cline{1-4}
+            \textbf{1} & Actor1: Acción realizada por el actor &  &  \\
+            \hline
+            \textbf{2} & Actor1: Acción realizada por el actor & \textbf{3} & Acción realizada por el sistema \\
+            \hline
+             & & & \\
+            \hline
+        \end{tabular}
+        
+        \vspace{5mm}
+        
+        \begin{tabular}{|p{0.224\textwidth}|p{0.224\textwidth}|p{0.224\textwidth}|p{0.224\textwidth}|}
+            \cline{1-4}
+            \rowcolor{SeaGreen} \multicolumn{4}{|l|}{\textbf{Otros datos}} \\
+            \cline{1-4}
+            \textbf{Frecuencia \newline esperada} &  & \textbf{Rendimiento} &  \\
+            \hline
+            \textbf{Importancia} & & \textbf{Urgencia} & \\
+            \hline
+            \textbf{Estado} & & \textbf{Estabilidad} & \\
+            \hline
+        \end{tabular}
+        
+        \caption{Caso de uso 15:}
+        \label{table:caso-de-uso-15}
+    \end{table}
+    
+    \newpage
+    
+    \item Caso de uso 16: 
+    
+    \begin{table}[h!]
+        \centering
+        \begin{tabular}{|l|p{0.753\textwidth}|}
+            \hline
+            \textbf{Casos de Uso}   &   (CU\_16). \\
+            \hline 
+            \textbf{Actores}        &       \\ 
+            \hline 
+            \textbf{Tipo}           &   Primario y esencial. \\ 
+            \hline
+            \textbf{Referencias}    &       \\ 
+            \hline
+            \textbf{Precondición}   &       \\ 
+            \hline
+            \textbf{Postcondición}  &       \\ 
+            \hline
+        \end{tabular}
+        
+        \vspace{5mm}
+        
+        \begin{tabular}{|p{\textwidth}|}
+            \hline
+            \rowcolor{SeaGreen} \textbf{Propósito} \\
+            \hline
+            \multicolumn{1}{|p{12cm}|}{} \\ [0.5ex]
+            \hline
+        \end{tabular}
+        
+        \vspace{5mm}
+        
+        \begin{tabular}{|p{\textwidth}|}
+            \hline
+            \rowcolor{SeaGreen} \textbf{Resumen} \\
+            \hline
+            \multicolumn{1}{|p{12cm}|}{} \\ [0.5ex]
+            \hline
+        \end{tabular}
+        
+        \vspace{5mm}
+        
+        \begin{tabular}{|p{0.01\textwidth}|p{0.438\textwidth}|p{0.01\textwidth}|p{0.438\textwidth}|}
+            \cline{1-4}
+            \rowcolor{SeaGreen} \multicolumn{4}{|l|}{\textbf{Curso Normal}} \\
+            \cline{1-4}
+            \textbf{1} & Actor1: Acción realizada por el actor &  &  \\
+            \hline
+            \textbf{2} & Actor1: Acción realizada por el actor & \textbf{3} & Acción realizada por el sistema \\
+            \hline
+             & & & \\
+            \hline
+        \end{tabular}
+        
+        \vspace{5mm}
+        
+        \begin{tabular}{|p{0.224\textwidth}|p{0.224\textwidth}|p{0.224\textwidth}|p{0.224\textwidth}|}
+            \cline{1-4}
+            \rowcolor{SeaGreen} \multicolumn{4}{|l|}{\textbf{Otros datos}} \\
+            \cline{1-4}
+            \textbf{Frecuencia \newline esperada} &  & \textbf{Rendimiento} &  \\
+            \hline
+            \textbf{Importancia} & & \textbf{Urgencia} & \\
+            \hline
+            \textbf{Estado} & & \textbf{Estabilidad} & \\
+            \hline
+        \end{tabular}
+        
+        \caption{Caso de uso 16:}
+        \label{table:caso-de-uso-16}
+    \end{table}
+    
+    \newpage
+
+    \item Caso de uso 17: 
+    
+    \begin{table}[h!]
+        \centering
+        \begin{tabular}{|l|p{0.753\textwidth}|}
+            \hline
+            \textbf{Casos de Uso}   &   (CU\_17). \\
+            \hline 
+            \textbf{Actores}        &       \\ 
+            \hline 
+            \textbf{Tipo}           &   Primario y esencial. \\
+            \hline
+            \textbf{Referencias}    &       \\ 
+            \hline
+            \textbf{Precondición}   &       \\ 
+            \hline
+            \textbf{Postcondición}  &       \\ 
+            \hline
+        \end{tabular}
+        
+        \vspace{5mm}
+        
+        \begin{tabular}{|p{\textwidth}|}
+            \hline
+            \rowcolor{SeaGreen} \textbf{Propósito} \\
+            \hline
+            \multicolumn{1}{|p{12cm}|}{} \\ [0.5ex]
+            \hline
+        \end{tabular}
+        
+        \vspace{5mm}
+        
+        \begin{tabular}{|p{\textwidth}|}
+            \hline
+            \rowcolor{SeaGreen} \textbf{Resumen} \\
+            \hline
+            \multicolumn{1}{|p{12cm}|}{} \\ [0.5ex]
+            \hline
+        \end{tabular}
+        
+        \vspace{5mm}
+        
+        \begin{tabular}{|p{0.01\textwidth}|p{0.438\textwidth}|p{0.01\textwidth}|p{0.438\textwidth}|}
+            \cline{1-4}
+            \rowcolor{SeaGreen} \multicolumn{4}{|l|}{\textbf{Curso Normal}} \\
+            \cline{1-4}
+            \textbf{1} & Actor1: Acción realizada por el actor &  &  \\
+            \hline
+            \textbf{2} & Actor1: Acción realizada por el actor & \textbf{3} & Acción realizada por el sistema \\
+            \hline
+             & & & \\
+            \hline
+        \end{tabular}
+        
+        \vspace{5mm}
+        
+        \begin{tabular}{|p{0.224\textwidth}|p{0.224\textwidth}|p{0.224\textwidth}|p{0.224\textwidth}|}
+            \cline{1-4}
+            \rowcolor{SeaGreen} \multicolumn{4}{|l|}{\textbf{Otros datos}} \\
+            \cline{1-4}
+            \textbf{Frecuencia \newline esperada} &  & \textbf{Rendimiento} &  \\
+            \hline
+            \textbf{Importancia} & & \textbf{Urgencia} & \\
+            \hline
+            \textbf{Estado} & & \textbf{Estabilidad} & \\
+            \hline
+        \end{tabular}
+        
+        \caption{Caso de uso 17:}
+        \label{table:caso-de-uso-17}
+    \end{table}
+    
+    \newpage
+    
+    \item Caso de uso 18: 
+    
+    \begin{table}[h!]
+        \centering
+        \begin{tabular}{|l|p{0.753\textwidth}|}
+            \hline
+            \textbf{Casos de Uso}   &   (CU\_18). \\
+            \hline 
+            \textbf{Actores}        &       \\ 
+            \hline 
+            \textbf{Tipo}           &   Primario y esencial. \\ 
+            \hline
+            \textbf{Referencias}    &       \\ 
+            \hline
+            \textbf{Precondición}   &       \\ 
+            \hline
+            \textbf{Postcondición}  &       \\ 
+            \hline
+        \end{tabular}
+        
+        \vspace{5mm}
+        
+        \begin{tabular}{|p{\textwidth}|}
+            \hline
+            \rowcolor{SeaGreen} \textbf{Propósito} \\
+            \hline
+            \multicolumn{1}{|p{12cm}|}{} \\ [0.5ex]
+            \hline
+        \end{tabular}
+        
+        \vspace{5mm}
+        
+        \begin{tabular}{|p{\textwidth}|}
+            \hline
+            \rowcolor{SeaGreen} \textbf{Resumen} \\
+            \hline
+            \multicolumn{1}{|p{12cm}|}{} \\ [0.5ex]
+            \hline
+        \end{tabular}
+        
+        \vspace{5mm}
+        
+        \begin{tabular}{|p{0.01\textwidth}|p{0.438\textwidth}|p{0.01\textwidth}|p{0.438\textwidth}|}
+            \cline{1-4}
+            \rowcolor{SeaGreen} \multicolumn{4}{|l|}{\textbf{Curso Normal}} \\
+            \cline{1-4}
+            \textbf{1} & Actor1: Acción realizada por el actor &  &  \\
+            \hline
+            \textbf{2} & Actor1: Acción realizada por el actor & \textbf{3} & Acción realizada por el sistema \\
+            \hline
+             & & & \\
+            \hline
+        \end{tabular}
+        
+        \vspace{5mm}
+        
+        \begin{tabular}{|p{0.224\textwidth}|p{0.224\textwidth}|p{0.224\textwidth}|p{0.224\textwidth}|}
+            \cline{1-4}
+            \rowcolor{SeaGreen} \multicolumn{4}{|l|}{\textbf{Otros datos}} \\
+            \cline{1-4}
+            \textbf{Frecuencia \newline esperada} &  & \textbf{Rendimiento} &  \\
+            \hline
+            \textbf{Importancia} & & \textbf{Urgencia} & \\
+            \hline
+            \textbf{Estado} & & \textbf{Estabilidad} & \\
+            \hline
+        \end{tabular}
+        
+        \caption{Caso de uso 18:}
+        \label{table:caso-de-uso-18}
+    \end{table}
+    
+    \newpage
+
+    \item Caso de uso 19: 
+    
+    \begin{table}[h!]
+        \centering
+        \begin{tabular}{|l|p{0.753\textwidth}|}
+            \hline
+            \textbf{Casos de Uso}   &   (CU\_19). \\
+            \hline 
+            \textbf{Actores}        &       \\ 
+            \hline 
+            \textbf{Tipo}           &   Primario y esencial. \\
+            \hline
+            \textbf{Referencias}    &       \\ 
+            \hline
+            \textbf{Precondición}   &       \\ 
+            \hline
+            \textbf{Postcondición}  &       \\ 
+            \hline
+        \end{tabular}
+        
+        \vspace{5mm}
+        
+        \begin{tabular}{|p{\textwidth}|}
+            \hline
+            \rowcolor{SeaGreen} \textbf{Propósito} \\
+            \hline
+            \multicolumn{1}{|p{12cm}|}{} \\ [0.5ex]
+            \hline
+        \end{tabular}
+        
+        \vspace{5mm}
+        
+        \begin{tabular}{|p{\textwidth}|}
+            \hline
+            \rowcolor{SeaGreen} \textbf{Resumen} \\
+            \hline
+            \multicolumn{1}{|p{12cm}|}{} \\ [0.5ex]
+            \hline
+        \end{tabular}
+        
+        \vspace{5mm}
+        
+        \begin{tabular}{|p{0.01\textwidth}|p{0.438\textwidth}|p{0.01\textwidth}|p{0.438\textwidth}|}
+            \cline{1-4}
+            \rowcolor{SeaGreen} \multicolumn{4}{|l|}{\textbf{Curso Normal}} \\
+            \cline{1-4}
+            \textbf{1} & Actor1: Acción realizada por el actor &  &  \\
+            \hline
+            \textbf{2} & Actor1: Acción realizada por el actor & \textbf{3} & Acción realizada por el sistema \\
+            \hline
+             & & & \\
+            \hline
+        \end{tabular}
+        
+        \vspace{5mm}
+        
+        \begin{tabular}{|p{0.224\textwidth}|p{0.224\textwidth}|p{0.224\textwidth}|p{0.224\textwidth}|}
+            \cline{1-4}
+            \rowcolor{SeaGreen} \multicolumn{4}{|l|}{\textbf{Otros datos}} \\
+            \cline{1-4}
+            \textbf{Frecuencia \newline esperada} &  & \textbf{Rendimiento} &  \\
+            \hline
+            \textbf{Importancia} & & \textbf{Urgencia} & \\
+            \hline
+            \textbf{Estado} & & \textbf{Estabilidad} & \\
+            \hline
+        \end{tabular}
+        
+        \caption{Caso de uso 19:}
+        \label{table:caso-de-uso-19}
+    \end{table}
+\end{itemize}
+
+\subsubsection{Diagramas de casos de uso.}
+
+\subsubsection{Diagramas de clase.}
+
+\subsubsection{Diagramas de secuencia.}
+
+\subsection{Arquitectura de la red Blockchain.}
+
+\subsection{Planificación y Presupuesto del proyecto.}
+
+\subsection{Conclusión.}
 
 \newpage
