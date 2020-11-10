@@ -2,8 +2,7 @@
 
 En esta sección vamos a exponer los requisitos extraidos del análisis de la descripción del proyecto, que se van a 
 especificar en los requisitos funcionales y no funcionales, los caso de uso, sus actores y diagramas de clase y secuencia.
-Se comentará sobre la arquitectura que se ha elaborado para la prueba de concepto y qué planificación y presupuesto se
-ha llevado a cabo.
+Se comentará sobre la planificación y presupuesto que se ha llevado a cabo.
 
 \subsection{Análisis de requerimientos.}
 
@@ -62,10 +61,12 @@ activación.
     \item[] RNF-3. Se establecerán conexiones seguras dentro de la aplicación, cifrando las peticiones HTTP.
     \item[] RNF-4. La aplicación tiene que cumplir los criterios de PWA, tiene que trabajar de forma offline, mandar
     notificaciones y soportar la sincronización en segundo plano.
-    \item[] RNF-5. La aplicación tiene que adaptarse a cualquier dimension de pantalla, es decir, tiene que ser responsive.
+    \item[] RNF-5. La aplicación tiene que adaptarse a cualquier dimension de pantalla, es decir, tiene que ser 
+    responsive.
     \item[] RNF-6. La aplicación tiene que cumplir niveles de rendimiento, accesibilidad y SEO\footnote{ SEO significa 
     Search Engine Optimization (optimización de motores de búsqueda), que es la práctica de aumentar la cantidad y la 
-    calidad del tráfico se un sitio web a través de los resultados orgánicos de los motores de búsqueda \cite{what-is-seo}. 
+    calidad del tráfico se un sitio web a través de los resultados orgánicos de los motores de búsqueda 
+    \cite{what-is-seo}. 
     \label{fnlabel}} aceptables, utilizando la aplicación LightHouse\footnote{ Es una herramienta elaborada por Google de 
     código abierto para mejorar la calidad de las páginas web \cite{lighthouse}. \label{fnlabel}}.
     \item[] RNF-7. La interfaz ha de ser clara e intuitiva.
@@ -80,20 +81,20 @@ activación.
 \subsubsection{Actores de los casos de uso.}
 
 \begin{itemize}
-    \item \textbf{Entorno}: es el actor vinculado al medio ambiente, se incluye lo referente al aire, la temperatura, la humedad,
-    el tiempo atmosférico, etc. Los sensores se van a encargar de recoger eso datos del exterior y manejarlos.
-    \item \textbf{Dispositivo}: es el actor que realiza un mecanismo con una función específica. Podemos diferenciar entre sensores
-    y actuadores.
+    \item \textbf{Entorno}: es el actor vinculado al medio ambiente, se incluye lo referente al aire, la temperatura, la 
+    humedad, el tiempo atmosférico, etc. Los sensores se van a encargar de recoger eso datos del exterior y manejarlos.
+    \item \textbf{Dispositivo}: es el actor que realiza un mecanismo con una función específica. Podemos diferenciar entre 
+    sensores y actuadores. Nos refirimos a los dispositivos de IoT.
     \item \textbf{Enlace}: es el actor que está formado por dos dispositivos, un sensor y un actuador. Un enlace va a estar 
-    condicionado por el cumplimiento de la condición establecida por el usuario. Por defecto, el enlace creado va a estar habilitado. 
-    Cuando un sensor recibe un valor, se comprobará cada uno de sus enlaces establecidos. En el caso de que se cumpla la condición, 
-    el enlace se habilita y se mandará una señal de activación al actuador.
+    condicionado por el cumplimiento de la condición establecida por el usuario. Por defecto, el enlace creado va a estar 
+    habilitado. Cuando un sensor recibe un valor, se comprobará cada uno de sus enlaces establecidos. En el caso de que se 
+    cumpla la condición, el enlace se habilita y se mandará una señal de activación al actuador.
     \item \textbf{Usuario}: es el actor que puede usar las principales funcionalidades que ofrece la aplicación una vez que 
-    tenga un certificado de autoridad dentro de la red Blockchain. Podrá llevar una gestión de sus dispositivos y enlaces dentro
-    de la aplicación y gracias a la tecnología Blockchain, podrá ver toda la trazabilidad de las transacciones realizadas y 
-    resistente a modificaciones.
-    \item \textbf{Administrador}: es el actor encargado de la gestión de usuarios, se encargará de administrar todo lo relacionado
-    con los certificados de autoridad de cada usuario del sistema.
+    tenga un certificado de autoridad dentro de la red Blockchain. Podrá llevar una gestión de sus dispositivos y enlaces 
+    dentro de la aplicación y gracias a la tecnología Blockchain, podrá ver toda la trazabilidad de las transacciones 
+    realizadas y resistente a modificaciones.
+    \item \textbf{Administrador}: es el actor encargado de la gestión de usuarios, se encargará de administrar todo lo 
+    relacionado con los certificados de autoridad de cada usuario del sistema.
 \end{itemize}
 
 \subsubsection{Diagramas de casos de uso.}
@@ -166,8 +167,8 @@ activación.
             \hline
             \rowcolor{SeaGreen} \textbf{Propósito} \\
             \hline
-            \multicolumn{1}{|p{12cm}|}{El usuario obtendrá el certificado de autoridad para poder realizar operaciones en el sistema, firmando las 
-            transacciones.} \\ [0.5ex]
+            \multicolumn{1}{|p{12cm}|}{El usuario obtendrá el certificado de autoridad para poder realizar operaciones en 
+            el sistema, firmando las transacciones.} \\ [0.5ex]
             \hline
         \end{tabular}
         
@@ -177,9 +178,9 @@ activación.
             \hline
             \rowcolor{SeaGreen} \textbf{Resumen} \\
             \hline
-            \multicolumn{1}{|p{12cm}|}{El usuario solicitará al administrador la petición de darse de alta del sistem. El administrador se encargará de 
-            crear el certificado de autoridad del usuario y lo guardará en la cartera, para que el usuario pueda realizar acciones en la 
-            aplicación.} \\ [0.5ex]
+            \multicolumn{1}{|p{12cm}|}{El usuario solicitará al administrador la petición de darse de alta del sistem. El 
+            administrador se encargará de crear el certificado de autoridad del usuario y lo guardará en la cartera, para 
+            que el usuario pueda realizar acciones en la aplicación.} \\ [0.5ex]
             \hline
         \end{tabular}
         
@@ -256,8 +257,9 @@ activación.
             \hline
             \rowcolor{SeaGreen} \textbf{Resumen} \\
             \hline
-            \multicolumn{1}{|p{12cm}|}{El usuario solicitará al administrador la petición de darse de baja del sistema. El administrador
-            se encargará de revocar el certificado de autoridad del usuario. El certificado de autoridad se borrará de la cartera (wallet).} \\ [0.5ex]
+            \multicolumn{1}{|p{12cm}|}{El usuario solicitará al administrador la petición de darse de baja del sistema. El 
+            administrador se encargará de revocar el certificado de autoridad del usuario. El certificado de autoridad se 
+            borrará de la cartera (wallet).} \\ [0.5ex]
             \hline
         \end{tabular}
         
@@ -323,7 +325,8 @@ activación.
             \hline
             \rowcolor{SeaGreen} \textbf{Propósito} \\
             \hline
-            \multicolumn{1}{|p{12cm}|}{El administrador mandará la solicitud al sistema, para crear el certificado de autoridad.} \\ [0.5ex]
+            \multicolumn{1}{|p{12cm}|}{El administrador mandará la solicitud al sistema, para crear el certificado de 
+            autoridad.} \\ [0.5ex]
             \hline
         \end{tabular}
         
@@ -486,9 +489,9 @@ activación.
             \hline
             \rowcolor{SeaGreen} \textbf{Resumen} \\
             \hline
-            \multicolumn{1}{|p{12cm}|}{El administrado manda la petición de renovación, que consiste en la emisión de un nuevo 
-            certificado para que el sistema (CA) extienda la vida útil de la misma más allá de la fecha de finalización del certificado
-            original.} \\ [0.5ex]
+            \multicolumn{1}{|p{12cm}|}{El administrado manda la petición de renovación, que consiste en la emisión de un 
+            nuevo certificado para que el sistema (CA) extienda la vida útil de la misma más allá de la fecha de 
+            finalización del certificado original.} \\ [0.5ex]
             \hline
         \end{tabular}
         
@@ -542,7 +545,8 @@ activación.
             \hline
             \textbf{Referencias}    &   RF-2.1. \\ 
             \hline
-            \textbf{Precondición}   &   No debe de existir un dispositivo con el mismo número serial o direccón IP en el sistema. \\ 
+            \textbf{Precondición}   &   No debe de existir un dispositivo con el mismo número serial o direccón IP en el 
+            sistema. \\ 
             \hline
             \textbf{Postcondición}  &   Se añade el nuevo dispositivo con valor -1. \\ 
             \hline
@@ -564,9 +568,9 @@ activación.
             \hline
             \rowcolor{SeaGreen} \textbf{Resumen} \\
             \hline
-            \multicolumn{1}{|p{12cm}|}{El usuario introducirá los datos asociados con el dispositivo, que son el nombre, el número serial 
-            y la dirección IP. Se comprobará que no haya un dispositivo existente con el número serial y la dirección IP iguales, en ese 
-            caso se añadirá el dispositivo con el atributo valor -1 por defecto.} \\ [0.5ex]
+            \multicolumn{1}{|p{12cm}|}{El usuario introducirá los datos asociados con el dispositivo, que son el nombre, 
+            el número serial y la dirección IP. Se comprobará que no haya un dispositivo existente con el número serial y 
+            la dirección IP iguales, en ese caso se añadirá el dispositivo con el atributo valor -1 por defecto.} \\ [0.5ex]
             \hline
         \end{tabular}
         
@@ -620,7 +624,8 @@ activación.
             \hline
             \textbf{Precondición}   &   El dispositivo debe de estar registrado en el sistema y tiene que ser un sensor. \\ 
             \hline
-            \textbf{Postcondición}  &   El valor del sensor se habrá modificado y se habrá comprobado las condiciones de sus enlaces. \\ 
+            \textbf{Postcondición}  &   El valor del sensor se habrá modificado y se habrá comprobado las condiciones de 
+            sus enlaces. \\ 
             \hline
         \end{tabular}
         
@@ -630,8 +635,8 @@ activación.
             \hline
             \rowcolor{SeaGreen} \textbf{Propósito} \\
             \hline
-            \multicolumn{1}{|p{12cm}|}{El entorno o el usuario podrá modificar los valores de entrada de un sensor para habilitar o 
-            deshabilitar enlaces en el cual se encuentre involucrado.} \\ [0.5ex]
+            \multicolumn{1}{|p{12cm}|}{El entorno o el usuario podrá modificar los valores de entrada de un sensor para 
+            habilitar o deshabilitar enlaces en el cual se encuentre involucrado.} \\ [0.5ex]
             \hline
         \end{tabular}
         
@@ -641,8 +646,9 @@ activación.
             \hline
             \rowcolor{SeaGreen} \textbf{Resumen} \\
             \hline
-            \multicolumn{1}{|p{12cm}|}{Los datos que se obtiene del entorno o los datos que introduce un usuario a un sensor, el sensor guardará el dato obtenido y 
-            se comprobará los enlaces que esté involucrado el dispositivo, para habilitar o deshabilitar el enlace de acuerdo a la condición establecida en el enlace.} \\ [0.5ex]
+            \multicolumn{1}{|p{12cm}|}{Los datos que se obtiene del entorno o los datos que introduce un usuario a un 
+            sensor, el sensor guardará el dato obtenido y se comprobará los enlaces que esté involucrado el dispositivo, 
+            para habilitar o deshabilitar el enlace de acuerdo a la condición establecida en el enlace.} \\ [0.5ex]
             \hline
         \end{tabular}
         
@@ -790,7 +796,8 @@ activación.
             \hline
             \rowcolor{SeaGreen} \textbf{Resumen} \\
             \hline
-            \multicolumn{1}{|p{12cm}|}{El usuario podrá consultar los dispositivos guardados y ver los datos de cada uno de ellos.} \\ [0.5ex]
+            \multicolumn{1}{|p{12cm}|}{El usuario podrá consultar los dispositivos guardados y ver los datos de cada uno 
+            de ellos.} \\ [0.5ex]
             \hline
         \end{tabular}
         
@@ -1014,9 +1021,10 @@ activación.
             \hline
             \rowcolor{SeaGreen} \textbf{Resumen} \\
             \hline
-            \multicolumn{1}{|p{12cm}|}{El usuario introducirá el número serial del sensor y del actuador, una región dónde se localice 
-            dicho enlace y por último, una condición. Dicha condición va a estar formado por una variable "value", acompañado de un 
-            operador de comparación y un valor numérico. Se generará un ID que es el hash del número serial del sensor y el actuador.} \\ [0.5ex]
+            \multicolumn{1}{|p{12cm}|}{El usuario introducirá el número serial del sensor y del actuador, una región 
+            dónde se localice dicho enlace y por último, una condición. Dicha condición va a estar formado por una 
+            variable "value", acompañado de un operador de comparación y un valor numérico. Se generará un ID que es 
+            el hash del número serial del sensor y el actuador.} \\ [0.5ex]
             \hline
         \end{tabular}
         
@@ -1090,7 +1098,8 @@ activación.
             \hline
             \rowcolor{SeaGreen} \textbf{Resumen} \\
             \hline
-            \multicolumn{1}{|p{12cm}|}{El usuario, verá los datos del enlace, modificará lo que desee y el sistema actualizará esos datos.} \\ [0.5ex]
+            \multicolumn{1}{|p{12cm}|}{El usuario, verá los datos del enlace, modificará lo que desee y el sistema 
+            actualizará esos datos.} \\ [0.5ex]
             \hline
         \end{tabular}
         
@@ -1237,8 +1246,8 @@ activación.
             \rowcolor{SeaGreen} \textbf{Resumen} \\
             \hline
             \multicolumn{1}{|p{12cm}|}{El enlace se podrá habilitar dependiendo de el valor de entrada recibido por el
-            sensor, en el caso de que se cumpla la condición. También el usuario podrá habilitar el enlace. Cuando se habilite,
-            se mandará una petición HTTP para activar el actuador.} \\ [0.5ex]
+            sensor, en el caso de que se cumpla la condición. También el usuario podrá habilitar el enlace. Cuando se 
+            habilite, se mandará una petición HTTP para activar el actuador.} \\ [0.5ex]
             \hline
         \end{tabular}
         
@@ -1758,8 +1767,169 @@ activación.
     \end{figure}
 \end{itemize}
 
-\subsection{Planificación y Presupuesto del proyecto.}
+\subsection{Planificación y presupuesto del proyecto.}
 
-\subsection{Conclusión.}
+\subsubsection*{Planificación}
+
+Después de explicar sobre el análisis de requerimientos, vamos a tratar sobre la planificación llevada a cabo en este 
+proyecto y el presupuesto con el coste de desarrollo del mismo.
+
+\vspace{5mm}
+
+\noindent La planificación del proyecto se puede dividir en cuatro partes principalmente, que se puede reflejar en el 
+siguiente diagrama de Gantt (ver fig. \ref{fig:planificacion-general}). La planificación consta de un proceso de 
+investigación y lecturas de trabajos anteriores, libros, comparativa de plataformas Blockchain, etc. Por otro lado, se 
+dedicó un plazo de tiempo en el aprovisionamiento de dispositivos hardware para la elaboración de la prueba de concepto y 
+su posterior configuración e instalación del sistema operativo.
+
+\vspace{5mm}
+
+\noindent Antes de pasar a la implementación de la red, era necesario realizar una labor de investigación para la creación 
+de los binarios e imagenes Docker de Hyperledger Fabric, para las arquitecturas ARM. Después de realizar modificaciones en 
+el propio código de base de Hyperledger Fabric \cite{fabric-baseimage}, implementé la red Blockchain en las Raspberry PI, 
+que se puede encontrar en la rama \say{config-network} de mi repositorio \cite{repo}. A esta parte se dedicó cerca de más 
+de 3 meses por la complejidad que tiene Hyperledger Fabric, ya que era muy difícil encontrar soluciones a determinados 
+problemas que tenía durante la elaboración, además de la poca información acerca de la implementación de la red en máquinas 
+como las utilizadas. Por lo tanto, tuve que dedicar un tiempo en implementar la red en mi máquina local y luego 
+transladarlo a los nodos. Todo ello se puede ver en la rama \say{dev} del repositorio \cite{repo}. 
+
+\vspace{5mm}
+
+\noindent En la fase de análisis y diseño, se obtuvo los requisitos y los casos de uso del proyecto, para elaborar un 
+boceto de la lógica de la aplicación. También se buscaron herramientas para elaborar las partes del Backend y el Frontend, 
+con sus principales ventajas y desventajas.
+
+\vspace{5mm}
+
+\noindent Para la fase de la implementación de la aplicación se dedicaron cerca de 2 meses y medio, para elaborar la API, 
+creando los Resolvers, Schemas y Models para los enlaces y dispositivos, y su posterior conexión a la red Blockchain. Se 
+creó un script para levantar el servicio en el nodo maestro y para poder hacerlo accesible desde fuera, se obtuvo un 
+dominio mediante DDNS en la plataforma NO-IP \cite{no-ip}, y se abrieron los puertos 80 y 443 del router personal.
+
+\vspace{5mm}
+
+\noindent Para la implementación de la interfaz de usuario, se llevó a cabo la implementación de PWA, que usa HTTPS, tiene 
+que incluir un manifiesto de Aplicación Web y debe de implementar un trabajador de servicio. Se desarrollaron las 
+funcionalidades de enlaces y dispositivos, se conectó a la API y se realizaron test unitarios. Por último se desplegó en el 
+servicio de Gatsby Cloud, que permite hacer análisis de SEO con la herramienta LightHouse.
+
+\vspace{5mm}
+
+\noindent Se puede obtener una planificación más detallada, extendiendo cada una de las partes elaboradas en la siguiente
+página (ver fig. \ref{fig:planificacion-general}).
+
+\begin{landscape}
+  \begin{figure}[h!]
+    \centering
+    \vspace*{\fill}
+    \noindent
+    \makebox[0pt]{\includegraphics[width=1.2\paperwidth]{imagenes/planificacion/planificacion_general}}
+    \caption{Planificación general.}
+    \label{fig:planificacion-general}
+    \vspace*{\fill}
+  \end{figure}
+
+  \begin{figure}[h!]
+    \centering
+    \vspace*{\fill}
+    \noindent
+    \makebox[0pt]{\includegraphics[width=1.2\paperwidth]{imagenes/planificacion/planificacion_expandida}}
+    \caption{Planificación expandida.}
+    \label{fig:planificacion-expandida}
+    \vspace*{\fill}
+  \end{figure}
+\end{landscape}
+
+\subsubsection*{Presupuesto}
+
+Seguidamente, pasaremos hablar sobre el presupuesto para la realización del proyecto, teniendo en cuenta que se van a 
+invertir 9 meses en él, desde el diseño de la plataforma hasta el despliegue y mantenimiento del mismo.
+
+El calculo del presupuesto se va a valorar en función de los siguientes recursos:
+
+\begin{itemize}
+  \item Recurso humano.
+  
+  Se va a necesitar: 
+  
+  \begin{itemize}
+    \item Jefe de proyecto, para que coordine las tareas del proyecto.
+    \item Analista de sistemas, para que diseñe la plataforma, teniendo en cuenta los requerimientos del usuario.
+    \item Full Stack Developer, para elaborar la implementación tanto del Backend y el Frontend y su despliegue.
+    \item Desarrollador Blockchain, encargado de la creación, gestión y mantenimiento de la red Blockchain.
+  \end{itemize}
+
+  Coste:
+
+  \begin{table}[h!]
+    \centering
+    \begin{tabular}{|l|c|}
+        \hline
+        \textbf{Perfil}                     &   \textbf{Coste} \\
+        \hline 
+        \hline
+        \textbf{Jefe de proyecto}           &   40.000 / 12 meses x 9 meses = 30.000€ \\ 
+        \hline 
+        \textbf{Analista de sistemas}       &   36.000 / 12 meses x 3 meses = 9.000€ \\ 
+        \hline
+        \textbf{Full Stack Developer}       &   30.000 / 12 meses x 6 meses = 15.000€ \\ 
+        \hline
+        \textbf{Desarrollador Blockchain}   &   40.000 / 12 meses x 4 meses = 13.333€ \\ 
+        \hline
+        \textbf{Coste total:}               &   30.000 + 9.000 + 15.000 + 13.333 = 67.333€ \\ 
+        \hline
+    \end{tabular}
+    
+    \caption{Coste de recursos humanos \cite{info-jobs}.}
+    \label{table:coste-recurso-humanos}
+  \end{table}
+
+
+  \item Recurso material.
+
+  Se ha utilizado: 
+  
+  \begin{itemize}
+    \item Portatil: MacBook Pro 2018 con procesador 2,7 GHz Intel Core i7 de 4 núcleos de 
+    16 GB de RAM y con capacidad de 256 GB. 1500€
+    \item 5 Raspberry Pi: 
+    5 Raspberries Pi (50€ cada una):
+    \begin{itemize}
+      \item 3 Raspberries Pi 4 Modelo B+ 2GB, que servirán como nodos principales para la red.
+      \item Actuador (Raspberry Pi 2 Modelo B+) y sensor (Raspberry Pi 3 Modelo B+) para simular la red domótica.
+    \end{itemize}
+    \item Un switch TP-Link TL-SG105 - Switch 5 Puertos 10/100/1000 MBps 17,99€
+    \item Cables ethernet: 14 €
+    \item Xiaomi Router 4A WiFi inalámbrico 2.4GHz 5GHz Banda Dual 1167Mbps WiFi Repeater 4 Antenas 34,99 €
+  \end{itemize}
+  
+  \item Otros gastos:
+  \begin{itemize}
+    \item Internet y Luz: 132 € x 9 meses = 1.188€
+    \item Servicios de la nube: Utilizo la subscripción gratuita de Gatsby Cloud.
+    \item Software: 0€
+  \end{itemize}
+
+  Coste total material: 3.004,98€
+\end{itemize}
+
+\begin{table}[h!]
+  \centering
+  \begin{tabular}{|l|c|}
+      \hline
+      \textbf{Recurso}  &   \textbf{Coste} \\
+      \hline
+      \hline 
+      \textbf{Humano}   &   67.333€ \\ 
+      \hline 
+      \textbf{Material} &   3.004,98€\\ 
+      \hline
+      \textbf{Total}    &   70.337,98€\\ 
+      \hline
+  \end{tabular}
+  
+  \caption{Coste total de los recursos}
+  \label{table:coste-recursos}
+\end{table}
 
 \newpage
