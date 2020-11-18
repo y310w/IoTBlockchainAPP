@@ -81,7 +81,7 @@ fue una de las primeras propuestas creadas por Wei Dai para un "sistema electró
 distribuido". \label{fnlabel}} y HashCash\footnote{Hashcash es un sistema de prueba de trabajo que se utiliza para 
 limitar el spam de correo electrónico y los ataques de denegación de servicio, y más recientemente se ha dado a 
 conocer por su uso en bitcoin (y otras criptodivisas) como parte del algoritmo de minería. Hashcash fue propuesto 
-en 1997 por Adam Back. \label{fnlabel}} para crear un sistema completamente descentralizado de dinero  electrónico 
+en 1997 por Adam Back. \label{fnlabel}} para crear un sistema completamente descentralizado de dinero  electrónico, 
 que no depende de una autoridad central para la emisión de moneda o liquidación y validación de las transacciones 
 \cite{antonopoulos2014mastering, bmoney, hashcash}.
 
@@ -187,7 +187,7 @@ Finalmente, un bloque hijo pasa a formar parte del Blockchain y la división se 
 
 \noindent La DLT es inmutable debido a que, en la cabecera del bloque, contiene el hash del padre y, por lo tanto, 
 afecta al bloque actual. La identidad del hijo cambia si la del padre también lo hace. Cuando cambia el padre, el 
-hash del padre cambia, y por tanto hay que modificar la cabecera del bloque. Esto a su vez cambia el hash del hijo y 
+hash de su padre cambia, y por tanto hay que modificar la cabecera del bloque. Esto a su vez cambia el hash del hijo y 
 por tanto requiere un cambio en el puntero del nieto y así sucesivamente \cite{antonopoulos2014mastering}.
 
 \vspace{5mm}
@@ -206,18 +206,18 @@ mineros proporcionan potencia de procesamiento a la red de bitcoin a cambio de l
 \vspace{5mm}
 
 \noindent Cada 10 minutos se \say{extrae} un nuevo bloque que contiene las transacciones que se han producido desde el 
-último, añadiendo así esas transacciones a la cadena de bloques. Las transacciones que pasan a formar parte de un bloque 
-y se añaden a la cadena de bloques se consideran \say{confirmadas} lo que permite a los nuevos propietarios de bitcoin 
+último, añadiendo así, esas transacciones a la cadena de bloques. Las transacciones que pasan a formar parte de un bloque 
+y se añaden a la cadena de bloques se consideran \say{confirmadas}, lo que permite a los nuevos propietarios de bitcoin 
 gastar el bitcoin recibido en esas transacciones \cite{antonopoulos2014mastering}.
 
 \vspace{5mm}
 
 \noindent Los mineros pueden recibir dos tipos de recompensas: las creadas por nuevos bloques y tasas de transacciones 
-de todas las transacciones dentro del bloque. Para ello, tiene que competir entre ellos para encontrar la solución a 
-un problema difícil basado en un algoritmo criptográfico de hash. La solución del problema, llamada Proof-of-Work, 
-se incluye en el nuevo bloque y actúa como prueba de que el minero gastó un esfuerzo de computación significativo. 
-La competencia por resolver el algoritmo de PoW para ganar recompensas y el derecho a registrar las transacciones 
-en la cadena de bloques, es la base del modelo de seguridad de Bitcoin.
+de todas las transacciones dentro del bloque. Para ello, tiene que competir contra otros mineros, para encontrar la 
+solución a un problema difícil basado en un algoritmo criptográfico de hash. La solución del problema, llamada 
+Proof-of-Work, se incluye en el nuevo bloque y actúa como prueba de que el minero gastó un esfuerzo de computación 
+significativo. La competencia por resolver el algoritmo de PoW para ganar recompensas y el derecho a registrar las 
+transacciones en la cadena de bloques, es la base del modelo de seguridad de Bitcoin.
 
 \vspace{5mm}
 
@@ -227,7 +227,7 @@ red sin una autoridad central \cite{antonopoulos2014mastering}.
 
 \subsubsection*{Consenso decentralizado.}
 
-A diferencia de los sistemas de pagos tradicionales, el Bitcoin no tiene una autoridad central sino que cada nodo tiene
+A diferencia de los sistemas de pagos tradicionales, el Bitcoin no tiene una autoridad central, sino que cada nodo tiene
 una copia completa de un libro de cuentas público como registro de autoridad. Cada nodo de la red comparte la 
 información transmitida y, en conclusión, ensamblará una copia del mismo libro público de todos los demás 
 \cite{antonopoulos2014mastering}.
@@ -239,12 +239,12 @@ independiente en los nodos de la red:
 
 \begin{itemize}
     \item Verificación independiente de cada transacción, por cada nodo completo, sobre la base de una lista completa 
-    de criterios
+    de criterios.
     \item La agregación independiente de esas transacciones en nuevos bloques por nodos mineros, junto con un cálculo 
-    demostrado a través de un algoritmo de prueba de trabajo
-    \item Verificación independiente de los nuevos bloques por cada nodo y ensamblaje en una cadena
-    \item Selección independiente, por cada nodo, de la cadena con el cálculo más acumulativo demostrado a través del 
-    PoW
+    demostrado a través de un algoritmo de prueba de trabajo.
+    \item Verificación independiente de los nuevos bloques por cada nodo y ensamblaje en una cadena.
+    \item Selección independiente, por cada nodo de la cadena, con el cálculo más acumulativo demostrado a través del 
+    PoW.
 \end{itemize}
 
 \subsubsection*{Algoritmo Proof-of-Work.}
@@ -283,9 +283,9 @@ objetivo, más difícil es generar un bloque \cite{proof-of-work}.
 
 \subsection{Internet de las Cosas (IoT).}
 
-El Internet de las Cosas, o también conocido cómo Internet of Things, consiste en dispositivos que generan procesos, e 
+El Internet de las Cosas, o también conocido como Internet of Things, consiste en dispositivos que generan procesos, e 
 intercambian grandes cantidades de información a través de Internet. Recolectan y comparten datos sobre cómo son 
-utilizados y sobre el medio que los rodea. Esta información puede ser utilizada para detertar patrones, hacer 
+utilizados y sobre el medio que los rodea. Esta información puede ser utilizada para detectar patrones, hacer 
 recomendaciones y detectar posibles problemas antes de que ocurran \cite{what-is-iot, novo2018blockchain}.
 
 \vspace{5mm}
@@ -308,7 +308,7 @@ proporcionr soluciones de seguridad a los problemas actuales del Internet de las
 
 \begin{itemize}
     \item \textbf{Espacio de direcciones}: Blockchain tiene 160-bit de espacio de direcciones, a diferencia de IPv6
-    que solo tiene 128-bit. Esto es debido a que el hash de la clave pública generada por ECDSA (Elliptic Cruve Digital
+    que solo tiene 128-bit. Esto es debido a que el hash de la clave pública generada por ECDSA (Elliptic Curve Digital
     Algorithm) es de 20 bytes o 160-bits. Por lo tanto, podemos alojar alrededor de \(1,46*10^{48}\) direcciones para 
     dispositivos IoT. Lo que hace que sea más escalable a diferencia de IPv6. 
     \item \textbf{Identidad y administración}: Blockchain tiene la capacidad de resolver estos desafíos de manera fácil, 
@@ -317,7 +317,7 @@ proporcionr soluciones de seguridad a los problemas actuales del Internet de las
     \item \textbf{Autenticación e integridad de los datos}: Por su diseño, los datos transmitidos siempre estarán
     criptográficamente probados y firmados, garantizando así la autenticación e integridad de los datos.
     \item \textbf{Autenticación, autorización y privacidad}: Provee una solución efectiva en autorización, privacidad en
-    los datos y la habilidad de suminstrar reglas de autenticación decentralizada. 
+    los datos y la habilidad de suministrar reglas de autenticación decentralizada. 
     \item \textbf{Comunicaciones seguras}: Los protocolos que utilizan las IoT son HTTP, MQTT, CoAP o XMPP, y no son 
     seguros por diseño y por tanto, son envueltos por una capa DTLS o TLS. Con Blockchain, la gestión y distribución 
     de claves se elimina totalmente, y cada dispositivo IoT tendrá su par de claves simétricas, para conectarse a la 
@@ -346,7 +346,7 @@ que he podido trabajar antes con diferentes modelos de la marca.
 
 En este capítulo hemos dado una introducción al proyecto. Hemos hablado sobre la tecnología Blockchain, apoyandonos 
 con el concepto de Bitcoin. Para pasar ha comentar sobre el Internet de las Cosas, y su combinación con el Blockchain, 
-También hemos comentado sobre los dispositivos que voy a utilizar como prueba de concepto. A continuación, indagararemos 
+También hemos comentado sobre los dispositivos que voy a utilizar como prueba de concepto. A continuación, indagaremos 
 más sobre otras tecnologías que han aplicado el Blockchain y plataformas.
 
 \newpage

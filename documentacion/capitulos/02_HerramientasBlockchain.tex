@@ -9,8 +9,8 @@ abiertas o cerradas. Dando el resultado de cuatro posibles configuraciones \cite
 
 \vspace{5mm}
 
-\noindent La comparación de estos dos últimos va asociado a quién es capaz de leer esos datos de la Blockchain Y así, 
-podemos hablar de soluciones que son públicas y abiertas, públicas y cerradas, privadas y abiertas, privadas y 
+\noindent La comparación de estos dos últimos va asociado a quién es capaz de leer esos datos de la Blockchain. Y así, 
+podemos hablar de soluciones que son públicas y abiertas, públicas y cerradas, privadas y abiertas y privadas y 
 cerradas.
 
 \vspace{5mm}
@@ -101,7 +101,7 @@ suelen tener un algoritmo de consenso diferente, como BFT vs PoW.
 \subsection{Plataformas Blockchain.}
 
 Conocemos de antemano, que la tecnología Blockchain surgió en 2008 con la plataforma Bitcoin, y ha evolucionado hasta
-convertirse en una tecnología dominante, utilizada también a nivel empresarial, y por tanto han surgido nuevas y 
+convertirse en una tecnología dominante, utilizada también a nivel empresarial, y en consecuencia, han surgido nuevas y 
 diversas plataformas de Blockchain. En la sección anterior, hemos comentado algunas plataformas, según su tipo de red.
 Es el momento de dar paso a definir la lista de las plataformas más conocidas de Blockchain que hay actualmente.
 
@@ -148,7 +148,7 @@ R3 Corda y utilizar la plataforma de cadena de bloques de código abierto según
 
 \subsubsection*{Ethereum.}
 
-Ethereum es una de las plataformas blockchain más importantes, destacamos de ella ser pionera en los Smart contract así 
+Ethereum es una de las plataformas blockchain más importantes, destacamos de ella ser pionera en los Smart Contract así 
 como la ejecución simple de los mismos \cite{top-blockchain-platforms-app}. Creada por Vitalk Buterin en 2013, es una 
 plataforma de código abierto y pública. Su moneda es el Ether. Sigue un mecanismo de consenso PoW, que es 
 comparativamente más lento en velocidad, pero se va a modificar por el algoritmo a prueba de participación o 
@@ -176,7 +176,7 @@ tanto, tiene muchas más características excepcionales añadidas que la tecnolo
 
 \noindent Esta plataforma permite implementaciones de consensos diferentes según las necesidades. Ofrece privacidad a 
 nivel de transacción, junto con transparencia en toda la red, y no soporta la política global de intercambio de datos. 
-Actualmente, la platforma de Quórum se está convirtiendo en una parte indispensable de organizaciones como bancos e 
+Actualmente, la platforma de Quorum se está convirtiendo en una parte indispensable de organizaciones como bancos e 
 instituciones financieras en las que la privacidad de los datos es crucial \cite{top-blockchain-platforms-app}.
 
 \subsubsection*{Ripple.}
@@ -218,10 +218,10 @@ Blockchain. Funciona con redes de cadenas de bloques populares como Ethereum y H
 \noindent Tiene los siguientes beneficios:
 
 \begin{itemize}
-    \item Completamente administrado
-    \item Se puede escoger entre Ethereum o Hyperledger Fabric
-    \item Seguro y escalable
-    \item Confiable
+    \item Completamente administrado.
+    \item Se puede escoger entre Ethereum o Hyperledger Fabric.
+    \item Seguro y escalable.
+    \item Confiable.
 \end{itemize}
 
 \noindent Ofrece una amplia gama de soluciones, incluyendo Amazon QLDB (Quatum Ledger Database), Amazon Managed 
@@ -316,7 +316,7 @@ gobierno electrónico, las telecomunicaciones, la industria musical, el arte, la
 
 En esta sección vamos a comentar las herramientas utilizadas en el proyecto y el motivo de por qué he utilizado dichas
 herramientas para cada apartado de la prueba de concepto. Como ya conocemos en la sección \ref{motivacion}, comenté 
-sobre los dispositovs que voy a utilizar, que son Rasberry Pi para simular la red Blockchain y los dispositivos IoT que 
+sobre los dispositvos que voy a utilizar, que son Rasberry Pi para simular la red Blockchain y los dispositivos IoT que 
 se encargarán de interactuar con la red. Y para la elaboración de la aplicación he decido implementar una aplicación 
 web que constará de dos partes principalmente. Una API\footnote{Una interfaz de programación de aplicaciones es una 
 interfaz informática que define las interacciones entre múltiples intermediarios de software. Define los tipos de 
@@ -340,7 +340,7 @@ Opera, etc).
 \noindent Otras ventajas que ofrece las aplicaciones basadas en web son: 
 
 \begin{itemize}
-    \item Son \textbf{multiplataforma} y \textbf{acceso universal}, para todos los sistemas operativos y móbiles
+    \item \textbf{Multiplataforma} y \textbf{acceso universal}, para todos los sistemas operativos y móbiles
     \item \textbf{Accesibles} en cualquier momento, siempre y cuando se tenga acceso a internet. Aunque como veremos 
     más adelante, podremos interactuar con la aplicación de manera \textbf{offline}, gracias a PWA (Progressive Web 
     Application).
@@ -396,7 +396,7 @@ para ejecutar la lógica del chaincode sobre el canal, protegiendo los datos \ci
 
 \vspace{5mm}
 
-\noindent Hyperledger Fabric ofrece un número de SDKs\footnote{SDK significa software development kit o devkit. Es un
+\noindent Hyperledger Fabric ofrece SDKs\footnote{SDK significa software development kit o devkit. Es un
 conjunto de herramientas de software y programas utilizados por los desarrolladores para crear aplicaciones para 
 plataformas específicas \cite{what-is-sdk}.\label{fnlabel}} para apoyar el desarrollo de contratos 
 inteligentes en varios lenguajes de programación. Hay tres disponibles: Go, Node.js y Java. En cuanto al desarrollo 
@@ -405,7 +405,7 @@ de aplicaciones soporta los lenguajes de Node.js y Java pero actualmente, aunque
 
 \vspace{5mm}
 
-\noindent En esta ocasión, hemos escogido, Go para la creación de los chaincode y para la parte de la elaboración
+\noindent En esta ocasión, hemos escogido Go, para la creación de los chaincode y para la parte de la elaboración
 de la API, nos hemos decantado por Node.js, que más adelante comentaremos en la siguiente sección. Los chaincode 
 se ejecutan en un contenedor Docker seguro y aislado del proceso de aprobación de los peers. Inicializa y gestiona 
 el estado del libro mayor a través de las transacciones presentadas por las solicitudes. Se puede invocar un 
@@ -434,7 +434,7 @@ elementos y su labor dentro de una red:
 
 \noindent A la hora de guardar las transacciones, Hyperledger Fabric ofrece dos tipo de bases datos, LevelDB y CouchDB. 
 LevelDB es la base de datos de estado predeterminada e incrustada en el nodo peer y almacena los datos del chaincode 
-como pares clave-valor simples y sólo admite consultas clave, rango clave y clave compuesta. En cambio, CouchDB es 
+como pares clave-valor simples y sólo admite consultas de clave, rango clave y clave compuesta. En cambio, CouchDB es 
 opcional y soporta consultas ricas ya que los datos de los chaincode están en formato JSON. Los datos se encuentran 
 indexados, lo que hace que las consultas sean flexibles y eficientes \cite{using-couchdb}.
 
@@ -454,7 +454,7 @@ todos los servicios que estén configurados.
 
 \noindent Al utilizar varias Raspberries como nodos principales de la red Blockchain, como un clúster, voy a utilizar 
 Docker Swarm para la orquestación de multiples contenedores dentro de múltiples máquinas anfitrionas. Dentro de un 
-clúster hay varios nodos trabajadores y un nodo administrador que se encarga de manejar los recursos de los nodos 
+clúster hay varios nodos trabajadores y un nodo administrador, que se encarga de manejar los recursos de los nodos 
 trabajadores de manera eficiente y de asegurar que el grupo funcione con eficacia. También, hace que la aplicación 
 tenga un alto nivel de disponibilidad \cite{what-is-docker-swarm}.
 
@@ -519,7 +519,7 @@ paquetes que ofrece, lo que facilita el desarrollo de la aplicación web.
 
 \vspace{5mm}
 
-\noindent Entre los paquetes los paquetes que he instalado en el lado del servidor caben destacar:
+\noindent Entre los paquetes que he instalado en el lado del servidor caben destacar:
 
 \begin{itemize}
     \item \textbf{fabric-network}: envio de transacciones y consultas de contratos inteligentes.
@@ -598,14 +598,14 @@ contribuyentes al proyecto. Posee menos documentación y es menos conocido \cite
 
 \noindent También se ha utilizado Apollo Client, que es una biblioteca completa de gestión de estado para JavaScript 
 que permite gestionar datos locales y remotos con GraphQL. Sirve para obtener, almacenar y modificar datos de 
-aplicaciones, mientras se actualiza la interfaz de usuario. El núcleo de la biblioteca de Apollo Cliente, proporciona 
+aplicaciones, mientras se actualiza la interfaz de usuario. El núcleo de la biblioteca de Apollo Client, proporciona 
 una integración con React y Apollo Server \cite{introduction-apollo-client}.
 
 \subsubsection*{Bootstrap.}
 
-Bootstrap es un framework código abierto y gratuito de CSS dirigido al desarrollo de la web móvil. Contiene 
-plantillas de diseño basadas en CSS y (opcionalmente) en JavaScript para la tipografía, los formularios, los botones, 
-la navegación y otros componentes de la interfaz \cite{bootstrap}.
+Bootstrap es un framework código abierto y gratuito de CSS dirigido al desarrollo web móvil. Contiene plantillas 
+de diseño basadas en CSS y (opcionalmente) en JavaScript para la tipografía, los formularios, los botones, la 
+navegación y otros componentes de la interfaz \cite{bootstrap}.
 
 \vspace{5mm}
 
