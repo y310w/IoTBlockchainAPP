@@ -88,7 +88,7 @@ Para la instalación de Hyperledger Fabric (1.4.4) necesitaremos que cada nodo t
   \item Python 2.7
 \end{itemize}
 
-\noindent Una vez instalado los requisitos procedemos a la creación de las imagenes de Hyperledger Fabric a partir de 
+\noindent Una vez instalado los requisitos procedemos a la creación de las imágenes de Hyperledger Fabric a partir de 
 los binarios. Actualmente no hay soporte para arquitecturas ARM ya que Hyperledger solamente soporta las siguientes 
 arquitecturas \cite{build-docker-images}:
 
@@ -99,7 +99,7 @@ arquitecturas \cite{build-docker-images}:
 \end{itemize}
 
 \noindent Por tanto el principal objetivo y uno de los obstáculos importantes, era conseguir que Hyperledger Fabric 
-se ejecutara en Raspberry Pi. Por ello, realice la construcción de mis propias imagenes de Docker que se pueden 
+se ejecutara en Raspberry Pi. Por ello, realice la construcción de mis propias imágenes de Docker que se pueden 
 encontrar en mi DockerHub \cite{dockerhub}. Para ello, he tenido que realizar una serie de cambios en el código fuente
 de Hyperledger Fabric que se encuentra distribuido en dos repositorios: \textbf{fabric-baseimage}\footnote{Actualmente, 
 este proyecto se encuentra deprecated. \label{fnlabel}} y \textbf{fabric} \cite{fabric-baseimage, fabric}. 
@@ -173,7 +173,7 @@ del repositorio \cite{fork-fabric-baseimage}.
 \begin{figure}[ht!]
   \centering
   \includegraphics[width=\textwidth]{imagenes/desarrollo/imagenes_docker}
-  \caption{Imagenes Docker de Hyperledger Fabric.}
+  \caption{Imágenes Docker de Hyperledger Fabric.}
   \label{fig:imagenes-docker}
 \end{figure}
 
@@ -215,7 +215,7 @@ a los nodos trabajadores activos, todo en una red privada \cite{hyperledger-fabr
 
 \vspace{5mm}
 
-\noindent Para facilitar el proceso de instalación de prerrequisitos, creación de binarios, imagenes, Docker Swarm, etc. 
+\noindent Para facilitar el proceso de instalación de prerrequisitos, creación de binarios, imágenes, Docker Swarm, etc. 
 Se ha creado un script \textbf{setup\_base.sh} que tiene las siguientes opciones:
 
 \begin{lstlisting}[language=bash]
@@ -250,7 +250,7 @@ Dentro del repositorio, la estructura de ficheros que rige la infraestructura de
 
 \vspace{5mm}
 
-\noindent La carpeta \textbf{config-network} contiene los binarios necesarios para las imagenes Docker de Hyperledger 
+\noindent La carpeta \textbf{config-network} contiene los binarios necesarios para las imágenes Docker de Hyperledger 
 Fabric, los chaincode creados para realizar las operaciones a los dispositivos y enlaces 
 \cite{developing-chaincode-nodejs}, y todos los ficheros necesarios para la configuración de la red Blockchain, que son: 
 
