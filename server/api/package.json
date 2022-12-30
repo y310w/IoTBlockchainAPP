@@ -19,7 +19,7 @@
     "@babel/register": "^7.10.3",
     "axios": "^0.19.2",
     "chai": "^4.2.0",
-    "mocha": "^8.0.1",
+    "mocha": "^8.4.0",
     "nodemon": "^2.0.4"
   },
   "dependencies": {
